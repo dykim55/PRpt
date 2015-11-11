@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Asset" pageWidth="539" pageHeight="726" columnWidth="539" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="0aacb918-ce3a-4834-8eca-6485e971d979">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="40"/>
+	<subDataset name="Dataset1" uuid="a42624a6-adb7-43da-9c77-1a5b992a62af">
+		<field name="gubun" class="java.lang.String"/>
+		<field name="month" class="java.lang.Integer"/>
+		<field name="count" class="java.lang.Integer"/>
+	</subDataset>
+	<parameter name="REPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["D:\\Project\\prom\\infra\\prom-webconsole\\src\\main\\resources\\WEB-INF\\reports\\synthesis\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="assetReportMap" class="java.util.Map"/>
+	<field name="_id" class="java.lang.String"/>
+	<field name="assetCode" class="java.lang.Integer"/>
+	<field name="assetName" class="java.lang.String"/>
+	<field name="productType" class="java.lang.String"/>
+	<field name="etc" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="726" splitType="Stretch">
+			<printWhenExpression><![CDATA[$F{productType}.equals( "FW" ) ? true : false]]></printWhenExpression>
+			<subreport>
+				<reportElement x="0" y="0" width="539" height="726" uuid="6a974361-4b90-4fdb-9c01-a4cf32a5c5a0"/>
+				<subreportParameter name="assetName">
+					<subreportParameterExpression><![CDATA[$F{assetName}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="assetReportInfo">
+					<subreportParameterExpression><![CDATA[$P{assetReportMap}.get( $F{_id} )]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{REPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource()]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{REPORT_DIR} + "docx/fw/AssetInfo.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="726">
+			<printWhenExpression><![CDATA[$F{productType}.equals( "WAF" ) ? true : false]]></printWhenExpression>
+			<subreport>
+				<reportElement x="0" y="0" width="539" height="726" uuid="f282f116-7512-4655-a968-5f4943bbe088"/>
+				<subreportParameter name="assetName">
+					<subreportParameterExpression><![CDATA[$F{assetName}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="assetReportInfo">
+					<subreportParameterExpression><![CDATA[$P{assetReportMap}.get( $F{_id} )]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{REPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource()]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{REPORT_DIR} + "docx/waf/AssetInfo.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="726">
+			<printWhenExpression><![CDATA[$F{productType}.equals( "IPS" ) ? true : false]]></printWhenExpression>
+			<subreport>
+				<reportElement x="0" y="0" width="539" height="726" uuid="907fc838-1a80-44dc-b548-bd059b8ca721"/>
+				<subreportParameter name="assetName">
+					<subreportParameterExpression><![CDATA[$F{assetName}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="assetReportInfo">
+					<subreportParameterExpression><![CDATA[$P{assetReportMap}.get( $F{_id} )]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{REPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource()]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{REPORT_DIR} + "docx/ips/AssetInfo.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="726">
+			<printWhenExpression><![CDATA[$F{productType}.equals( "IDS" ) ? true : false]]></printWhenExpression>
+			<subreport>
+				<reportElement x="0" y="0" width="539" height="726" uuid="ab0c041e-5a7c-425d-9d18-6a83837f2797"/>
+				<subreportParameter name="assetName">
+					<subreportParameterExpression><![CDATA[$F{assetName}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="assetReportInfo">
+					<subreportParameterExpression><![CDATA[$P{assetReportMap}.get( $F{_id} )]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{REPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource()]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{REPORT_DIR} + "docx/ids/AssetInfo.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="726">
+			<printWhenExpression><![CDATA[($F{productType}.equals("DDOS") && $F{etc}.equals("1")) ? true : false]]></printWhenExpression>
+			<subreport>
+				<reportElement x="0" y="0" width="539" height="726" uuid="8bb9ebd2-c980-411c-9814-397c6ee567f4"/>
+				<subreportParameter name="assetName">
+					<subreportParameterExpression><![CDATA[$F{assetName}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="assetReportInfo">
+					<subreportParameterExpression><![CDATA[$P{assetReportMap}.get( $F{_id} )]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{REPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource()]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{REPORT_DIR} + "docx/ddos/AssetInfo1.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="726">
+			<printWhenExpression><![CDATA[($F{productType}.equals("DDOS") && $F{etc}.equals("2")) ? true : false]]></printWhenExpression>
+			<subreport>
+				<reportElement x="0" y="0" width="539" height="726" uuid="4bf4fa24-bde8-4c58-887a-973217883843"/>
+				<subreportParameter name="assetName">
+					<subreportParameterExpression><![CDATA[$F{assetName}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="assetReportInfo">
+					<subreportParameterExpression><![CDATA[$P{assetReportMap}.get( $F{_id} )]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{REPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource()]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{REPORT_DIR} + "docx/ddos/AssetInfo2.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

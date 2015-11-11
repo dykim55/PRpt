@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Main">
+	
+	<!-- 모의훈련별 메일발송 건수 -->
+	<select id="selectMailSndCount" resultType="java.util.HashMap">
+        SELECT 
+            A.smltCd,
+            SUM(CASE WHEN B.sndSt = 1 THEN 1 ELSE 0 END) wait,
+            SUM(CASE WHEN B.sndSt = 3 THEN 1 ELSE 0 END) fnsh
+        FROM TrainTbl A, MailSndTbl B
+        WHERE A.trnCd = B.trnCd
+            AND A.smltCd = #{smltCd}
+        GROUP BY A.smltCd
+    </select>   
+
+    <!-- 모의훈련별 훈련현황 -->
+    <select id="selectTrainCount" resultType="java.util.HashMap">
+        SELECT 
+            A.smltCd,
+            SUM(CASE WHEN (B.trnSt = 1 OR B.trnSt = 2 OR B.trnSt = 3) THEN 1 ELSE 0 END) wait,
+            SUM(CASE WHEN B.trnSt = 5 THEN 1 ELSE 0 END) going,
+            SUM(CASE WHEN B.trnSt = 4 THEN 1 ELSE 0 END) rsv,
+            SUM(CASE WHEN B.trnSt = 6 THEN 1 ELSE 0 END) fnsh
+        FROM SimulationTbl A, TrainTbl B
+        WHERE A.smltCd = B.smltCd
+            AND A.smltCd = #{smltCd}
+        GROUP BY A.smltCd
+    </select>   
+    	
+</mapper>

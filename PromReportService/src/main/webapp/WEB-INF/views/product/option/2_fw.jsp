@@ -1,0 +1,321 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<script>
+
+FORM_OPTION = (function() {
+
+    var _formCode, _formType, _reportType, _assetCode, _data;
+    var _port = [
+                 {"code":"80",   "name":"HTTP"},
+                 {"code":"443",  "name":"HTTPS"},
+                 {"code":"1433", "name":"MS-SQL"},
+                 {"code":"1521", "name":"Oracle"},
+                 {"code":"3306", "name":"Mysql"},
+                 //{"code":"21",   "name":"FTP"},
+                 //{"code":"23",   "name":"Telnet"},
+                 {"code":"22",   "name":"SSH"},
+                 {"code":"3389", "name":"Terminal"},
+                 {"code":"8502", "name":"HTS"}
+             ];
+    
+    $("#search_port").loadSelect(_port, "name", "code");
+    $("#search_port").multiselect({
+        header: false,
+        selectedList: 4,
+        noneSelectedText: "선택하세요.",
+        position: {
+            my: 'left bottom',
+            at: 'left top'
+         }                
+    });
+    $("#search_port").multiselect("refresh");
+	
+    return {
+        title : function() {
+            return $("#formTitle").html();
+        },
+        done : function() {
+            var data = {};
+            $("#frm").serializeArray().map(function(x){data[x.name] = x.value;});
+            
+            var port = '';
+            $.each($("#search_port").multiselect("getChecked").map(function(){ return this.value; }).get(), function(idx, pack) {
+                port += pack + ",";
+            });
+            
+            return { "data": data, "formInfo": { formCode:_formCode, formType:_formType, formReportType:_reportType}, "etc": port };
+        },
+        formData : function() {
+            return { formCode:_formCode, formType:_formType, formReportType:_reportType, assetCode:_assetCode};
+        },
+        init : function(formData, assetCode) {
+        	_data = formData.data;
+
+        	if (formData.formInfo) {
+                _formCode = formData.formInfo.formCode;
+                _formType = formData.formInfo.formType;
+                _reportType = formData.formInfo.formReportType;
+            }
+        	_assetCode = assetCode;
+            $("#btn_save_div").css('display', _assetCode ? '' : 'none');
+            $("#sch_port_div").css('display', _assetCode ? '' : 'none');
+        	
+            $.each(Object.keys(_data), function() {
+                if (this.indexOf("opt") != -1) {
+                    $("#"+this).prop("checked", true);
+                    $("#"+this).nextAll('div').children().prop("disabled", false);
+                } else if (this.indexOf("rd") != -1) {
+                    $("input:radio[name="+this+"]:input[value="+_data[this]+"]").prop("checked", true);
+                } else if (this.indexOf("ck") != -1) {
+                    $("#"+this).prop("checked", true);
+                }
+            });
+            
+            if (formData.etc) {
+                $.each(formData.etc.split(','), function(idx, pack) {
+                    $.each($("#search_port")[0].options, function(idx, opt) {
+                        if (pack == $(opt).val()) {
+                            $(opt).attr('selected','selected');
+                        }
+                    });
+                });
+                $("#search_port").multiselect("refresh");
+            }
+            
+            $("#formSaveAs").button({icons: {primary: "ui-icon-save"},}).click(function( event ) {
+                formSaveAs();
+            });
+        }
+    };
+    
+})();
+
+$(document).ready(function(){
+
+    $(".subpanel").children().prop("disabled", true);
+    
+    $("label").bind("mouseover", function () {
+        $(this).addClass("labelHover");
+    });
+    
+    $("label").bind("mouseleave", function () {
+        $(this).removeClass("labelHover");
+    });
+
+    $(":input:checkbox").bind("click", function () {
+        $(this).nextAll('div').children().prop("disabled", !$(this).is(":checked"));
+    });
+    
+});
+
+</script>
+
+<span id="formTitle" style="display:none;">방화벽(FW) 주간보고서 설정</span>
+
+<form id="frm" style="font-weight: bold;">
+
+<div id="sch_port_div" style="display:none;">
+  <h2 style="margin-top:0px;">조회포트</h2>
+  <select style="width:278px;margin-bottom:10px;" id="search_port" multiple="multiple"/>
+  <div style="height: 10px;"></div>
+</div>
+
+<h2 style="margin-top:0px;">세션로그 발생추이</h2>
+<div class="mb10">
+  <input type="checkbox" id="opt1" name="opt1"><label for="opt1"> 전체 세션로그 발생추이 (차트, 표)</label>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt2" name="opt2"><label for="opt2"> 전체 허용로그 발생추이 (차트)</label>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt3" name="opt3"><label for="opt3"> 전체 차단로그 발생추이 (차트)</label>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt4" name="opt4"><label for="opt4"> 외부에서 내부로의 전체 세션 로그 발생추이 (차트, 표)</label>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt5" name="opt5"><label for="opt5"> 외부에서 내부로의 허용 세션 로그 발생추이 (차트)</label>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt6" name="opt6"><label for="opt6"> 외부에서 내부로의 차단 세션 로그 발생추이 (차트)</label>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt7" name="opt7"><label for="opt7"> 내부에서 외부로의 전체 세션 로그 발생추이 (차트, 표)</label>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt8" name="opt8"><label for="opt8"> 내부에서 외부로의 허용 세션 로그 발생추이 (차트)</label>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt9" name="opt9"><label for="opt9"> 내부에서 외부로의 차단 세션 로그 발생추이 (차트)</label>
+</div>
+
+
+<h2 class="mb10">출발지IP TOP#N</h2>
+<div class="mb10">
+  <input type="checkbox" id="opt10" name="opt10"><label for="opt10"> 외부에서 내부로의 전체 세션로그 & SIP TOP (표)</label>
+  <div style="margin-left: 20px;" class="subpanel">
+    <input type="radio" name="rd10" id="rd10-1" value="10" checked><label for="rd10-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd10" id="rd10-2" value="20"><label for="rd10-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd10" id="rd10-3" value="30"><label for="rd10-3"> TOP 30</label>
+  </div>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt11" name="opt11"><label for="opt11"> 외부에서 내부로의 허용 세션로그 & SIP TOP (표)</label>
+  <div style="margin-left: 20px;" class="subpanel">
+    <input type="radio" name="rd11" id="rd11-1" value="10" checked><label for="rd11-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd11" id="rd11-2" value="20"><label for="rd11-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd11" id="rd11-3" value="30"><label for="rd11-3"> TOP 30</label>
+  </div>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt12" name="opt12"><label for="opt12"> 외부에서 내부로의 차단 세션로그 & SIP TOP (표)</label>
+  <div style="margin-left: 20px;" class="subpanel">
+    <input type="radio" name="rd12" id="rd12-1" value="10" checked><label for="rd12-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd12" id="rd12-2" value="20"><label for="rd12-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd12" id="rd12-3" value="30"><label for="rd12-3"> TOP 30</label></br>
+    <input type="checkbox" id="ck12" name="ck12"><label for="ck12"> SRC IP TOP10 세션 로그 발생추이 (차트)</label>
+  </div>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt13" name="opt13"><label for="opt13"> 내부에서 외부로의 전체 세션로그 & SIP TOP (표)</label>
+  <div style="margin-left: 20px;" class="subpanel">
+    <input type="radio" name="rd13" id="rd13-1" value="10" checked><label for="rd13-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd13" id="rd13-2" value="20"><label for="rd13-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd13" id="rd13-3" value="30"><label for="rd13-3"> TOP 30</label>
+  </div>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt14" name="opt14"><label for="opt14"> 내부에서 외부로의 허용 세션로그 & SIP TOP (표)</label>
+  <div style="margin-left: 20px;" class="subpanel">
+    <input type="radio" name="rd14" id="rd14-1" value="10" checked><label for="rd14-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd14" id="rd14-2" value="20"><label for="rd14-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd14" id="rd14-3" value="30"><label for="rd14-3"> TOP 30</label>
+  </div>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt15" name="opt15"><label for="opt15"> 내부에서 외부로의 차단 세션로그 & SIP TOP (표)</label>
+  <div style="margin-left: 20px;" class="subpanel">
+    <input type="radio" name="rd15" id="rd15-1" value="10" checked><label for="rd15-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd15" id="rd15-2" value="20"><label for="rd15-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd15" id="rd15-3" value="30"><label for="rd15-3"> TOP 30</label></br>
+    <input type="checkbox" id="ck15" name="ck15"><label for="ck15"> SRC IP TOP10 세션 로그 발생추이 (차트)</label>
+  </div>
+</div>
+
+<h2 class="mb10">목적지IP TOP#N</h2>
+<div class="mb10">
+  <input type="checkbox" id="opt16" name="opt16"><label for="opt16"> 외부에서 내부로의 전체 세션로그 & DIP TOP (표)</label>
+  <div style="margin-left: 20px;" class="subpanel">
+    <input type="radio" name="rd16" id="rd16-1" value="10" checked><label for="rd16-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd16" id="rd16-2" value="20"><label for="rd16-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd16" id="rd16-3" value="30"><label for="rd16-3"> TOP 30</label>
+  </div>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt17" name="opt17"><label for="opt17"> 외부에서 내부로의 허용 세션로그 & DIP TOP (표)</label>
+  <div style="margin-left: 20px;" class="subpanel">
+    <input type="radio" name="rd17" id="rd17-1" value="10" checked><label for="rd17-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd17" id="rd17-2" value="20"><label for="rd17-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd17" id="rd17-3" value="30"><label for="rd17-3"> TOP 30</label>
+  </div>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt18" name="opt18"><label for="opt18"> 외부에서 내부로의 차단 세션로그 & DIP TOP (표)</label>
+  <div style="margin-left: 20px;" class="subpanel">
+    <input type="radio" name="rd18" id="rd18-1" value="10" checked><label for="rd18-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd18" id="rd18-2" value="20"><label for="rd18-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd18" id="rd18-3" value="30"><label for="rd18-3"> TOP 30</label>
+  </div>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt19" name="opt19"><label for="opt19"> 내부에서 외부로의 전체 세션로그 & DIP TOP (표)</label>
+  <div style="margin-left: 20px;" class="subpanel">
+    <input type="radio" name="rd19" id="rd19-1" value="10" checked><label for="rd19-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd19" id="rd19-2" value="20"><label for="rd19-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd19" id="rd19-3" value="30"><label for="rd19-3"> TOP 30</label>
+  </div>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt20" name="opt20"><label for="opt20"> 내부에서 외부로의 허용 세션로그 & DIP TOP (표)</label>
+  <div style="margin-left: 20px;" class="subpanel">
+    <input type="radio" name="rd20" id="rd20-1" value="10" checked><label for="rd20-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd20" id="rd20-2" value="20"><label for="rd20-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd20" id="rd20-3" value="30"><label for="rd20-3"> TOP 30</label>
+  </div>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt21" name="opt21"><label for="opt21"> 내부에서 외부로의 차단 세션로그 & DIP TOP (표)</label>
+  <div style="margin-left: 20px;" class="subpanel">
+    <input type="radio" name="rd21" id="rd21-1" value="10" checked><label for="rd21-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd21" id="rd21-2" value="20"><label for="rd21-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd21" id="rd21-3" value="30"><label for="rd21-3"> TOP 30</label>
+  </div>
+</div>
+
+<h2 class="mb10">서비스 TOP#N</h2>
+<div class="mb10">
+  <input type="checkbox" id="opt22" name="opt22"><label for="opt22"> 외부에서 내부로의 허용 세션로그 & 서비스 TOP10 (차트, 표)</label>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt23" name="opt23"><label for="opt23"> 외부에서 내부로의 차단 세션로그 & 서비스 TOP10 (차트, 표)</label>
+  <div style="margin-left: 20px;" class="subpanel">
+    <input type="checkbox" id="ck23" name="ck23"><label for="ck23"> 서비스 TOP10 세션 로그 발생추이 (차트)</label>
+  </div>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt24" name="opt24"><label for="opt24"> 외부에서 내부로의 차단 세션로그 & 서비스 TOP10 상세 (표)</label>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt25" name="opt25"><label for="opt25"> 내부에서 외부로의 허용 세션로그 & 서비스 TOP10 (차트, 표)</label>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt26" name="opt26"><label for="opt26"> 내부에서 외부로의 차단 세션로그 & 서비스 TOP10 (차트, 표)</label>
+  <div style="margin-left: 20px;" class="subpanel">
+    <input type="checkbox" id="ck26" name="ck26"><label for="ck26"> 서비스 TOP10 세션 로그 발생추이 (차트)</label>
+  </div>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt27" name="opt27"><label for="opt27"> 내부에서 외부로의 차단 세션로그 & 서비스 TOP10 상세 (표)</label>
+</div>
+
+<h2 class="mb10">성능정보</h2>
+<div class="mb10">
+  <input type="checkbox" id="opt99" name="opt99"><label for="opt99"> 성능정보 (차트, 표)</label>
+</div>
+
+</form>
+
+<div id="btn_save_div" style="display:none;"> 
+    <table class="tbl_button marginT5">
+        <tr>
+            <td class="alignL">
+            </td>
+            <td class="alignR">
+                <button id="formSaveAs">양식 저장</button>
+            </td>
+        </tr>
+    </table>
+</div>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.js"></script>
+
+<script>
+
+$(document).ready(function(){
+
+    $(".subpanel").children().prop("disabled", true);
+
+    var _data={"opt1":"on","rd1":"1","opt2":"on","rd2":"1","opt5":"on","rd5":"1","opt8":"on","rd8":"1","opt11":"on","rd11":"1","opt17":"on","rd17":"1","ck17":"on","opt20":"on","rd20":"1","ck20":"on","opt23":"on","rd23":"1","opt26":"on","rd26":"1","opt29":"on","ck29":"on","opt30":"on","ck30":"on","opt99":"on"};
+
+    $.each(Object.keys(_data), function() {
+        if (this.indexOf("opt") != -1) {
+            $("#"+this).prop("checked", true);
+            $("#"+this).nextAll('div').children().prop("disabled", false);
+        } else if (this.indexOf("rd") != -1) {
+        	$("input:radio[name="+this+"]:input[value="+_data[this]+"]").prop("checked", true);
+        } else if (this.indexOf("ck") != -1) {
+        	$("#"+this).prop("checked", true);
+        }
+    });
+
+    $(":input:checkbox").bind("click", function () {
+        $(this).nextAll('div').children().prop("disabled", !$(this).is(":checked"));
+    });
+    
+    $("#btnSubmit").click(function() {
+		var data = {};
+		$("#frm").serializeArray().map(function(x){data[x.name] = x.value;});     
+		console.log(JSON.stringify(data));
+		alert(JSON.stringify(data));
+    });
+
+    $("#btnInit").click(function() {
+
+    	var data={"rd1":"1","rd4":"1","rd7":"1","rd10":"1","rd11":"1","rd12":"1","rd13":"1","rd14":"1","rd15":"1","rd16":"1","rd17":"1","rd18":"1","rd19":"1","rd20":"1","rd21":"1"};
+        $.each(Object.keys(data), function() {
+            if (this.indexOf("rd") != -1) {
+                $("input:radio[name="+this+"]:input[value="+data[this]+"]").prop("checked", true);
+            }
+        });
+        $(".subpanel").children().prop("disabled", true);
+        $(":input:checkbox").prop("checked", false);
+        
+    });
+    
+    $("label").bind("mouseover", function () {
+    	$(this).addClass("labelHover");
+    });
+    
+    $("label").bind("mouseleave", function () {
+    	$(this).removeClass("labelHover");
+    });
+    
+});
+
+</script>
+
+<style>
+
+html, body { width: 100%; height: 100%; padding: 0; margin: 0; }
+body { font-family: '맑은 고딕', 'malgun','NanumGothic', arial, sans-serif; color: #333; font-size: 12px; }
+  
+input { vertical-align: middle; }  
+input[type="radio"] { vertical-align:top; }
+.mb10 { margin-bottom:10px; }
+
+.labelHover { color: #ff0000; }
+
+</style>
+
+
+</head>
+
+<body>
+
+<h1 class="mb10">침입탐지(IDS) 일일보고서 설정</h1>
+
+<form id="frm" style="font-weight: bold;">
+
+<h3 class="mb10">탐지로그 발생추이</h3>
+<div class="mb10">
+  <input type="checkbox" id="opt1" name="opt1"><label for="opt1"> 전체 탐지로그 발생추이</label>
+  <div style="margin-left: 20px;" class="subpanel">
+    <input type="radio" name="rd1" id="rd1-1" value="1" checked><label for="rd1-1"> 해당일 (차트)</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd1" id="rd1-2" value="2"><label for="rd1-2"> 최근 3일 (차트, 표)</label>
+  </div>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt2" name="opt2"><label for="opt2"> 외부에서 내부로의 전체 탐지로그 발생추이 (차트)</label>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt3" name="opt3"><label for="opt3"> 내부에서 외부로의 전체 탐지로그 발생추이 (차트)</label>
+</div>
+
+<h3 class="mb10">이벤트 TOP#N</h3>
+<div class="mb10">
+  <input type="checkbox" id="opt4" name="opt4"><label for="opt4"> 외부에서 내부로의 전체 탐지로그 & 이벤트 TOP (차트, 표)</label>
+  <div style="margin-left: 20px;" class="subpanel">
+    <input type="radio" name="rd4" id="rd4-1" value="1" checked><label for="rd4-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd4" id="rd4-2" value="2"><label for="rd4-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd4" id="rd4-3" value="3"><label for="rd4-3"> TOP 30</label></br>
+    <input type="checkbox" id="ck4" name="ck4"><label for="ck4"> 이벤트 TOP10 발생추이 (차트)</label>
+  </div>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt5" name="opt5"><label for="opt5"> 내부에서 외부로의 전체 탐지로그 & 이벤트 TOP (차트, 표)</label>
+  <div style="margin-left: 20px;" class="subpanel">
+    <input type="radio" name="rd5" id="rd5-1" value="1" checked><label for="rd5-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd5" id="rd5-2" value="2"><label for="rd5-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd5" id="rd5-3" value="3"><label for="rd5-3"> TOP 30</label></br>
+    <input type="checkbox" id="ck5" name="ck5"><label for="ck5"> 이벤트 TOP10 발생추이 (차트)</label>
+  </div>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt6" name="opt6"><label for="opt6"> 외부에서 내부로의 전체 탐지로그 & 신규 탐지 이벤트 현황 (차트, 표)</label>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt7" name="opt7"><label for="opt7"> 내부에서 외부로의 전체 탐지로그 & 신규 탐지 이벤트 현황 (차트, 표)</label>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt8" name="opt8"><label for="opt8"> 외부에서 내부로의 전체 탐지로그 & 이전대비 2배증가된 이벤트 현황 (차트, 표)</label>
+</div>
+
+<h3 class="mb10">출발지IP TOP#N</h3>
+<div class="mb10">
+  <input type="checkbox" id="opt9" name="opt9"><label for="opt9"> 외부에서 내부로의 전체 탐지로그 & SIP TOP (표)</label>
+  <div style="margin-left: 20px;" class="subpanel">
+    <input type="radio" name="rd9" id="rd9-1" value="1" checked><label for="rd9-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd9" id="rd9-2" value="2"><label for="rd9-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd9" id="rd9-3" value="3"><label for="rd9-3"> TOP 30</label></br>
+    <input type="checkbox" id="ck9" name="ck9"><label for="ck9"> 출발지IP TOP10 탐지로그 발생추이 (차트)</label>
+  </div>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt10" name="opt10"><label for="opt10"> 내부에서 외부로의 전체 탐지로그 & SIP TOP (표)</label>
+  <div style="margin-left: 20px;" class="subpanel">
+    <input type="radio" name="rd10" id="rd10-1" value="1" checked><label for="rd10-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd10" id="rd10-2" value="2"><label for="rd10-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd10" id="rd10-3" value="3"><label for="rd10-3"> TOP 30</label></br>
+    <input type="checkbox" id="ck10" name="ck10"><label for="ck10"> 출발지IP TOP10 탐지로그 발생추이 (차트)</label>
+  </div>
+</div>
+
+<h3 class="mb10">목적지IP TOP#N</h3>
+<div class="mb10">
+  <input type="checkbox" id="opt11" name="opt11"><label for="opt11"> 외부에서 내부로의 전체 탐지로그 & DIP TOP (표)</label>
+  <div style="margin-left: 20px;" class="subpanel">
+    <input type="radio" name="rd11" id="rd11-1" value="1" checked><label for="rd11-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd11" id="rd11-2" value="2"><label for="rd11-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd11" id="rd11-3" value="3"><label for="rd11-3"> TOP 30</label>
+  </div>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt12" name="opt12"><label for="opt12"> 내부에서 외부로의 전체 탐지로그 & DIP TOP (표)</label>
+  <div style="margin-left: 20px;" class="subpanel">
+    <input type="radio" name="rd12" id="rd12-1" value="1" checked><label for="rd12-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd12" id="rd12-2" value="2"><label for="rd12-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd12" id="rd12-3" value="3"><label for="rd12-3"> TOP 30</label>
+  </div>
+</div>
+
+<h3 class="mb10">서비스 TOP#N</h3>
+<div class="mb10">
+  <input type="checkbox" id="opt13" name="opt13"><label for="opt13"> 외부에서 내부로의 전체 탐지로그 & 서비스 TOP10 (차트)</label>
+  <div style="margin-left: 20px;" class="subpanel">
+    <input type="checkbox" id="ck13" name="ck13"><label for="ck13"> 서비스 TOP10 증감현황 및 이벤트유형 (표)</label>
+  </div>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt14" name="opt14"><label for="opt14"> 내부에서 외부로의 전체 탐지로그 & 서비스 TOP10 (차트)</label>
+  <div style="margin-left: 20px;" class="subpanel">
+    <input type="checkbox" id="ck14" name="ck14"><label for="ck14"> 서비스 TOP10 증감현황 및 이벤트유형 (표)</label>
+  </div>
+</div>
+
+<h3 class="mb10">성능정보</h3>
+<div class="mb10">
+  <input type="checkbox" id="opt99" name="opt99"><label for="opt99"> 성능정보 (차트, 표)</label>
+</div>
+
+</form>
+
+
+<input type="button" id="btnSubmit" value="설정완료">&nbsp;&nbsp;<input type="button" id="btnInit" value="초기화">
+    
+</body>
+</html>
+
+
+
+

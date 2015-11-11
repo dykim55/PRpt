@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="WAF_Host_Info" pageWidth="539" pageHeight="726" columnWidth="539" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="f44e2d03-b4f5-4cb7-8dea-8e9d3d38e6f5">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="REPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["D:\\Project\\prom\\infra\\prom-webconsole\\src\\main\\resources\\WEB-INF\\reports\\synthesis\\waf\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="gridInfo" class="java.util.Map"/>
+	<parameter name="pieInfo" class="java.util.Map"/>
+	<field name="host" class="java.lang.String"/>
+	<field name="count" class="java.lang.Long"/>
+	<field name="no" class="java.lang.Integer"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="74" splitType="Stretch">
+			<subreport>
+				<reportElement x="0" y="30" width="539" height="44" uuid="fa272437-6aa8-4f00-8cb9-6d1dc69d928f"/>
+				<subreportParameter name="host">
+					<subreportParameterExpression><![CDATA[$F{host}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="gridInfo">
+					<subreportParameterExpression><![CDATA[$P{gridInfo}.get( $F{host} )]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="count">
+					<subreportParameterExpression><![CDATA[$F{count}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="no">
+					<subreportParameterExpression><![CDATA[$F{no}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="pieInfo">
+					<subreportParameterExpression><![CDATA[$P{pieInfo}.get( $F{host} )]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource()]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{REPORT_DIR} + "docx/waf/HostInfo.jasper"]]></subreportExpression>
+			</subreport>
+			<textField>
+				<reportElement x="0" y="10" width="500" height="20" uuid="b67aa3d8-bcb6-4640-a65e-81e6dae05046"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{no} == 1 ? "①" : $F{no} == 2 ? "②" : $F{no} == 3 ? "③" : $F{no} == 4 ? "④" : $F{no} == 5 ? "⑤" : $F{no} == 6 ? "⑥" : $F{no} == 7 ? "⑦" : $F{no} == 8 ? "⑧" : $F{no} == 9 ? "⑨" : $F{no} == 10 ? "⑩" : $F{no} == 11 ? "⑪" : "") + " " +
+$F{host} + " 전체 탐지 건수 : " + new DecimalFormat("#,##0").format($F{count}) + "건"]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

@@ -1,0 +1,30 @@
+.ui-multiselect { padding:3px 0 2px 4px; text-align:left; font-size: 12px;}
+.ui-multiselect span.ui-icon { float:right ;background-image: url(images/ui-icons_2996cc_256x240.png);}
+.ui-multiselect-single .ui-multiselect-checkboxes input { position:absolute !important; top: auto !important; left:-9999px; }
+.ui-multiselect-single .ui-multiselect-checkboxes label { padding:5px !important }
+
+.ui-multiselect-header { margin-bottom:3px; padding:3px 0 3px 4px; }
+.ui-multiselect-header ul { font-size:9pt }
+.ui-multiselect-header ul li { float:left; padding:0 10px 0 0;  }
+.ui-multiselect-header a { text-decoration:none }
+.ui-multiselect-header a:hover { text-decoration:underline }
+.ui-multiselect-header span.ui-icon { float:left }
+.ui-multiselect-header li.ui-multiselect-close { float:right; text-align:right; padding-right:0 }
+
+.ui-multiselect-menu { display:none; padding:1px; position:absolute; z-index:10000; margin-top:1px; background-image:none; background-color: #FFFFFF; text-align:left; -webkit-border-radius:2px !important; -moz-border-radius:2px !important; border-radius:2px !important; box-shadow: 1px 1px 2px 0px rgba(0,0,0,.30);}
+.ui-multiselect-checkboxes { position:relative /* fixes bug in IE6/7 */; overflow-y:auto}
+.ui-multiselect-checkboxes label { cursor:default; display:block; border:none; padding:2px 1px 0px 1px; }
+.ui-multiselect-checkboxes label input { position:relative; top:-1px }
+.ui-multiselect-checkboxes li { clear:both; font-size:9pt; padding-right:0px;font-weight:normal !important;  }
+.ui-multiselect-checkboxes li.ui-multiselect-optgroup-label { text-align:center; font-weight:normal !important; }
+.ui-multiselect-checkboxes li.ui-multiselect-optgroup-label a { display:block; margin:1px 0; text-decoration:none }
+
+.ui-multiselect.ui-widget.ui-state-default  { font-weight:normal !important; background: white; color: black; border: 1px solid #a3bbcc;}
+.ui-multiselect.ui-widget.ui-state-hover    { font-weight:normal !important; }
+.ui-multiselect.ui-widget.ui-state-active   { font-weight:normal !important; }
+.ui-multiselect.ui-widget.ui-state-focus    { font-weight:normal !important; }
+
+/* remove label borders in IE6 because IE6 does not support transparency */
+* html .ui-multiselect-checkboxes label { border:none }
+
+.ui-multiselect.ui-state-hover { border: 1px solid #97A3AF; background: #007DFF; font-weight: bold; color: #FFFFFF; }
