@@ -31,13 +31,29 @@ FORM_OPTION = (function() {
             $("#btn_save_div").css('display', _assetCode ? '' : 'none');
         	
             $.each(Object.keys(_data), function() {
-                if (this.indexOf("opt") != -1) {
-                    $("#"+this).prop("checked", true);
-                    $("#"+this).nextAll('div').children().prop("disabled", false);
-                } else if (this.indexOf("rd") != -1) {
+                if (this.indexOf("rd") != -1 || this.indexOf("sd") != -1) {
                     $("input:radio[name="+this+"]:input[value="+_data[this]+"]").prop("checked", true);
                 } else if (this.indexOf("ck") != -1) {
                     $("#"+this).prop("checked", true);
+                }
+            });
+
+            $.each(Object.keys(_data), function() {
+                if (this.indexOf("opt") != -1) {
+                    $("#"+this).prop("checked", true);
+                    var bDisabled = !true;
+                    $.each($("#"+this).nextAll('div').children(), function() {
+                        if ($(this).is('div')) {
+                            $.each($(this).children(), function() {
+                                $(this).prop("disabled", bDisabled);
+                            });
+                        } else {
+                            $(this).prop("disabled", bDisabled);
+                        }
+                        if (!bDisabled && $(this).is('input:checkbox')) {
+                            bDisabled = !$(this).is(":checked");
+                        }
+                    });
                 }
             });
             
@@ -62,7 +78,19 @@ $(document).ready(function(){
     });
 
     $(":input:checkbox").bind("click", function () {
-        $(this).nextAll('div').children().prop("disabled", !$(this).is(":checked"));
+        var bDisabled = !$(this).is(":checked");
+        $.each($(this).nextAll('div').children(), function() {
+            if ($(this).is('div')) {
+                $.each($(this).children(), function() {
+                    $(this).prop("disabled", bDisabled);
+                });
+            } else {
+                $(this).prop("disabled", bDisabled);
+            }
+            if (!bDisabled && $(this).is('input:checkbox')) {
+                bDisabled = !$(this).is(":checked");
+            }
+        });
     });
     
 });
@@ -83,7 +111,11 @@ $(document).ready(function(){
 </div>
 
 <div class="mb10">
-  <input type="checkbox" id="opt2" name="opt2"><label for="opt2"> 전체 탐지로그 & 도메인 TOP10 발생추이 (차트)</label>
+  <input type="checkbox" id="opt2" name="opt2"><label for="opt2"> 전체 탐지로그 & 도메인 TOP10 발생추이</label>
+  <div style="margin-left: 20px;" class="subpanel">
+    <input type="radio" name="rd2" id="rd2-1" value="1" checked><label for="rd2-1"> 해당일 (차트)</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd2" id="rd2-2" value="2"><label for="rd2-2"> 최근 3일 (차트, 표)</label>
+  </div>
 </div>
 
 <h2 class="mb10">이벤트 TOP#N</h2>
@@ -103,7 +135,11 @@ $(document).ready(function(){
     <input type="radio" name="rd4" id="rd4-1" value="10" checked><label for="rd4-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
     <input type="radio" name="rd4" id="rd4-2" value="20"><label for="rd4-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
     <input type="radio" name="rd4" id="rd4-3" value="30"><label for="rd4-3"> TOP 30</label></br>
-    <input type="checkbox" id="ck4" name="ck4"><label for="ck4"> 출발지IP TOP10 탐지로그 발생추이 (차트)</label>
+    <input type="checkbox" id="ck4" name="ck4"><label for="ck4"> 출발지IP TOP10 탐지로그 발생추이</label>
+    <div style="margin-left: 20px;" class="subpanel">
+        <input type="radio" name="sd4" id="sd4-1" value="1" checked><label for="sd4-1"> 해당일 (차트)</label>&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="radio" name="sd4" id="sd4-2" value="2"><label for="sd4-2"> 최근 3일 (차트)</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
   </div>
 </div>
 

@@ -99,21 +99,24 @@ $(document).ready(function(){
     <input type="radio" name="rd4" id="rd4-1" value="10" checked><label for="rd4-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
     <input type="radio" name="rd4" id="rd4-2" value="20"><label for="rd4-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
     <input type="radio" name="rd4" id="rd4-3" value="30"><label for="rd4-3"> TOP 30</label></br>
-    <input type="checkbox" id="ck4" name="ck4"><label for="ck4"> 출발지IP TOP10 탐지로그 발생추이 (차트)</label>
   </div>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt5" name="opt5"><label for="opt5"> 출발지IP TOP10 탐지로그 발생추이 (차트)</label>
 </div>
 
 <h2 class="mb10">도메인별 상세통계</h2>
 <div class="mb10">
-  <input type="checkbox" id="opt5" name="opt5"><label for="opt5"> 도메인 별 탐지로그 & 탐지로그 발생추이 (차트, 표)</label>
+  <input type="checkbox" id="opt6" name="opt6"><label for="opt6"> 도메인 별 탐지로그 & 탐지로그 발생추이 (차트, 표)</label>
 </div>
 
 <div class="mb10">
-  <input type="checkbox" id="opt6" name="opt6"><label for="opt6"> 도메인 별 탐지로그 & EVT TOP10 발생추이 (차트)</label>
+  <input type="checkbox" id="opt7" name="opt7"><label for="opt7"> 도메인 별 탐지로그 & EVT TOP10 발생추이 (차트)</label>
 </div>
 
 <div class="mb10">
-  <input type="checkbox" id="opt7" name="opt7"><label for="opt7"> 도메인 별 탐지로그 & EVT TOP10 통계 (차트, 표)</label>
+  <input type="checkbox" id="opt8" name="opt8"><label for="opt8"> 도메인 별 탐지로그 & EVT TOP10 통계 (차트, 표)</label>
 </div>
 
 <h2 class="mb10">성능정보</h2>

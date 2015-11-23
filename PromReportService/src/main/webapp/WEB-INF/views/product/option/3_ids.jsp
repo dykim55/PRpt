@@ -31,13 +31,29 @@ FORM_OPTION = (function() {
             $("#btn_save_div").css('display', _assetCode ? '' : 'none');
         	
             $.each(Object.keys(_data), function() {
-                if (this.indexOf("opt") != -1) {
-                    $("#"+this).prop("checked", true);
-                    $("#"+this).nextAll('div').children().prop("disabled", false);
-                } else if (this.indexOf("rd") != -1) {
+                if (this.indexOf("rd") != -1 || this.indexOf("sd") != -1) {
                     $("input:radio[name="+this+"]:input[value="+_data[this]+"]").prop("checked", true);
                 } else if (this.indexOf("ck") != -1) {
                     $("#"+this).prop("checked", true);
+                }
+            });
+
+            $.each(Object.keys(_data), function() {
+                if (this.indexOf("opt") != -1) {
+                    $("#"+this).prop("checked", true);
+                    var bDisabled = !true;
+                    $.each($("#"+this).nextAll('div').children(), function() {
+                        if ($(this).is('div')) {
+                            $.each($(this).children(), function() {
+                                $(this).prop("disabled", bDisabled);
+                            });
+                        } else {
+                            $(this).prop("disabled", bDisabled);
+                        }
+                        if (!bDisabled && $(this).is('input:checkbox')) {
+                            bDisabled = !$(this).is(":checked");
+                        }
+                    });
                 }
             });
             
@@ -61,7 +77,19 @@ $(document).ready(function(){
     });
 
     $(":input:checkbox").bind("click", function () {
-        $(this).nextAll('div').children().prop("disabled", !$(this).is(":checked"));
+        var bDisabled = !$(this).is(":checked");
+        $.each($(this).nextAll('div').children(), function() {
+            if ($(this).is('div')) {
+                $.each($(this).children(), function() {
+                    $(this).prop("disabled", bDisabled);
+                });
+            } else {
+                $(this).prop("disabled", bDisabled);
+            }
+            if (!bDisabled && $(this).is('input:checkbox')) {
+                bDisabled = !$(this).is(":checked");
+            }
+        });
     });
     
 });
@@ -93,6 +121,10 @@ $(document).ready(function(){
     <input type="radio" name="rd4" id="rd4-2" value="20"><label for="rd4-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
     <input type="radio" name="rd4" id="rd4-3" value="30"><label for="rd4-3"> TOP 30</label></br>
     <input type="checkbox" id="ck4" name="ck4"><label for="ck4"> 이벤트 TOP10 발생추이 (차트)</label>
+    <div style="margin-left: 20px;" class="subpanel">
+        <input type="radio" name="sd4" id="sd4-1" value="1" checked><label for="sd4-1"> 최근 1개월</label>&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="radio" name="sd4" id="sd4-2" value="2"><label for="sd4-2"> 최근 6개월</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
   </div>
 </div>
 
@@ -103,6 +135,10 @@ $(document).ready(function(){
     <input type="radio" name="rd5" id="rd5-2" value="20"><label for="rd5-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
     <input type="radio" name="rd5" id="rd5-3" value="30"><label for="rd5-3"> TOP 30</label></br>
     <input type="checkbox" id="ck5" name="ck5"><label for="ck5"> 이벤트 TOP10 발생추이 (차트)</label>
+    <div style="margin-left: 20px;" class="subpanel">
+        <input type="radio" name="sd5" id="sd5-1" value="1" checked><label for="sd5-1"> 최근 1개월</label>&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="radio" name="sd5" id="sd5-2" value="2"><label for="sd5-2"> 최근 6개월</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
   </div>
 </div>
 
@@ -126,6 +162,10 @@ $(document).ready(function(){
     <input type="radio" name="rd9" id="rd9-2" value="20"><label for="rd9-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
     <input type="radio" name="rd9" id="rd9-3" value="30"><label for="rd9-3"> TOP 30</label></br>
     <input type="checkbox" id="ck9" name="ck9"><label for="ck9"> 출발지IP TOP10 탐지로그 발생추이 (차트)</label>
+    <div style="margin-left: 20px;" class="subpanel">
+        <input type="radio" name="sd9" id="sd9-1" value="1" checked><label for="sd9-1"> 최근 1개월</label>&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="radio" name="sd9" id="sd9-2" value="2"><label for="sd9-2"> 최근 3개월</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
   </div>
 </div>
 
@@ -136,6 +176,10 @@ $(document).ready(function(){
     <input type="radio" name="rd10" id="rd10-2" value="20"><label for="rd10-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
     <input type="radio" name="rd10" id="rd10-3" value="30"><label for="rd10-3"> TOP 30</label></br>
     <input type="checkbox" id="ck10" name="ck10"><label for="ck10"> 출발지IP TOP10 탐지로그 발생추이 (차트)</label>
+    <div style="margin-left: 20px;" class="subpanel">
+        <input type="radio" name="sd10" id="sd10-1" value="1" checked><label for="sd10-1"> 최근 1개월</label>&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="radio" name="sd10" id="sd10-2" value="2"><label for="sd10-2"> 최근 3개월</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
   </div>
 </div>
 

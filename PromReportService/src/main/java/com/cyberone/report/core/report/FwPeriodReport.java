@@ -180,7 +180,7 @@ public class FwPeriodReport extends BaseReport {
 		}
 		
 		//허용/차단
-		Iterable<DBObject> dbResult = fwDao.SessionLogDayTrend(nDirection, ALLOW, assetCode, sStartDay, sEndDay, 0);
+		Iterable<DBObject> dbResult = fwDao.SessionLogTrend("DY", nDirection, ALLOW, assetCode, sStartDay, sEndDay, 0);
 
     	HashMap<String, DBObject> mapResult = new HashMap<String, DBObject>(); 
     	for (DBObject val : dbResult) {
@@ -209,7 +209,7 @@ public class FwPeriodReport extends BaseReport {
     		}	    		
     	}
     	
-		dbResult = fwDao.SessionLogDayTrend(nDirection, "", assetCode, sStartDay, sEndDay, 0);
+		dbResult = fwDao.SessionLogTrend("DY", nDirection, "", assetCode, sStartDay, sEndDay, 0);
 		
     	mapResult = new HashMap<String, DBObject>(); 
     	for (DBObject val : dbResult) {
@@ -235,7 +235,7 @@ public class FwPeriodReport extends BaseReport {
     	if (searchPort != null) {
     		for (int i = 0; i < searchPort.length; i++) {
 	    		String strServiceName = fwDao.getPortServiceName(searchPort[i]);
-	    		dbResult = fwDao.SessionLogDayTrend(nDirection, ALLOW, assetCode, sStartDay, sEndDay, searchPort[i]);
+	    		dbResult = fwDao.SessionLogTrend("DY", nDirection, ALLOW, assetCode, sStartDay, sEndDay, searchPort[i]);
 	    	
 	    		mapResult = new HashMap<String, DBObject>(); 
 		    	for (DBObject val : dbResult) {
@@ -284,16 +284,16 @@ public class FwPeriodReport extends BaseReport {
 		List<HashMap<String, Object>> dataSource = new ArrayList<HashMap<String, Object>>();
 		
     	//IP 건수기준 TOP N 리스트
-		Iterable<DBObject> ipTopNResult = fwDao.IpPeriodTopN(nDirection, sAction, assetCode, sStartDay, sEndDay, bSrcIp, nLimit);
+		Iterable<DBObject> ipTopNResult = fwDao.IpTopN("DY", nDirection, sAction, assetCode, sStartDay, sEndDay, bSrcIp, nLimit);
     	List<String> topNIps = new ArrayList<String>();
     	for (DBObject val : ipTopNResult) {
     		Iterable<DBObject> prevObj = null;
     		if (bSrcIp) {    		
     			topNIps.add((String)val.get("srcIp"));
-        		prevObj = fwDao.BeforeIpDayCondition(nDirection, sAction, assetCode, fwDao.addDate(sStartDay,-7), fwDao.addDate(sEndDay,-7), bSrcIp, (String)val.get("srcIp"));
+        		prevObj = fwDao.BeforeIpCondition("DY", nDirection, sAction, assetCode, fwDao.addDate(sStartDay,-7), fwDao.addDate(sEndDay,-7), bSrcIp, (String)val.get("srcIp"));
     		} else {
     			topNIps.add((String)val.get("destIp"));
-    			prevObj = fwDao.BeforeIpDayCondition(nDirection, sAction, assetCode, fwDao.addDate(sStartDay,-7), fwDao.addDate(sEndDay,-7), bSrcIp, (String)val.get("destIp"));
+    			prevObj = fwDao.BeforeIpCondition("DY", nDirection, sAction, assetCode, fwDao.addDate(sStartDay,-7), fwDao.addDate(sEndDay,-7), bSrcIp, (String)val.get("destIp"));
     		}
     		val.put("prevCount", 0);
     		for (DBObject dbObj : prevObj) {
@@ -305,9 +305,9 @@ public class FwPeriodReport extends BaseReport {
     	for (DBObject val : ipTopNResult) {
     		Iterable<DBObject> ipTopNCondition = null;
     		if (bSrcIp) {
-    			ipTopNCondition = fwDao.IpDayTopNCondition(nDirection, sAction, assetCode, sStartDay, sEndDay, (String)val.get("srcIp"), bSrcIp);
+    			ipTopNCondition = fwDao.IpTopNCondition("DY", nDirection, sAction, assetCode, sStartDay, sEndDay, (String)val.get("srcIp"), bSrcIp);
     		} else {
-    			ipTopNCondition = fwDao.IpDayTopNCondition(nDirection, sAction, assetCode, sStartDay, sEndDay, (String)val.get("destIp"), bSrcIp);
+    			ipTopNCondition = fwDao.IpTopNCondition("DY", nDirection, sAction, assetCode, sStartDay, sEndDay, (String)val.get("destIp"), bSrcIp);
     		}
 			for (DBObject dbObj : ipTopNCondition) {
 				HashMap<String, Object> map = new HashMap<String, Object>();
@@ -355,7 +355,7 @@ public class FwPeriodReport extends BaseReport {
 	    	
 	    	if (bChk) { //SRC IP TOP10 세션 로그 발생추이 
 	        	dataSource = new ArrayList<HashMap<String, Object>>();
-	        	Iterable<DBObject> ipTopNTrend = fwDao.IpDayTopNTrend(nDirection, sAction, assetCode, sStartDay, sEndDay, true, topNIps);
+	        	Iterable<DBObject> ipTopNTrend = fwDao.IpTopNTrend("DY", nDirection, sAction, assetCode, sStartDay, sEndDay, topNIps, true);
 	        	
 	        	HashMap<String, DBObject> mapResult = new HashMap<String, DBObject>(); 
 	        	for (DBObject val : ipTopNTrend) {
@@ -419,7 +419,7 @@ public class FwPeriodReport extends BaseReport {
 		
 		List<HashMap<String, Object>> dataSource = new ArrayList<HashMap<String, Object>>();
 
-		Iterable<DBObject> logResult = fwDao.ServiceSessionLogPeriod(nDirection, sAction, assetCode, sStartDay, sEndDay);   	
+		Iterable<DBObject> logResult = fwDao.ServiceSessionLog("DY", nDirection, sAction, assetCode, sStartDay, sEndDay);   	
 		
     	int nTop = 1;
     	long lTotalCount = 0;
@@ -485,7 +485,7 @@ public class FwPeriodReport extends BaseReport {
 		
 		if (bChk) {
 			dataSource = new ArrayList<HashMap<String, Object>>();
-			Iterable<DBObject> portTrend = fwDao.ServiceDayTopNTrend(nDirection, sAction, assetCode, sStartDay, sEndDay, topNPort);
+			Iterable<DBObject> portTrend = fwDao.ServiceTopNTrend("DY", nDirection, sAction, assetCode, sStartDay, sEndDay, topNPort);
         	HashMap<String, DBObject> mapResult = new HashMap<String, DBObject>(); 
         	for (DBObject val : portTrend) {
         		int nPort = (Integer)val.get("destPort");
@@ -531,7 +531,7 @@ public class FwPeriodReport extends BaseReport {
 		
 		List<HashMap<String, Object>> dataSource = new ArrayList<HashMap<String, Object>>();
 
-		Iterable<DBObject> logResult = fwDao.ServiceSessionLogPeriod(nDirection, sAction, assetCode, sStartDay, sEndDay);   	
+		Iterable<DBObject> logResult = fwDao.ServiceSessionLog("DY", nDirection, sAction, assetCode, sStartDay, sEndDay);   	
 		
     	int nTop = 1;
     	List<HashMap<String, Object>> topNPort = new ArrayList<HashMap<String, Object>>();
@@ -555,7 +555,7 @@ public class FwPeriodReport extends BaseReport {
     		long totalCount = ((Number)val.get("count")).longValue();
     		isExist = false;
     		
-    		Iterable<DBObject> svcCondition = fwDao.ServiceConditionDay(nDirection, sAction, assetCode, sStartDay, sEndDay, nPort);
+    		Iterable<DBObject> svcCondition = fwDao.ServiceCondition("DY", nDirection, sAction, assetCode, sStartDay, sEndDay, nPort);
     		
     		for (DBObject dbObj : svcCondition) {
     			isExist = true;

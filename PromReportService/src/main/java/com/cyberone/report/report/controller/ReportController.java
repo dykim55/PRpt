@@ -28,6 +28,11 @@ import com.cyberone.report.core.report.FwDailyReport;
 import com.cyberone.report.core.report.FwMonthlyReport;
 import com.cyberone.report.core.report.FwPeriodReport;
 import com.cyberone.report.core.report.FwWeeklyReport;
+import com.cyberone.report.core.report.IpsDailyReport;
+import com.cyberone.report.core.report.WafDailyReport;
+import com.cyberone.report.core.report.WafMonthlyReport;
+import com.cyberone.report.core.report.WafPeriodReport;
+import com.cyberone.report.core.report.WafWeeklyReport;
 import com.cyberone.report.core.service.SDService;
 import com.cyberone.report.exception.BizException;
 import com.cyberone.report.model.UserInfo;
@@ -891,8 +896,52 @@ public class ReportController {
 					}
 					
 				} else if (sPrefix.equals("waf")) {
+
+					if (sReportType.equals(Constants.REPORT_DAILY)) {
+						
+						WafDailyReport wafReport = new WafDailyReport(userInfo);
+						assetReportInfo = wafReport.getDataSource(sReportType, sSearchDate, hMap);
+						
+					} else if (sReportType.equals(Constants.REPORT_WEEKLY)) {
+
+						WafWeeklyReport wafReport = new WafWeeklyReport(userInfo);
+						assetReportInfo = wafReport.getDataSource(sReportType, sSearchDate, hMap);
+						
+					} else if (sReportType.equals(Constants.REPORT_MONTHLY)) {
+
+						WafMonthlyReport wafReport = new WafMonthlyReport(userInfo);
+						assetReportInfo = wafReport.getDataSource(sReportType, sSearchDate, hMap);
+						
+					} else if (sReportType.equals(Constants.REPORT_PERIOD)) {
+
+						WafPeriodReport wafReport = new WafPeriodReport(userInfo);
+						assetReportInfo = wafReport.getDataSource(sReportType, sSearchDate, hMap);
+						
+					}
 					
 				} else if (sPrefix.equals("ips")) {
+					
+					if (sReportType.equals(Constants.REPORT_DAILY)) {
+						
+						IpsDailyReport ipsReport = new IpsDailyReport(userInfo);
+						assetReportInfo = ipsReport.getDataSource(sReportType, sSearchDate, hMap);
+						
+					} else if (sReportType.equals(Constants.REPORT_WEEKLY)) {
+
+						FwWeeklyReport fwReport = new FwWeeklyReport(userInfo.getPromDb(), userInfo.getReportDb());
+						assetReportInfo = fwReport.getDataSource(sReportType, sSearchDate, hMap);
+						
+					} else if (sReportType.equals(Constants.REPORT_MONTHLY)) {
+
+						FwMonthlyReport fwReport = new FwMonthlyReport(userInfo.getPromDb(), userInfo.getReportDb());
+						assetReportInfo = fwReport.getDataSource(sReportType, sSearchDate, hMap);
+						
+					} else if (sReportType.equals(Constants.REPORT_PERIOD)) {
+
+						FwPeriodReport fwReport = new FwPeriodReport(userInfo.getPromDb(), userInfo.getReportDb());
+						assetReportInfo = fwReport.getDataSource(sReportType, sSearchDate, hMap);
+						
+					}
 					
 				} else if (sPrefix.equals("ids")) {
 					
