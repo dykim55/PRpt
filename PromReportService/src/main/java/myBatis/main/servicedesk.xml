@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ServiceDesk">
+	
+	<select id="selectCscoEqpm_RefCd" resultType="java.util.HashMap">
+        SELECT
+              B.cscoCd,
+              B.cscoNm,
+              A.eqpmNm,
+              A.eqpmIp,
+              A.rqrNm,
+              A.instPos,
+              A.eqpmCd
+              ,(SELECT 
+                    (SELECT eqpmGrpNm FROM EqpmGrpTbl WHERE N.grpPath REGEXP CONCAT('/', eqpmGrpCd, '/') AND grpLv = 1)
+                FROM EqpmTbl M LEFT JOIN EqpmGrpTbl N ON M.eqpmGrpCd = N.eqpmGrpCd WHERE M.eqpmCd = A.eqpmCd) AS solution
+        FROM CscoEqpmTbl A LEFT JOIN CscoTbl B ON A.cscoCd = B.cscoCd
+        WHERE A.cscoCd IN (
+            SELECT B.cscoCd FROM CscoEqpmTbl A LEFT JOIN CscoTbl B ON A.cscoCd = B.cscoCd
+            WHERE A.esmRefCd IN 
+            <foreach collection="list" item="item" index="index" separator="," open="(" close=")">
+                #{item}
+            </foreach>        
+        )
+        ORDER BY solution, A.eqpmNm
+    </select>   
+
+    <select id="selectWorkCondition" resultType="java.util.HashMap">
+		SELECT rptTp, count(*) AS CNT
+		FROM ScrtCtrlRptTbl
+        WHERE cpcgDtime BETWEEN #{startDtime} AND #{endDtime}
+           AND cpcgYn = 'y'
+           AND cscoCd = #{cscoCd}   
+        GROUP BY rptTp    
+    </select>   
+
+    <select id="selectWorkDetail" resultType="java.util.HashMap">
+		SELECT
+		    rptTp, DATE_FORMAT(cpcgDtime, '%Y-%m-%d') AS dateValue, rptTit AS contValue
+		FROM ScrtCtrlRptTbl
+		WHERE 1 = 1
+		    AND cpcgDtime BETWEEN #{startDtime} AND #{endDtime}
+		    AND cpcgYn = 'y'
+		    AND cscoCd = #{cscoCd}
+		ORDER BY cpcgDtime ASC
+	</select>
+
+	<select id="selectOperCondition" resultType="java.util.HashMap">
+		SELECT
+		    SCT, CNT
+		FROM (
+		    SELECT dryTp AS SCT, COUNT(*) AS CNT
+		    FROM WkDryTbl
+		    WHERE procDtime BETWEEN #{startDtime} AND #{endDtime}
+		        AND procSt = '2'
+		        AND dryTp in ('6','7','8')
+		        AND cscoCd = #{cscoCd}
+		    GROUP BY dryTp
+		            
+		    UNION ALL
+		
+		    SELECT reqSct AS SCT, COUNT(*) AS CNT
+		    FROM CscoFwReqTbl A LEFT JOIN FwSetTbl B ON A.tcktCd = B.tcktCd
+		    WHERE A.cpcgDtime BETWEEN #{startDtime} AND #{endDtime}
+		        AND A.cpcgYn = 'y'
+		        AND A.disposer IS NOT NULL
+		        AND A.procDtime IS NOT NULL
+		        AND A.cscoCd = #{cscoCd}
+		) T
+	</select>
+
+	<select id="selectOperDetail" resultType="java.util.HashMap">
+		SELECT
+		    SCT, DATE_FORMAT(DT, '%Y-%m-%d') AS dateValue, contValue, eqpmNm, srcIp, destIp, destPort, prtcl, execSct
+		FROM (
+			SELECT A.dryTp AS SCT, A.procDtime AS DT, B.bbsTit AS contValue, IF(ISNULL(A.tgtEqpmNm)||LENGTH(A.tgtEqpmNm)=0, A.etcEqpm, A.tgtEqpmNm) AS eqpmNm, '' AS srcIp, '' AS destIp, '' AS destPort, '' AS prtcl, '' AS execSct
+			FROM WkDryTbl A LEFT JOIN BbsBaseTbl B ON A.bbsId = B.bbsId
+			WHERE A.procDtime BETWEEN #{startDtime} AND #{endDtime}
+			    AND A.procSt = '2'
+			    AND A.dryTp in ('6','7','8')
+			    AND cscoCd = #{cscoCd}
+			
+			UNION ALL
+			             
+			SELECT A.reqSct AS SCT, A.cpcgDtime AS DT, '' AS contValue, C.rqrNm AS eqpmNm, B.srcIp AS srcIp, B.destIp AS destIp, B.destPort AS destPort, B.prtcl AS prtcl, B.execSct AS execSct
+			FROM CscoFwReqTbl A LEFT JOIN FwSetTbl B ON A.tcktCd = B.tcktCd LEFT JOIN CscoEqpmTbl C ON B.cscoCd = C.cscoCd AND B.eqpmCd = C.eqpmCd
+			WHERE A.cpcgDtime BETWEEN #{startDtime} AND #{endDtime}
+			    AND A.cpcgYn = 'y'
+			    AND A.disposer IS NOT NULL
+			    AND A.procDtime IS NOT NULL
+			    AND A.cscoCd = #{cscoCd}
+		) T
+		ORDER BY T.DT
+	</select>
+	
+    <select id="selectRequestCondition" resultType="java.util.HashMap">
+        SELECT reqSct, count(*) AS CNT
+        FROM CscoReqTbl
+        WHERE cpcgDtime BETWEEN #{startDtime} AND #{endDtime}
+           AND cpcgYn = 'y'
+           AND cscoCd = #{cscoCd}   
+        GROUP BY reqSct    
+    </select>   
+
+    <select id="selectRequestDetail" resultType="java.util.HashMap">
+        SELECT
+            reqSct, DATE_FORMAT(cpcgDtime, '%Y-%m-%d') AS dateValue, reqTit AS contValue
+        FROM CscoReqTbl
+        WHERE 1 = 1
+            AND cpcgDtime BETWEEN #{startDtime} AND #{endDtime}
+            AND cpcgYn = 'y'
+            AND cscoCd = #{cscoCd}
+        ORDER BY cpcgDtime ASC
+    </select>
+	
+	<select id="selectNewsCondition" resultType="java.util.HashMap">	
+		SELECT bbsSct, COUNT(*) AS CNT FROM BbsBaseTbl
+		WHERE bbsSct='B'
+		  AND regDtime BETWEEN #{startDtime} AND #{endDtime}
+		
+		UNION ALL
+		
+		SELECT bbsSct, COUNT(*) AS CNT FROM BbsBaseTbl
+		WHERE bbsSct='T'
+		  AND regDtime BETWEEN #{startDtime} AND #{endDtime}
+		
+		UNION ALL
+		
+		SELECT bbsSct, COUNT(*) AS CNT FROM BbsBaseTbl
+		WHERE bbsSct='P'
+		  AND regDtime BETWEEN #{startDtime} AND #{endDtime}
+		
+		UNION ALL
+		
+		SELECT 'R' AS bbsSct, COUNT(*) AS CNT FROM (
+		    SELECT
+		        DATE_FORMAT(B.modDtime, '%Y. %m. %d') AS regDtime
+		    FROM RssTbl A LEFT JOIN BbsBaseTbl B ON A.bbsId = B.bbsId
+		    WHERE B.bbsSct = 'R'
+		        AND A.clippingYn = 'y'
+		        AND B.modDtime BETWEEN #{startDtime} AND #{endDtime}
+		    GROUP BY DATE_FORMAT(B.modDtime, '%Y-%m-%d')
+		) T
+	</select>	
+	
+	<select id="selectRuleGroupPrntTrend_D" resultType="java.util.HashMap">
+		SELECT DATE_FORMAT(cpcgDtime, '%Y%m%d') AS dateValue, esmRuleGroupPrntCd, esmRuleGroupPrntNm, COUNT(*) AS CNT
+		FROM ViolAlrtRptTbl
+		WHERE cpcgDtime BETWEEN #{startDtime} AND #{endDtime}
+            AND cscoCd = #{cscoCd}
+			AND esmRuleGroupPrntCd IS NOT NULL 
+			AND esmRuleGroupCd IS NOT NULL
+			AND cpcgYn = 'y'
+			AND mailSndYn = 'y'
+		GROUP BY DATE_FORMAT(cpcgDtime, '%m-%d'), esmRuleGroupPrntCd
+		ORDER BY dateValue, CNT DESC;
+	</select>
+	
+	<select id="selectRuleGroupPrntTrend_M" resultType="java.util.HashMap">
+		SELECT DATE_FORMAT(cpcgDtime, '%Y%m') AS dateValue, esmRuleGroupPrntCd, esmRuleGroupPrntNm, COUNT(*) AS CNT
+		FROM ViolAlrtRptTbl
+        WHERE cpcgDtime BETWEEN #{startDtime} AND #{endDtime}
+			AND cscoCd = #{cscoCd}
+            AND esmRuleGroupPrntCd IS NOT NULL 
+            AND esmRuleGroupCd IS NOT NULL
+            AND cpcgYn = 'y'
+            AND mailSndYn = 'y'
+		GROUP BY DATE_FORMAT(cpcgDtime, '%Y-%m'), esmRuleGroupPrntCd
+		ORDER BY dateValue, CNT DESC;
+	</select>
+	
+    <select id="selectViolAlrtTopN" resultType="java.util.HashMap">
+        SELECT esmRuleGroupPrntCd, esmRuleGroupPrntNm, COUNT(*) AS CNT
+        FROM ViolAlrtRptTbl
+        WHERE cpcgDtime BETWEEN #{startDtime} AND #{endDtime}
+        <if test='cscoCd != null'>
+            AND cscoCd = #{cscoCd}
+        </if>
+            AND esmRuleGroupPrntCd IS NOT NULL 
+            AND esmRuleGroupCd IS NOT NULL
+            AND cpcgYn = 'y'
+            AND mailSndYn = 'y'
+        <if test='srcIp != null'>
+            AND srcIp = #{srcIp}
+        </if>
+        <if test='destIp != null'>
+            AND destIp = #{destIp}
+        </if>
+        <if test='srcGeo != null'>
+            AND srcGeo = #{srcGeo}
+        </if>
+        <if test='destPort != null'>
+            AND destPort = #{destPort}
+        </if>    
+        GROUP BY esmRuleGroupPrntCd
+        ORDER BY CNT DESC;
+    </select>
+	
+	<select id="selectRuleGroupCondition" resultType="java.util.HashMap">
+		SELECT esmRuleGroupCd, esmRuleGroupNm, COUNT(*) AS CNT
+		FROM ViolAlrtRptTbl
+		WHERE cpcgDtime BETWEEN #{startDtime} AND #{endDtime}
+            AND esmRuleGroupPrntCd IS NOT NULL 
+            AND esmRuleGroupCd IS NOT NULL
+            AND cpcgYn = 'y'
+            AND mailSndYn = 'y'
+		<if test='cscoCd != null'>
+            AND cscoCd = #{cscoCd}
+        </if>
+        <if test='srcIp != null'>
+            AND srcIp = #{srcIp}
+        </if>
+        <if test='destIp != null'>
+            AND destIp = #{destIp}
+        </if>
+        <if test='srcGeo != null'>
+            AND srcGeo = #{srcGeo}
+        </if>
+        <if test='destPort != null'>
+            AND destPort = #{destPort}
+        </if>    
+            AND esmRuleGroupPrntCd = #{prntCd}
+		GROUP BY esmRuleGroupCd
+		ORDER BY CNT DESC
+       <if test='limit != null'>
+          LIMIT #{limit}
+       </if>
+	</select>
+
+    <select id="selectRuleGroupDetail" resultType="java.util.HashMap">
+        SELECT
+            A.esmAssetNm
+            ,B.rqrNm
+            ,DATE_FORMAT(A.occurDtime, '%Y-%m-%d') AS dateValue            
+            ,A.esmRuleGroupPrntNm
+            ,A.esmRuleGroupNm
+            ,A.srcIp
+            ,A.srcGeo
+            ,A.destIp
+            ,A.attackIpBlock
+            ,A.occurCnt            
+        FROM ViolAlrtRptTbl A LEFT JOIN CscoEqpmTbl B ON A.cscoCd = B.cscoCd AND A.dtctEqpm = B.eqpmCd
+        WHERE A.cpcgDtime BETWEEN #{startDtime} AND #{endDtime}
+            AND A.esmRuleGroupPrntCd IS NOT NULL 
+            AND A.esmRuleGroupCd IS NOT NULL
+            AND A.cpcgYn = 'y'
+            AND A.mailSndYn = 'y'
+            AND A.cscoCd = #{cscoCd}
+        ORDER BY A.cpcgDtime
+    </select>
+
+    <select id="selectAttackIpTopN" resultType="java.util.HashMap">
+		SELECT 
+        <if test="bSrcIp==true">
+            srcIp, 
+            srcGeo, 
+        </if>
+        <if test="bSrcIp==false">            
+            destIp,
+        </if>
+            COUNT(*) AS CNT
+		FROM ViolAlrtRptTbl
+		WHERE cpcgDtime BETWEEN #{startDtime} AND #{endDtime}
+            AND esmRuleGroupPrntCd IS NOT NULL 
+            AND esmRuleGroupCd IS NOT NULL
+            AND cpcgYn = 'y'
+            AND mailSndYn = 'y'
+		<if test='cscoCd != null'>
+			AND cscoCd = #{cscoCd}
+		</if>
+        <if test='ips != null'>			
+			<if test="bSrcIp==true">AND srcIp IN</if>
+	        <if test="bSrcIp==false">AND destIp IN</if>
+	        <foreach collection="ips" item="item" index="index" separator="," open="(" close=")">
+	            #{item}
+	        </foreach>        
+		</if>
+		GROUP BY <if test="bSrcIp==true">srcIp, srcGeo</if><if test="bSrcIp==false">destIp</if>
+		ORDER BY CNT DESC
+	   <if test='limit != null'>
+		  LIMIT #{limit}
+	   </if>
+    </select>	
+	
+    <select id="selectSrcIpTrend_D" resultType="java.util.HashMap">
+        SELECT DATE_FORMAT(cpcgDtime, '%Y%m%d') AS dateValue, srcIp, COUNT(*) AS CNT
+        FROM ViolAlrtRptTbl
+        WHERE cpcgDtime BETWEEN #{startDtime} AND #{endDtime}
+            AND esmRuleGroupPrntCd IS NOT NULL 
+            AND esmRuleGroupCd IS NOT NULL
+            AND cpcgYn = 'y'
+            AND mailSndYn = 'y'
+            AND cscoCd = #{cscoCd}
+        <if test='ips != null'>            
+            AND srcIp IN
+            <foreach collection="ips" item="item" index="index" separator="," open="(" close=")">
+                #{item}
+            </foreach>        
+        </if>
+        GROUP BY DATE_FORMAT(cpcgDtime, '%m-%d'), srcIp
+        ORDER BY dateValue, CNT DESC;
+    </select>
+
+    <select id="selectSrcIpTrend_M" resultType="java.util.HashMap">
+        SELECT DATE_FORMAT(cpcgDtime, '%Y%m') AS dateValue, srcIp, COUNT(*) AS CNT
+        FROM ViolAlrtRptTbl
+        WHERE cpcgDtime BETWEEN #{startDtime} AND #{endDtime}
+            AND esmRuleGroupPrntCd IS NOT NULL 
+            AND esmRuleGroupCd IS NOT NULL
+            AND cpcgYn = 'y'
+            AND mailSndYn = 'y'
+            AND cscoCd = #{cscoCd}
+        <if test='ips != null'>            
+            AND srcIp IN
+            <foreach collection="ips" item="item" index="index" separator="," open="(" close=")">
+                #{item}
+            </foreach>        
+        </if>
+        GROUP BY DATE_FORMAT(cpcgDtime, '%Y-%m'), srcIp
+        ORDER BY dateValue, CNT DESC;
+    </select>
+	
+    <select id="selectAttackGeoTopN" resultType="java.util.HashMap">
+        SELECT srcGeo, COUNT(*) AS CNT
+        FROM ViolAlrtRptTbl
+        WHERE cpcgDtime BETWEEN #{startDtime} AND #{endDtime}
+            AND esmRuleGroupPrntCd IS NOT NULL 
+            AND esmRuleGroupCd IS NOT NULL
+            AND cpcgYn = 'y'
+            AND mailSndYn = 'y'
+        <if test='cscoCd != null'>
+            AND cscoCd = #{cscoCd}
+        </if>
+            AND srcGeo != '00'
+        <if test='geos != null'>
+            AND srcGeo IN
+            <foreach collection="geos" item="item" index="index" separator="," open="(" close=")">
+                #{item}
+            </foreach>        
+        </if>
+        GROUP BY srcGeo
+        ORDER BY CNT DESC
+       <if test='limit != null'>
+          LIMIT #{limit}
+       </if>
+    </select>   
+	
+    <select id="selectSrcGeoTrend_D" resultType="java.util.HashMap">
+        SELECT DATE_FORMAT(cpcgDtime, '%Y%m%d') AS dateValue, srcGeo, COUNT(*) AS CNT
+        FROM ViolAlrtRptTbl
+        WHERE cpcgDtime BETWEEN #{startDtime} AND #{endDtime}
+            AND esmRuleGroupPrntCd IS NOT NULL 
+            AND esmRuleGroupCd IS NOT NULL
+            AND cpcgYn = 'y'
+            AND mailSndYn = 'y'
+            AND cscoCd = #{cscoCd}
+        <if test='geos != null'>            
+            AND srcGeo IN
+            <foreach collection="geos" item="item" index="index" separator="," open="(" close=")">
+                #{item}
+            </foreach>        
+        </if>
+        GROUP BY DATE_FORMAT(cpcgDtime, '%m-%d'), srcGeo
+        ORDER BY dateValue, CNT DESC;
+    </select>
+
+    <select id="selectSrcGeoTrend_M" resultType="java.util.HashMap">
+        SELECT DATE_FORMAT(cpcgDtime, '%Y%m') AS dateValue, srcGeo, COUNT(*) AS CNT
+        FROM ViolAlrtRptTbl
+        WHERE cpcgDtime BETWEEN #{startDtime} AND #{endDtime}
+            AND esmRuleGroupPrntCd IS NOT NULL 
+            AND esmRuleGroupCd IS NOT NULL
+            AND cpcgYn = 'y'
+            AND mailSndYn = 'y'
+            AND cscoCd = #{cscoCd}
+        <if test='geos != null'>            
+            AND srcGeo IN
+            <foreach collection="geos" item="item" index="index" separator="," open="(" close=")">
+                #{item}
+            </foreach>        
+        </if>
+        GROUP BY DATE_FORMAT(cpcgDtime, '%Y-%m'), srcGeo
+        ORDER BY dateValue, CNT DESC;
+    </select>
+	
+    <select id="selectSrcIpDetail" resultType="java.util.HashMap">
+        SELECT 
+            srcIp, 
+            destPort, 
+            COUNT(*) AS CNT
+        FROM ViolAlrtRptTbl
+        WHERE cpcgDtime BETWEEN #{startDtime} AND #{endDtime}
+            AND esmRuleGroupPrntCd IS NOT NULL 
+            AND esmRuleGroupCd IS NOT NULL
+            AND cpcgYn = 'y'
+            AND mailSndYn = 'y'
+            AND cscoCd = #{cscoCd}            
+            AND destIp = #{destIp}
+            AND esmRuleGroupPrntCd = #{prntCd}
+        GROUP BY srcIp, destPort
+        ORDER BY CNT DESC
+        LIMIT 5
+    </select>   
+	
+	<select id="selectCodeProDomainList" resultType="java.util.HashMap">
+	   SELECT 
+	       domainUrl
+	   FROM CodeProDomainTbl
+	   WHERE cscoCd = #{cscoCd}
+	   ORDER BY domainUrl
+	</select>
+
+    <select id="selectEsmAssetAggregate" resultType="java.util.HashMap">
+       SELECT 
+           A.esmAssetCd 
+           ,A.esmAssetNm 
+           ,B.rqrNm
+           ,COUNT(*) AS CNT 
+        FROM ViolAlrtRptTbl A LEFT JOIN CscoEqpmTbl B ON A.cscoCd = B.cscoCd AND A.dtctEqpm = B.eqpmCd
+        WHERE A.cpcgDtime BETWEEN #{startDtime} AND #{endDtime}
+            AND A.esmRuleGroupPrntCd IS NOT NULL 
+            AND A.esmRuleGroupCd IS NOT NULL
+            AND A.cpcgYn = 'y'
+            AND A.mailSndYn = 'y'
+            AND A.cscoCd = #{cscoCd}
+            AND A.gearType = #{gearType}
+        GROUP BY A.esmAssetCd
+    </select>
+	
+    <select id="selectGearTypeDetail" resultType="java.util.HashMap">
+        SELECT
+            DATE_FORMAT(A.occurDtime, '%Y-%m-%d') AS dateValue
+            ,A.etcFields
+            ,A.esmAssetNm
+            ,B.rqrNm
+            ,A.esmMessage
+            ,A.srcIp
+            ,A.destIp
+        FROM ViolAlrtRptTbl A LEFT JOIN CscoEqpmTbl B ON A.cscoCd = B.cscoCd AND A.dtctEqpm = B.eqpmCd
+        WHERE A.cpcgDtime BETWEEN #{startDtime} AND #{endDtime}
+            AND A.esmRuleGroupPrntCd IS NOT NULL 
+            AND A.esmRuleGroupCd IS NOT NULL
+            AND A.cpcgYn = 'y'
+            AND A.mailSndYn = 'y'
+            AND A.cscoCd = #{cscoCd}
+            AND A.gearType = #{gearType}
+        ORDER BY A.occurDtime
+    </select>   
+
+    <select id="selectTotalTrendTopN" resultType="java.util.HashMap">
+        SELECT 
+	<if test='prntCd != null'>
+            esmRuleGroupPrntCd, esmRuleGroupPrntNm, COUNT(*) AS CNT
+    </if>
+    <if test='srcIp != null'>
+            srcIp, COUNT(*) AS CNT
+    </if>
+    <if test='destPort != null'>
+            destPort, COUNT(*) AS CNT
+    </if>
+		FROM ViolAlrtRptTbl
+		WHERE cpcgDtime BETWEEN #{startDtime} AND #{endDtime}
+		   AND esmRuleGroupPrntCd IS NOT NULL 
+		   AND esmRuleGroupCd IS NOT NULL
+           AND cpcgYn = 'y'
+           AND mailSndYn = 'y'
+	<if test='prntCd != null'>
+		GROUP BY esmRuleGroupPrntCd
+    </if>
+    <if test='srcIp != null'>
+        GROUP BY srcIp
+    </if>
+    <if test='destPort != null'>
+        GROUP BY destPort
+    </if>
+		ORDER BY CNT DESC
+    <if test='limit != null'>
+        LIMIT #{limit}
+    </if>
+    </select>
+
+	<select id="selectTotalCondition" resultType="java.util.HashMap">
+	SELECT 
+	  esmRuleGroupCd, esmRuleGroupNm, COUNT(*) AS CNT 
+	FROM ViolAlrtRptTbl
+	WHERE 1 = 1
+	    AND esmRuleGroupPrntCd = '1700'
+	   AND esmRuleGroupPrntCd IS NOT NULL 
+	   AND esmRuleGroupCd IS NOT NULL
+	GROUP BY esmRuleGroupCd
+	ORDER BY CNT DESC
+    
+    
+    </select>
+	
+</mapper>

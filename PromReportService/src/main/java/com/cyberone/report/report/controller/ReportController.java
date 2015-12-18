@@ -7,9 +7,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import net.sf.jasperreports.engine.DefaultJasperReportsContext;
+import net.sf.jasperreports.engine.JREmptyDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRExporterParameter;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
+import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.type.TypeFactory;
@@ -24,16 +34,24 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.cyberone.report.Constants;
+import com.cyberone.report.core.datasource.SynthesisDataSource;
+import com.cyberone.report.core.report.DpDdosDailyReport;
 import com.cyberone.report.core.report.FwDailyReport;
 import com.cyberone.report.core.report.FwMonthlyReport;
 import com.cyberone.report.core.report.FwPeriodReport;
 import com.cyberone.report.core.report.FwWeeklyReport;
 import com.cyberone.report.core.report.IpsDailyReport;
+import com.cyberone.report.core.report.IpsMonthlyReport;
+import com.cyberone.report.core.report.IpsPeriodReport;
+import com.cyberone.report.core.report.IpsWeeklyReport;
+import com.cyberone.report.core.report.SvcDailyReport;
+import com.cyberone.report.core.report.SvcMonthlyReport;
+import com.cyberone.report.core.report.SvcPeriodReport;
+import com.cyberone.report.core.report.SvcWeeklyReport;
 import com.cyberone.report.core.report.WafDailyReport;
 import com.cyberone.report.core.report.WafMonthlyReport;
 import com.cyberone.report.core.report.WafPeriodReport;
 import com.cyberone.report.core.report.WafWeeklyReport;
-import com.cyberone.report.core.service.SDService;
 import com.cyberone.report.exception.BizException;
 import com.cyberone.report.model.UserInfo;
 import com.cyberone.report.product.service.ProductService;
@@ -54,8 +72,9 @@ public class ReportController {
     @Autowired
     private ProductService productService;
     
-    @Autowired
-    private SDService sdService;
+    private String EXPORT_DIR = "D:/jasper/export/";
+    private String IMAGES_DIR = "D:/jasper/images/";
+    
     
     @RequestMapping("/")
     public String reportManage(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
@@ -107,7 +126,8 @@ public class ReportController {
         return "report/reportOption";
     }
     
-    @RequestMapping("/assetList")
+    @SuppressWarnings("unchecked")
+	@RequestMapping("/assetList")
     public ModelAndView assetList(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
         logger.debug("자산목록[assetList] ");
         
@@ -201,6 +221,7 @@ public class ReportController {
 							node2.put("assetType", "");
 							node2.put("memo", StringUtil.convertString(childGroup.get("memo")));
 							node2.put("stat", "");
+							node2.put("prefix", "servicedesk");
 							
 							/*
 							if (strSearchWord.trim().length() > 0) {
@@ -216,7 +237,7 @@ public class ReportController {
 							List<DBObject> assets = reportService.selectAssetsProduct(userInfo.getPromDb(), (Integer)childGroup.get("groupCode"), 0);
 							for (DBObject asset : assets) {
 								node3 = new HashMap<String, Object>();
-								node3.put("name", StringUtil.convertString(asset.get("assetName")));
+								node3.put("name", StringUtil.convertString(asset.get("assetName")) + "(" + StringUtil.convertString(asset.get("assetCode")) + ")");
 								node3.put("level", (Integer)node2.get("level") + 1);
 								node3.put("parent", (Integer)node2.get("id"));
 								node3.put("isLeaf", true);
@@ -350,7 +371,8 @@ public class ReportController {
         return modelAndView.addObject("status", "success");
     }
 
-    @RequestMapping("/assetApplyList")
+    @SuppressWarnings("unchecked")
+	@RequestMapping("/assetApplyList")
     public ModelAndView assetApplyList(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
         logger.debug("자산목록[assetApplyList] ");
         
@@ -834,64 +856,154 @@ public class ReportController {
 	@RequestMapping("/printReport")
     public ModelAndView printReport(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
         logger.debug("보고서작성 [printReport] ");
+
+        List<String> contentsList = new ArrayList<String>();
+		List<HashMap<String, Object>> assetList = new ArrayList<HashMap<String, Object>>();
+		
+        HashMap<String, Object> reportMap = new HashMap<String, Object>();
+        HashMap<String, Object> reportInfo = null;
+        HashMap<String, Object> coverMap = new HashMap<String, Object>();
+        HashMap<String, Object> basicMap = new HashMap<String, Object>();
         
         UserInfo userInfo = (UserInfo)request.getSession().getAttribute("userInfo");
-
-        HashMap<String, Object> assetReportMap = new HashMap<String, Object>();
-        HashMap<String, Object> assetReportInfo = null;
-        HashMap<String, Object> reportData = new HashMap<String, Object>();
         
-		String sStartDay = "";
-		String sEndDay = "";
+        List<DBObject> dbResult = productService.selectProducts(userInfo.getPromDb(), 0);
+		HashMap<String, DBObject> productMap = new HashMap<String, DBObject>();
+		for (DBObject obj : dbResult) {
+			productMap.put(((Integer)obj.get("productCode")).toString(), obj);
+		}
         
         String strPrintInfo = request.getParameter("printInfo");
         
 		ObjectMapper mapper = new ObjectMapper();
 		HashMap<String,Object> printInfoMap = mapper.readValue(StringUtil.convertString(strPrintInfo), HashMap.class);
 
+		String sCiType = StringUtil.convertString(printInfoMap.get("ciType"));
+		String sCiText = StringUtil.convertString(printInfoMap.get("ciText"));
+		String sCiGroup = StringUtil.convertString(printInfoMap.get("groupCode"));
 		String sReportType = StringUtil.convertString(printInfoMap.get("reportType")); 	//1:일일보고서 2:주간보고서 3:월간보고서 4:임의기간보고서
 		String sReportSct = StringUtil.convertString(printInfoMap.get("reportSct")); 	//1:관제실적 2:원시로그 통계 3:관제실적+원시로그통계
 		String sSearchDate = StringUtil.convertString(printInfoMap.get("searchDate"));
 		String sReviewText = StringUtil.convertString(printInfoMap.get("reviewText"));
 		String sFileFormat = StringUtil.convertString(printInfoMap.get("format"));
 
+		contentsList.add("1. 개요");
+		
+		int ItemNo = 1; //1.개요
+		if (!StringUtil.isEmpty(sReviewText)) {
+			contentsList.add(++ItemNo + ". 총평");
+			basicMap.put("B1", ItemNo + ". 총평");
+			basicMap.put("reviewText", sReviewText);
+		}
+		contentsList.add(++ItemNo + ". 관제대상 장비현황");
+		basicMap.put("B2", ItemNo + ". 관제대상 장비현황");
+		
+		//서비스데스크 고객사 검색
+		List<String> saAssetCodes = new ArrayList<String>();
+		dbResult = reportService.selectAssetsProduct(userInfo.getPromDb(), Integer.valueOf(sCiGroup), 0);
+		for (DBObject asset : dbResult) {
+			saAssetCodes.add(StringUtil.convertString(asset.get("assetCode")));
+		}
+		List<HashMap<String,Object>> cscoEqpmList = reportService.getCscoCd(saAssetCodes);
+		if (cscoEqpmList.size() == 0) {
+			throw new BizException("서비스데스크의 고객사를 찾을 수 없습니다.");
+		}
+
+		basicMap.put("cscoEqpms", new SynthesisDataSource(cscoEqpmList));
+		basicMap.put("searchPeriod", sSearchDate);
+		
+		coverMap.put("searchPeriod", sSearchDate);
+		coverMap.put("ciType", sCiType);
+		coverMap.put("ciText", sCiText);
+		coverMap.put("ciGroup", sCiGroup);
+		coverMap.put("csName", StringUtil.convertString(cscoEqpmList.get(0).get("cscoNm")));
+		coverMap.put("prefix", "all");
+		coverMap.put("reportType", sReportType);
+		
 		List<HashMap<String,Object>> formDataList = (ArrayList<HashMap<String, Object>>)printInfoMap.get("formDatas");
 		
 		if (sReportSct.equals("1") || sReportSct.equals("3")) {
 			for (HashMap<String,Object> hMap : formDataList) {
+				hMap.put("cscoCd", (Integer)cscoEqpmList.get(0).get("cscoCd"));	//서비스데스크 고객사코드
 				String sPrefix = StringUtil.convertString(hMap.get("prefix"));
 				if (sPrefix.equals("servicedesk")) {
-					//sdService.getDataSource(sReportType, sStartDay, sEndDay, reportData, hMap);
+					if (sReportType.equals(Constants.REPORT_DAILY)) {
+						
+						SvcDailyReport svcReport = new SvcDailyReport(userInfo);
+						reportInfo = svcReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
+						
+					} else if (sReportType.equals(Constants.REPORT_WEEKLY)) {
+
+						SvcWeeklyReport svcReport = new SvcWeeklyReport(userInfo);
+						reportInfo = svcReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
+						
+					} else if (sReportType.equals(Constants.REPORT_MONTHLY)) {
+						SvcMonthlyReport svcReport = new SvcMonthlyReport(userInfo);
+						reportInfo = svcReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
+					} else if (sReportType.equals(Constants.REPORT_PERIOD)) {
+						SvcPeriodReport svcReport = new SvcPeriodReport(userInfo);
+						reportInfo = svcReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
+					}
+					reportMap.put("servicedesk", reportInfo);
 					break;
 				}
+				
+				
 			}
 		}
 		
 		if (sReportSct.equals("2") || sReportSct.equals("3")) {
 			for (HashMap<String,Object> hMap : formDataList) {
 				String sPrefix = StringUtil.convertString(hMap.get("prefix"));
-				if (sPrefix.equals("servicedesk")) {
-				} else if (sPrefix.equals("fw")) {
+				
+				if (sPrefix.equals("servicedesk")) continue;
+				
+				String sAssetCode = StringUtil.convertString(hMap.get("assetCode"));
+				int assetCode = Integer.valueOf(sAssetCode.substring(0, sAssetCode.indexOf("_")));
+				
+				DBObject asset = reportService.selectAsset(userInfo.getPromDb(), assetCode);
+				hMap.put("assetName", (String)asset.get("assetName"));
+				
+				DBObject policy = reportService.selectAssetPolicy(userInfo.getPromDb(), assetCode);
+				DBObject basePolicy = (DBObject)policy.get("basePolicy");
+				int statMonthBaseDay = 1;
+				if (basePolicy.containsField("statMonthBaseDay")) {
+					statMonthBaseDay = (Integer)basePolicy.get("statMonthBaseDay");
+				}
+
+				HashMap<String, Object> map = new HashMap<String, Object>();
+				map.put("assetCode", assetCode);
+				map.put("assetName", (String)asset.get("assetName"));
+				map.put("assetIp", (String)asset.get("assetIp"));
+				map.put("statMonthBaseDay", statMonthBaseDay);
+				
+				DBObject productObj = productMap.get(((Integer)asset.get("productCode")).toString());
+				map.put("productName", (String)productObj.get("productName") );
+				map.put("productType", sPrefix);
+				
+				assetList.add(map);
+				
+				if (sPrefix.equals("fw")) {
 					
 					if (sReportType.equals(Constants.REPORT_DAILY)) {
 						
 						FwDailyReport fwReport = new FwDailyReport(userInfo);
-						assetReportInfo = fwReport.getDataSource(sReportType, sSearchDate, hMap);
+						reportInfo = fwReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
 						
 					} else if (sReportType.equals(Constants.REPORT_WEEKLY)) {
 
-						FwWeeklyReport fwReport = new FwWeeklyReport(userInfo.getPromDb(), userInfo.getReportDb());
-						assetReportInfo = fwReport.getDataSource(sReportType, sSearchDate, hMap);
+						FwWeeklyReport fwReport = new FwWeeklyReport(userInfo);
+						reportInfo = fwReport.getDataSource(sReportType, sSearchDate, hMap);
 						
 					} else if (sReportType.equals(Constants.REPORT_MONTHLY)) {
 
-						FwMonthlyReport fwReport = new FwMonthlyReport(userInfo.getPromDb(), userInfo.getReportDb());
-						assetReportInfo = fwReport.getDataSource(sReportType, sSearchDate, hMap);
+						FwMonthlyReport fwReport = new FwMonthlyReport(userInfo);
+						reportInfo = fwReport.getDataSource(sReportType, sSearchDate, hMap);
 						
 					} else if (sReportType.equals(Constants.REPORT_PERIOD)) {
 
-						FwPeriodReport fwReport = new FwPeriodReport(userInfo.getPromDb(), userInfo.getReportDb());
-						assetReportInfo = fwReport.getDataSource(sReportType, sSearchDate, hMap);
+						FwPeriodReport fwReport = new FwPeriodReport(userInfo);
+						reportInfo = fwReport.getDataSource(sReportType, sSearchDate, hMap);
 						
 					}
 					
@@ -900,22 +1012,22 @@ public class ReportController {
 					if (sReportType.equals(Constants.REPORT_DAILY)) {
 						
 						WafDailyReport wafReport = new WafDailyReport(userInfo);
-						assetReportInfo = wafReport.getDataSource(sReportType, sSearchDate, hMap);
+						reportInfo = wafReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
 						
 					} else if (sReportType.equals(Constants.REPORT_WEEKLY)) {
 
 						WafWeeklyReport wafReport = new WafWeeklyReport(userInfo);
-						assetReportInfo = wafReport.getDataSource(sReportType, sSearchDate, hMap);
+						reportInfo = wafReport.getDataSource(sReportType, sSearchDate, hMap);
 						
 					} else if (sReportType.equals(Constants.REPORT_MONTHLY)) {
 
 						WafMonthlyReport wafReport = new WafMonthlyReport(userInfo);
-						assetReportInfo = wafReport.getDataSource(sReportType, sSearchDate, hMap);
+						reportInfo = wafReport.getDataSource(sReportType, sSearchDate, hMap);
 						
 					} else if (sReportType.equals(Constants.REPORT_PERIOD)) {
 
 						WafPeriodReport wafReport = new WafPeriodReport(userInfo);
-						assetReportInfo = wafReport.getDataSource(sReportType, sSearchDate, hMap);
+						reportInfo = wafReport.getDataSource(sReportType, sSearchDate, hMap);
 						
 					}
 					
@@ -924,70 +1036,87 @@ public class ReportController {
 					if (sReportType.equals(Constants.REPORT_DAILY)) {
 						
 						IpsDailyReport ipsReport = new IpsDailyReport(userInfo);
-						assetReportInfo = ipsReport.getDataSource(sReportType, sSearchDate, hMap);
+						reportInfo = ipsReport.getDataSource(sReportType, sSearchDate, hMap);
 						
 					} else if (sReportType.equals(Constants.REPORT_WEEKLY)) {
 
-						FwWeeklyReport fwReport = new FwWeeklyReport(userInfo.getPromDb(), userInfo.getReportDb());
-						assetReportInfo = fwReport.getDataSource(sReportType, sSearchDate, hMap);
+						IpsWeeklyReport ipsReport = new IpsWeeklyReport(userInfo);
+						reportInfo = ipsReport.getDataSource(sReportType, sSearchDate, hMap);
 						
 					} else if (sReportType.equals(Constants.REPORT_MONTHLY)) {
 
-						FwMonthlyReport fwReport = new FwMonthlyReport(userInfo.getPromDb(), userInfo.getReportDb());
-						assetReportInfo = fwReport.getDataSource(sReportType, sSearchDate, hMap);
+						IpsMonthlyReport ipsReport = new IpsMonthlyReport(userInfo);
+						reportInfo = ipsReport.getDataSource(sReportType, sSearchDate, hMap);
 						
 					} else if (sReportType.equals(Constants.REPORT_PERIOD)) {
 
-						FwPeriodReport fwReport = new FwPeriodReport(userInfo.getPromDb(), userInfo.getReportDb());
-						assetReportInfo = fwReport.getDataSource(sReportType, sSearchDate, hMap);
+						IpsPeriodReport ipsReport = new IpsPeriodReport(userInfo);
+						reportInfo = ipsReport.getDataSource(sReportType, sSearchDate, hMap);
 						
 					}
 					
 				} else if (sPrefix.equals("ids")) {
 					
+				} else if (sPrefix.equals("ddos")) {
+					
+				} else if (sPrefix.equals("ddos_dp")) {
+				
+					if (sReportType.equals(Constants.REPORT_DAILY)) {
+						
+						DpDdosDailyReport ddosReport = new DpDdosDailyReport(userInfo);
+						reportInfo = ddosReport.getDataSource(sReportType, sSearchDate, hMap);
+						
+					} else if (sReportType.equals(Constants.REPORT_WEEKLY)) {
+
+						IpsWeeklyReport ipsReport = new IpsWeeklyReport(userInfo);
+						reportInfo = ipsReport.getDataSource(sReportType, sSearchDate, hMap);
+						
+					} else if (sReportType.equals(Constants.REPORT_MONTHLY)) {
+
+						IpsMonthlyReport ipsReport = new IpsMonthlyReport(userInfo);
+						reportInfo = ipsReport.getDataSource(sReportType, sSearchDate, hMap);
+						
+					} else if (sReportType.equals(Constants.REPORT_PERIOD)) {
+
+						IpsPeriodReport ipsReport = new IpsPeriodReport(userInfo);
+						reportInfo = ipsReport.getDataSource(sReportType, sSearchDate, hMap);
+						
+					}
+					
 				}
 				
-				assetReportMap.put(StringUtil.convertString(hMap.get("assetCode")), assetReportInfo);
+				reportMap.put(String.valueOf(assetCode), reportInfo);
 			}
-			
+		}
+
+		for (String s : contentsList) {
+			logger.debug(s);
 		}
 		
-		/*
-		HashMap<String, Object> reportInitInfo = new HashMap<String, Object>();
-		HashMap<String, Object> baseReportInfo = new HashMap<String, Object>();
+		basicMap.put("contents", new SynthesisDataSource(getContents(contentsList)));
+		basicMap.put("assetList", new SynthesisDataSource(assetList));
 		
-		HashMap<String, Object> assetReportInfo = new HashMap<String, Object>();
-		
-		fwService.FW_SessionLogMonthlyChange("2015-05-01", "2015-05-31", 990001, null, assetReportInfo);
-		
-		assetReportMap.put("990001_FW", assetReportInfo);
-		
-		
-		String[] saAssets = {"990001_FW"};
-		List<HashMap<String, Object>> assetList = fwService.getAssetList(saAssets);
-		baseReportInfo.put("AssetList", new SynthesisDataSource(assetList));
-		
-        
         String sContextPath = request.getSession().getServletContext().getRealPath("/");
         
         SimpleDateFormat dateTime = new SimpleDateFormat("yyyyMMddHHmmss");
         
-        String sJaperPath = sContextPath + "WEB-INF/jasper/";
+        String sJaperPath = "C:/Users/Administrator/git/PRpt/PromReportService/src/main/webapp/" + "jasper/";
         String sReportPath = sContextPath + "WEB-INF/views/report/";        
         String sExportPath = sJaperPath + "export/";
-        String sFileFormat = "pdf";
         
         Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put("baseDir", sJaperPath);
-        parameters.put("assetReportMap", assetReportMap);
-        parameters.put("baseReportInfo", baseReportInfo);        
+        parameters.put("JASPER_DIR", sJaperPath);
+        parameters.put("IMAGES_DIR", IMAGES_DIR);
+        parameters.put("coverMap", coverMap);
+        parameters.put("reportMap", reportMap);
+        parameters.put("basicMap", basicMap);        
         
-        File destFile = new File(sExportPath, (String)request.getParameter("ciText") + "_월간종합보고서_" + dateTime.format(new Date()) + "." + sFileFormat);
+        File destFile = new File(EXPORT_DIR, sCiText + "_월간종합보고서_" + dateTime.format(new Date()) + "." + sFileFormat);
         
         JasperPrint jasperPrint = null;
         
 		try {
-			String sourceFileName = sReportPath + sFileFormat + "/MonthlyReport.jasper";
+			String sourceFileName = sJaperPath + "/Cover.jasper";
 			jasperPrint = JasperFillManager.fillReport(
 					sourceFileName, 
 					parameters, 
@@ -998,22 +1127,36 @@ public class ReportController {
 			e.printStackTrace();
 		}
 
+		if (sFileFormat.equals("docx")) {
+			JRDocxExporter exporter = new JRDocxExporter(DefaultJasperReportsContext.getInstance());
+			exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+			exporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, destFile.toString());
+		    //exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+		    //exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(destFile));
+		    exporter.exportReport();
+		} else {
+			JRPdfExporter exporter = new JRPdfExporter(DefaultJasperReportsContext.getInstance());
+			exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+			exporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, destFile.toString());
+			//exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+			//exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(destFile));
+			exporter.exportReport();
+		}
 		
-		//JRDocxExporter exporter = new JRDocxExporter(DefaultJasperReportsContext.getInstance());
-		//exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-		//exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(destFile));
-		//exporter.exportReport();
-		
-		
-		JRPdfExporter exporter = new JRPdfExporter(DefaultJasperReportsContext.getInstance());
-		exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-		exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(destFile));
-		exporter.exportReport();
-
-        */
 		
         ModelAndView modelAndView = new ModelAndView("jsonView");
         return modelAndView.addObject("status", "success");
 		
-    }    
+    }
+    
+	public List<HashMap<String, Object>> getContents(List<String> contentsList) {
+		List<HashMap<String, Object>> contents = new ArrayList<HashMap<String, Object>>();
+		for (int i = 0; i < contentsList.size(); i++) {
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put("content", contentsList.get(i));
+			contents.add(map);
+		}
+		return contents;
+	}
+    
 }

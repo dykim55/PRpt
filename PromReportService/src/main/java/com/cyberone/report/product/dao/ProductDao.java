@@ -24,51 +24,48 @@ public class ProductDao {
 	public List<DBObject> selectProductGroups(DB db) throws Exception {
 		DBObject condition = new BasicDBObject("deleted", false);
 		DBObject sortFields = new BasicDBObject("productGroupName", 1);
-		DBCursor dbCursor = null;
 		DBCollection collection =  db.getCollection("ProductGroup");
-		try {
-			dbCursor = collection.find(condition).sort(sortFields);
+		try (DBCursor dbCursor = collection.find(condition).sort(sortFields)) {
+			return dbCursor != null ? dbCursor.toArray() : new ArrayList<DBObject>();
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
 		} finally {
 		}
-		return dbCursor != null ? dbCursor.toArray() : new ArrayList<DBObject>();
 	}
 	
 	public List<DBObject> selectProductGroups(DB db, boolean deleted) throws Exception {
 		DBObject condition = new BasicDBObject();
 		DBObject sortFields = new BasicDBObject();
-		DBCursor dbCursor = null;
 		DBCollection collection =  db.getCollection("ProductGroup");
-		try {
-			condition.put("deleted", deleted);
-			sortFields.put("productGroupName", 1);
-			dbCursor = collection.find(condition).sort(sortFields);
+		condition.put("deleted", deleted);
+		sortFields.put("productGroupName", 1);
+		try (DBCursor dbCursor = collection.find(condition).sort(sortFields)) {
+			return dbCursor != null ? dbCursor.toArray() : new ArrayList<DBObject>();			
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
 		} finally {
 		}
-		return dbCursor != null ? dbCursor.toArray() : new ArrayList<DBObject>();
 	}
 	
 	public List<DBObject> selectProducts(DB db, int productGroupCode) throws Exception {
 		DBObject condition = new BasicDBObject();
 		DBObject sortFields = new BasicDBObject();
-		DBCursor dbCursor = null;
-		DBCollection collection =  db.getCollection("Product");
-		try {
+		if (productGroupCode > 0) {
 			condition.put("productGroupCode", productGroupCode);
-			condition.put("deleted", false);
-			sortFields.put("productName", 1);
-			dbCursor = collection.find(condition).sort(sortFields);
+		}
+		condition.put("deleted", false);
+		sortFields.put("productName", 1);
+		
+		DBCollection collection =  db.getCollection("Product");
+		try (DBCursor dbCursor = collection.find(condition).sort(sortFields)) {
+			return dbCursor != null ? dbCursor.toArray() : new ArrayList<DBObject>();		
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
 		} finally {
 		}
-		return dbCursor != null ? dbCursor.toArray() : new ArrayList<DBObject>();
 	}
 
 	public DBObject selectProduct(DB db, int productCode) throws Exception {
@@ -103,32 +100,29 @@ public class ProductDao {
 
 	public List<DBObject> selectProductGroup(DB db) throws Exception {
 		DBObject condition = new BasicDBObject("deleted", false);
-		DBCursor dbCursor = null;
 		DBCollection collection =  db.getCollection("ProductGroup");
-		try {
-			dbCursor = collection.find(condition).sort(new BasicDBObject("productGroupName",1));;
+		try (DBCursor dbCursor = collection.find(condition).sort(new BasicDBObject("productGroupName",1))) {
+			return dbCursor != null ? dbCursor.toArray() : new ArrayList<DBObject>();	
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
 		} finally {
 		}
-		return dbCursor != null ? dbCursor.toArray() : new ArrayList<DBObject>();
 	}
 	
 	public List<DBObject> selectAutoReportFormList(DB db, int formType, int formReportType) throws Exception {
 		DBObject condition = new BasicDBObject();
-		DBCursor dbCursor = null;
+		condition.put("formType", formType);
+		condition.put("formReportType", formReportType);
+		
 		DBCollection collection =  db.getCollection("AutoReportForm");
-		try {
-			condition.put("formType", formType);
-			condition.put("formReportType", formReportType);
-			dbCursor = collection.find(condition).sort(new BasicDBObject("formName",1));
+		try (DBCursor dbCursor = collection.find(condition).sort(new BasicDBObject("formName",1))) {
+			return dbCursor != null ? dbCursor.toArray() : new ArrayList<DBObject>();
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
 		} finally {
 		}
-		return dbCursor != null ? dbCursor.toArray() : new ArrayList<DBObject>();
 	}
 
 	public DBObject selectAutoReportForm(DB db, int formCode) throws Exception {
@@ -164,17 +158,16 @@ public class ProductDao {
 	
 	public List<DBObject> selectFormInAsset(DB db, int assetCode) throws Exception {
 		DBObject condition = new BasicDBObject();
-		DBCursor dbCursor = null;
+		condition.put("appliedAssets.code", assetCode);
+		
 		DBCollection collection =  db.getCollection("AutoReportForm");
-		try {
-			condition.put("appliedAssets.code", assetCode);
-			dbCursor = collection.find(condition).sort(new BasicDBObject("formReportType",1));
+		try (DBCursor dbCursor = collection.find(condition).sort(new BasicDBObject("formReportType",1))) {
+			return dbCursor != null ? dbCursor.toArray() : new ArrayList<DBObject>();	
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
 		} finally {
 		}
-		return dbCursor != null ? dbCursor.toArray() : new ArrayList<DBObject>();
 	}
 	
 	public void insertAutoReportForm(DB db, DBObject dbObject) throws Exception {

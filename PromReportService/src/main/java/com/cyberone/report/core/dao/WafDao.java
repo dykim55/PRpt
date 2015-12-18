@@ -35,7 +35,7 @@ public class WafDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 			
-			DBCollection dbCollection = reportDB.getCollection("WAF_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_WAF_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
@@ -106,7 +106,7 @@ public class WafDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 			
-			DBCollection dbCollection = reportDB.getCollection("WAF_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_WAF_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
@@ -184,7 +184,7 @@ public class WafDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 			
-			DBCollection dbCollection = reportDB.getCollection("WAF_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_WAF_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
@@ -258,7 +258,7 @@ public class WafDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 			
-			DBCollection dbCollection = reportDB.getCollection("WAF_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_WAF_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
@@ -329,7 +329,7 @@ public class WafDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 			
-			DBCollection dbCollection = reportDB.getCollection("WAF_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_WAF_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
@@ -387,7 +387,7 @@ public class WafDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 
-			DBCollection dbCollection = reportDB.getCollection("WAF_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_WAF_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
@@ -448,7 +448,7 @@ public class WafDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 			
-			DBCollection dbCollection = reportDB.getCollection("WAF_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_WAF_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
@@ -505,7 +505,7 @@ public class WafDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 			
-			DBCollection dbCollection = reportDB.getCollection("WAF_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_WAF_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
@@ -562,7 +562,7 @@ public class WafDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 			
-			DBCollection dbCollection = reportDB.getCollection("WAF_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_WAF_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
@@ -624,7 +624,7 @@ public class WafDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 			
-			DBCollection dbCollection = reportDB.getCollection("WAF_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_WAF_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
@@ -676,7 +676,7 @@ public class WafDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 			
-			DBCollection dbCollection = reportDB.getCollection("WAF_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_WAF_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
@@ -730,7 +730,7 @@ public class WafDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 
-			DBCollection dbCollection = reportDB.getCollection("WAF_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_WAF_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));

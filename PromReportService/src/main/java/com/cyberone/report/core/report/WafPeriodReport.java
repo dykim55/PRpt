@@ -66,37 +66,37 @@ public class WafPeriodReport extends BaseReport {
 		for (Entry<String, Object> e : hData.entrySet()) {
 			
 			switch (e.getKey()) {
-				case "opt1" :	//전체 탐지로그 발생추이
+				case "opt01" :	//전체 탐지로그 발생추이
 					push("항목: 전체 탐지로그 발생추이");
 					All_DetectLog_Trend(reportData, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt2" : 	//전체 탐지로그 & 도메인 TOP10 발생추이 (차트)
+				case "opt02" : 	//전체 탐지로그 & 도메인 TOP10 발생추이 (차트)
 					push("항목: 전체 탐지로그 & 도메인 TOP10 발생추이 (차트)");
 					All_Domain_TopN_Trend(reportData, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt3" : 	//전체 탐지로그 & Event TOP (차트, 표)
+				case "opt03" : 	//전체 탐지로그 & Event TOP (차트, 표)
 					push("항목: 전체 탐지로그 & Event TOP (차트, 표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd3")));
 					ALL_Event_TopN(reportData, assetCode, sStartDay, sEndDay, nChoice);
 					break;
-				case "opt4" :	//전체 탐지로그 & SIP TOP (표)
+				case "opt04" :	//전체 탐지로그 & SIP TOP (표)
 					push("항목: 전체 탐지로그 & SIP TOP (표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd4")));
 					ALL_SrcIp_TopN(reportData, assetCode, sStartDay, sEndDay, nChoice);
 					break;
-				case "opt5" : 	//출발지IP TOP10 탐지로그 발생추이 (차트)
+				case "opt05" : 	//출발지IP TOP10 탐지로그 발생추이 (차트)
 					push("항목: 출발지IP TOP10 탐지로그 발생추이 (차트)");
 					SrcIp_Top10_Trend(reportData, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt6" : 	//도메인 별 탐지로그 & 탐지로그 발생추이
+				case "opt06" : 	//도메인 별 탐지로그 & 탐지로그 발생추이
 					push("항목: 도메인 별 탐지로그 & 탐지로그 발생추이");
 					Domain_TopN_Trend(reportData, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt7" : 	//도메인 별 탐지로그 & EVT TOP10 발생추이
+				case "opt07" : 	//도메인 별 탐지로그 & EVT TOP10 발생추이
 					push("항목: 도메인 별 탐지로그 & EVT TOP10 발생추이");
 					Domain_EventTopN_Trend(reportData, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt8" : 	//도메인 별 탐지로그 & EVT TOP10 통계 (차트, 표)
+				case "opt08" : 	//도메인 별 탐지로그 & EVT TOP10 통계 (차트, 표)
 					push("항목: 도메인 별 탐지로그 & EVT TOP10 통계 (차트, 표)");
 					Domain_EventTopN_Condition(reportData, assetCode, sStartDay, sEndDay);
 					break;

@@ -36,7 +36,7 @@ public class IpsDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 			
-			DBCollection dbCollection = reportDB.getCollection("IPS_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_IPS_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
@@ -106,7 +106,7 @@ public class IpsDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 			
-			DBCollection dbCollection = reportDB.getCollection("IPS_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_IPS_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
@@ -179,7 +179,7 @@ public class IpsDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 			
-			DBCollection dbCollection = reportDB.getCollection("IPS_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_IPS_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
@@ -249,7 +249,7 @@ public class IpsDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 			
-			DBCollection dbCollection = reportDB.getCollection("IPS_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_IPS_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
@@ -311,7 +311,7 @@ public class IpsDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 			
-			DBCollection dbCollection = reportDB.getCollection("IPS_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_IPS_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
@@ -373,7 +373,7 @@ public class IpsDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 
-			DBCollection dbCollection = reportDB.getCollection("IPS_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_IPS_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
@@ -445,7 +445,7 @@ public class IpsDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 			
-			DBCollection dbCollection = reportDB.getCollection("IPS_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_IPS_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
@@ -518,7 +518,7 @@ public class IpsDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 
-			DBCollection dbCollection = reportDB.getCollection("IPS_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_IPS_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
@@ -584,7 +584,7 @@ public class IpsDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 
-			DBCollection dbCollection = reportDB.getCollection("IPS_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_IPS_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
@@ -652,7 +652,7 @@ public class IpsDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 			
-			DBCollection dbCollection = reportDB.getCollection("IPS_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_IPS_" + assetCode + "_" + sCol);
 			
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
@@ -669,7 +669,6 @@ public class IpsDao extends BaseDao {
 			if (bAction) {
 				keys.put("action", "$action");
 			}
-			
 			DBObject groupFields = new BasicDBObject( "_id", keys);
 			groupFields.put("count", new BasicDBObject( "$sum", "$count"));
 			
@@ -721,7 +720,7 @@ public class IpsDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 			
-			DBCollection dbCollection = reportDB.getCollection("IPS_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_IPS_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
@@ -781,7 +780,7 @@ public class IpsDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 			
-			DBCollection dbCollection = reportDB.getCollection("IPS_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_IPS_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
@@ -856,7 +855,7 @@ public class IpsDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 
-			DBCollection dbCollection = reportDB.getCollection("IPS_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_IPS_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));

@@ -227,6 +227,9 @@ $("#rptopt_search_period1").datetimepicker('setDate', today);
                     	console.log(formDatas);
 
                         var printInfo = {};
+                        printInfo["ciType"] = "<%=sCiType%>";
+                        printInfo["ciText"] = "<%=StringUtil.convertString(sCiText)%>";
+                        printInfo["groupCode"] = "<%=sGroupCode%>";
                         printInfo["reportType"] = "<%=sReportType%>";
                     	printInfo["reportSct"] =  $("input[name=rptopt_rptSct]:checked").val();
                         printInfo["formDatas"] = formDatas;

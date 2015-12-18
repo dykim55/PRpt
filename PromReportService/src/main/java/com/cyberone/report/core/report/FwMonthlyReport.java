@@ -12,12 +12,13 @@ import java.util.Set;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.socket.TextMessage;
 
 import com.cyberone.report.Constants;
 import com.cyberone.report.core.dao.FwDao;
 import com.cyberone.report.core.datasource.SynthesisDataSource;
+import com.cyberone.report.model.UserInfo;
 import com.cyberone.report.utils.StringUtil;
-import com.mongodb.DB;
 import com.mongodb.DBObject;
 
 public class FwMonthlyReport extends BaseReport {
@@ -26,8 +27,11 @@ public class FwMonthlyReport extends BaseReport {
 	
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
-	public FwMonthlyReport(DB promDB, DB reportDB) {
-		this.fwDao = new FwDao(promDB, reportDB);
+	private UserInfo userInfo;
+	
+	public FwMonthlyReport(UserInfo userInfo) {
+		this.userInfo = userInfo;
+		this.fwDao = new FwDao(userInfo.getPromDb(), userInfo.getReportDb());
 	}
 	
 	/* 
@@ -95,41 +99,41 @@ public class FwMonthlyReport extends BaseReport {
 			
 			switch (e.getKey()) {
 			
-				case "opt1" :	//외부에서 내부로의 전체 세션 로그 발생추이
+				case "opt01" :	//외부에서 내부로의 전체 세션 로그 발생추이
 					logger.debug("항목: 외부에서 내부로의 전체 세션 로그 발생추이");
 					All_SessionLog_Trend(reportData, INBOUND, assetCode, sStartDay, sEndDay, sEtc);
 					break;
-				case "opt2" : 	//외부에서 내부로의 허용 세션 로그 발생추이 (차트)
+				case "opt02" : 	//외부에서 내부로의 허용 세션 로그 발생추이 (차트)
 					logger.debug("항목: 외부에서 내부로의 허용 세션 로그 발생추이 (차트)");
 					Action_SessionLog_Trend(reportData, INBOUND, ALLOW, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt3" : 	//외부에서 내부로의 차단 세션 로그 발생추이 (차트)
+				case "opt03" : 	//외부에서 내부로의 차단 세션 로그 발생추이 (차트)
 					logger.debug("항목: 외부에서 내부로의 차단 세션 로그 발생추이 (차트)");
 					Action_SessionLog_Trend(reportData, INBOUND, CUTOFF, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt4" : 	//내부에서 외부로의 전체 세션 로그 발생추이
+				case "opt04" : 	//내부에서 외부로의 전체 세션 로그 발생추이
 					logger.debug("항목: 내부에서 외부로의 전체 세션 로그 발생추이");
 					All_SessionLog_Trend(reportData, OUTBOUND, assetCode, sStartDay, sEndDay, sEtc);
 					break;
-				case "opt5" : 	//내부에서 외부로의 허용 세션 로그 발생추이 (차트)
+				case "opt05" : 	//내부에서 외부로의 허용 세션 로그 발생추이 (차트)
 					logger.debug("항목: 내부에서 외부로의 허용 세션 로그 발생추이 (차트)");
 					Action_SessionLog_Trend(reportData, OUTBOUND, ALLOW, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt6" : 	//내부에서 외부로의 차단 세션 로그 발생추이 (차트)
+				case "opt06" : 	//내부에서 외부로의 차단 세션 로그 발생추이 (차트)
 					logger.debug("항목: 내부에서 외부로의 차단 세션 로그 발생추이 (차트)");
 					Action_SessionLog_Trend(reportData, OUTBOUND, CUTOFF, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt7" : 	//외부에서 내부로의 전체 세션로그 & SIP TOP (표)
+				case "opt07" : 	//외부에서 내부로의 전체 세션로그 & SIP TOP (표)
 					logger.debug("항목: 외부에서 내부로의 전체 세션로그 & SIP TOP (표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd7")));
 					Action_SessionLog_TopN(reportData, INBOUND, "", assetCode, sStartDay, sEndDay, true, nChoice, false);
 					break;
-				case "opt8" : 	//외부에서 내부로의 허용 세션로그 & SIP TOP (표)
+				case "opt08" : 	//외부에서 내부로의 허용 세션로그 & SIP TOP (표)
 					logger.debug("항목: 외부에서 내부로의 허용 세션로그 & SIP TOP (표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd8")));
 					Action_SessionLog_TopN(reportData, INBOUND, ALLOW, assetCode, sStartDay, sEndDay, true, nChoice, false);
 					break;
-				case "opt9" : 	//외부에서 내부로의 차단 세션로그 & SIP TOP (표)
+				case "opt09" : 	//외부에서 내부로의 차단 세션로그 & SIP TOP (표)
 					logger.debug("항목: 외부에서 내부로의 차단 세션로그 & SIP TOP (표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd9")));
 					Action_SessionLog_TopN(reportData, INBOUND, CUTOFF, assetCode, sStartDay, sEndDay, true, nChoice, !StringUtil.isEmpty(hData.get("ck9")));
@@ -690,6 +694,19 @@ public class FwMonthlyReport extends BaseReport {
 			reportData.put("OPT21", new SynthesisDataSource(dataSource));
 		} else if (nDirection == OUTBOUND && sAction.equals(CUTOFF)) {
 			reportData.put("OPT24", new SynthesisDataSource(dataSource));
+		}
+	}
+
+	public void push(String msg) {
+		logger.debug(msg);
+		
+		HashMap<String, Object> pMap = new HashMap<String, Object>();
+    	pMap.put("message", msg);
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			userInfo.getWsSession().sendMessage(new TextMessage(mapper.writeValueAsString(pMap)));
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	

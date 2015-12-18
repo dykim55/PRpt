@@ -122,20 +122,20 @@ $(document).ready(function(){
 
 <h2 style="margin-top:0px;">세션로그 발생추이</h2>
 <div class="mb10">
-  <input type="checkbox" id="opt1" name="opt1"><label for="opt1"> 전체 세션로그 발생추이 (차트)</label>
+  <input type="checkbox" id="opt01" name="opt01"><label for="opt01"> 전체 세션로그 발생추이 (차트)</label>
 </div>
 
 <div class="mb10">
-  <input type="checkbox" id="opt2" name="opt2"><label for="opt2"> 외부에서 내부로의 전체 세션 로그 발생추이 (차트)</label>
+  <input type="checkbox" id="opt02" name="opt02"><label for="opt02"> 외부에서 내부로의 전체 세션 로그 발생추이 (차트)</label>
 </div>
 
 <div class="mb10">
-  <input type="checkbox" id="opt3" name="opt3"><label for="opt3"> 내부에서 외부로의 전체 세션 로그 발생추이 (차트)</label>
+  <input type="checkbox" id="opt03" name="opt03"><label for="opt03"> 내부에서 외부로의 전체 세션 로그 발생추이 (차트)</label>
 </div>
 
 <h2 class="mb10">출발지IP TOP#N</h2>
 <div class="mb10">
-  <input type="checkbox" id="opt4" name="opt4"><label for="opt4"> 외부에서 내부로의 전체 세션로그 & SIP TOP (표)</label>
+  <input type="checkbox" id="opt04" name="opt04"><label for="opt04"> 외부에서 내부로의 전체 세션로그 & SIP TOP (표)</label>
   <div style="margin-left: 20px;" class="subpanel">
     <input type="radio" name="rd4" id="rd4-1" value="10" checked><label for="rd4-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
     <input type="radio" name="rd4" id="rd4-2" value="20"><label for="rd4-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
@@ -144,7 +144,7 @@ $(document).ready(function(){
 </div>
 
 <div class="mb10">
-  <input type="checkbox" id="opt5" name="opt5"><label for="opt5"> 외부에서 내부로의 허용 세션로그 & SIP TOP (표)</label>
+  <input type="checkbox" id="opt05" name="opt05"><label for="opt05"> 외부에서 내부로의 허용 세션로그 & SIP TOP (표)</label>
   <div style="margin-left: 20px;" class="subpanel">
     <input type="radio" name="rd5" id="rd5-1" value="10" checked><label for="rd5-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
     <input type="radio" name="rd5" id="rd5-2" value="20"><label for="rd5-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
@@ -153,7 +153,7 @@ $(document).ready(function(){
 </div>
 
 <div class="mb10">
-  <input type="checkbox" id="opt6" name="opt6"><label for="opt6"> 외부에서 내부로의 차단 세션로그 & SIP TOP (표)</label>
+  <input type="checkbox" id="opt06" name="opt06"><label for="opt06"> 외부에서 내부로의 차단 세션로그 & SIP TOP (표)</label>
   <div style="margin-left: 20px;" class="subpanel">
     <input type="radio" name="rd6" id="rd6-1" value="10" checked><label for="rd6-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
     <input type="radio" name="rd6" id="rd6-2" value="20"><label for="rd6-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
@@ -163,7 +163,7 @@ $(document).ready(function(){
 </div>
 
 <div class="mb10">
-  <input type="checkbox" id="opt7" name="opt7"><label for="opt7"> 내부에서 외부로의 전체 세션로그 & SIP TOP (표)</label>
+  <input type="checkbox" id="opt07" name="opt07"><label for="opt07"> 내부에서 외부로의 전체 세션로그 & SIP TOP (표)</label>
   <div style="margin-left: 20px;" class="subpanel">
     <input type="radio" name="rd7" id="rd7-1" value="10" checked><label for="rd7-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
     <input type="radio" name="rd7" id="rd7-2" value="20"><label for="rd7-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
@@ -172,7 +172,7 @@ $(document).ready(function(){
 </div>
 
 <div class="mb10">
-  <input type="checkbox" id="opt8" name="opt8"><label for="opt8"> 내부에서 외부로의 허용 세션로그 & SIP TOP (표)</label>
+  <input type="checkbox" id="opt08" name="opt08"><label for="opt08"> 내부에서 외부로의 허용 세션로그 & SIP TOP (표)</label>
   <div style="margin-left: 20px;" class="subpanel">
     <input type="radio" name="rd8" id="rd8-1" value="10" checked><label for="rd8-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
     <input type="radio" name="rd8" id="rd8-2" value="20"><label for="rd8-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
@@ -181,7 +181,7 @@ $(document).ready(function(){
 </div>
 
 <div class="mb10">
-  <input type="checkbox" id="opt9" name="opt9"><label for="opt9"> 내부에서 외부로의 차단 세션로그 & SIP TOP (표)</label>
+  <input type="checkbox" id="opt09" name="opt09"><label for="opt09"> 내부에서 외부로의 차단 세션로그 & SIP TOP (표)</label>
   <div style="margin-left: 20px;" class="subpanel">
     <input type="radio" name="rd9" id="rd9-1" value="10" checked><label for="rd9-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
     <input type="radio" name="rd9" id="rd9-2" value="20"><label for="rd9-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;

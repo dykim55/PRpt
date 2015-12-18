@@ -88,16 +88,14 @@ public class ConfigDao {
 	}
 	
 	public List<DBObject> selectAutoReportDb(DBObject condition, DBObject sortFields)	throws Exception {
-		DBCursor dbCursor = null;
 		DBCollection collection =  mongoProm.getCollection("AutoReportDb");
-		try {
-			dbCursor = collection.find(condition).sort(sortFields);
+		try (DBCursor dbCursor = collection.find(condition).sort(sortFields)) {
+			return dbCursor != null ? dbCursor.toArray() : new ArrayList<DBObject>();
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
 		} finally {
 		}
-		return dbCursor != null ? dbCursor.toArray() : new ArrayList<DBObject>();
 	}
 
 	public DBObject selectAutoReportDb(DBObject condition) throws Exception {

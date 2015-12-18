@@ -1,5 +1,6 @@
 package com.cyberone.report.core.customize;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.GradientPaint;
 import java.io.Serializable;
@@ -14,6 +15,7 @@ import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.plot.Plot;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
+import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.data.Range;
 public class ChartBorderRemoveCustom implements JRChartCustomizer, Serializable
 {
@@ -33,11 +35,17 @@ public class ChartBorderRemoveCustom implements JRChartCustomizer, Serializable
 			Range range = axis.getRange();
 			if (range.getLowerBound() < 0) {
 				axis.setRange(new Range(-5, 5));
+			} else if (range.getUpperBound() < 10) {
+				axis.setRange(new Range(0, 10));
 			}
-			
+
 			CategoryItemRenderer renderer = ((CategoryPlot)plot).getRenderer();
 			if (renderer instanceof BarRenderer) {
 				((BarRenderer)renderer).setSeriesPaint(0, new GradientPaint(0.0f, 0.0f, Color.blue, 0.0f, 0.0f, Color.lightGray));
+			} else if (renderer instanceof LineAndShapeRenderer) {
+				for (int i = 0; i < ((CategoryPlot) plot).getDataset().getRowCount(); i++) {
+					((LineAndShapeRenderer)renderer).setSeriesStroke(i, new BasicStroke(2f));
+				}
 			}
 		} else if (plot instanceof PiePlot) {
 			((PiePlot)plot).setLabelBackgroundPaint(Color.WHITE);

@@ -99,48 +99,48 @@ public class IpsMonthlyReport extends BaseReport {
 		for (Entry<String, Object> e : hData.entrySet()) {
 			
 			switch (e.getKey()) {
-				case "opt1" :	//전체 탐지로그 발생추이
+				case "opt01" :	//전체 탐지로그 발생추이
 					push("항목: 전체 탐지로그 발생추이");
 					All_DetectLog_Trend(reportData, -1, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt2" :	//외부에서 내부로의 전체 탐지로그 발생추이 
+				case "opt02" :	//외부에서 내부로의 전체 탐지로그 발생추이 
 					push("항목: 외부에서 내부로의 전체 탐지로그 발생추이");
 					Direction_DetectLog_Trend(reportData, INBOUND, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt3" : 	//외부에서 내부로의 허용 탐지로그 발생추이 (차트)
+				case "opt03" : 	//외부에서 내부로의 허용 탐지로그 발생추이 (차트)
 					push("항목: 외부에서 내부로의 허용 탐지로그 발생추이 (차트)");
 					Compare_DetectLog_Trend(reportData, INBOUND, ALLOW, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt4" :	//외부에서 내부로의 차단 탐지로그 발생추이 (차트)
+				case "opt04" :	//외부에서 내부로의 차단 탐지로그 발생추이 (차트)
 					push("항목: 외부에서 내부로의 차단 탐지로그 발생추이 (차트)");
 					Compare_DetectLog_Trend(reportData, INBOUND, CUTOFF, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt5" : 	//내부에서 외부로의 전체 탐지로그 발생추이
+				case "opt05" : 	//내부에서 외부로의 전체 탐지로그 발생추이
 					push("항목: 내부에서 외부로의 전체 탐지로그 발생추이");
 					Direction_DetectLog_Trend(reportData, OUTBOUND, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt6" : 	//내부에서 외부로의 허용 탐지로그 발생추이 (차트)
+				case "opt06" : 	//내부에서 외부로의 허용 탐지로그 발생추이 (차트)
 					push("항목: 내부에서 외부로의 허용 탐지로그 발생추이 (차트)");
 					Compare_DetectLog_Trend(reportData, OUTBOUND, ALLOW, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt7" : 	//내부에서 외부로의 차단 탐지로그 발생추이 (차트)
+				case "opt07" : 	//내부에서 외부로의 차단 탐지로그 발생추이 (차트)
 					push("항목: 내부에서 외부로의 차단 탐지로그 발생추이 (차트)");
 					Compare_DetectLog_Trend(reportData, OUTBOUND, CUTOFF, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt8" : 	//외부에서 내부로의 전체 탐지로그 & 이벤트 TOP (차트, 표)
+				case "opt08" : 	//외부에서 내부로의 전체 탐지로그 & 이벤트 TOP (차트, 표)
 					push("항목: 외부에서 내부로의 전체 탐지로그 & 이벤트 TOP (차트, 표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd8")));
 					Direction_EventTopN(reportData, INBOUND, assetCode, sStartDay, sEndDay, nChoice);
 					break;
-				case "opt9" : 	//외부에서 내부로의 허용 탐지로그 & 이벤트 TOP (차트, 표)
+				case "opt09" : 	//외부에서 내부로의 허용 탐지로그 & 이벤트 TOP (차트, 표)
 					push("항목: 외부에서 내부로의 허용 탐지로그 & 이벤트 TOP (차트, 표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd9")));
-					Direction_Action_EventTopN(reportData, INBOUND, ALLOW, assetCode, sStartDay, sEndDay, nChoice, !StringUtil.isEmpty(hData.get("ck9")), Integer.valueOf(StringUtil.convertString(hData.get("sd9"))));
+					Direction_Action_EventTopN(reportData, INBOUND, ALLOW, assetCode, sStartDay, sEndDay, nChoice, !StringUtil.isEmpty(hData.get("ck9")), StringUtil.convertString(hData.get("sd9")));
 					break;
 				case "opt10" : 	//외부에서 내부로의 차단 탐지로그 & 이벤트 TOP (차트, 표)
 					push("항목: 외부에서 내부로의 차단 탐지로그 & 이벤트 TOP (차트, 표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd10")));
-					Direction_Action_EventTopN(reportData, INBOUND, CUTOFF, assetCode, sStartDay, sEndDay, nChoice, !StringUtil.isEmpty(hData.get("ck10")), Integer.valueOf(StringUtil.convertString(hData.get("sd10"))));
+					Direction_Action_EventTopN(reportData, INBOUND, CUTOFF, assetCode, sStartDay, sEndDay, nChoice, !StringUtil.isEmpty(hData.get("ck10")), StringUtil.convertString(hData.get("sd10")));
 					break;
 				case "opt11" : 	//내부에서 외부로의 전체 탐지로그 & 이벤트 TOP (차트, 표)
 					push("항목: 내부에서 외부로의 전체 탐지로그 & 이벤트 TOP (차트, 표)");
@@ -150,12 +150,12 @@ public class IpsMonthlyReport extends BaseReport {
 				case "opt12" : 	//내부에서 외부로의 허용 탐지로그 & 이벤트 TOP (차트, 표)
 					push("항목: 내부에서 외부로의 허용 탐지로그 & 이벤트 TOP (차트, 표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd12")));
-					Direction_Action_EventTopN(reportData, OUTBOUND, ALLOW, assetCode, sStartDay, sEndDay, nChoice, !StringUtil.isEmpty(hData.get("ck12")), Integer.valueOf(StringUtil.convertString(hData.get("sd11"))));
+					Direction_Action_EventTopN(reportData, OUTBOUND, ALLOW, assetCode, sStartDay, sEndDay, nChoice, !StringUtil.isEmpty(hData.get("ck12")), StringUtil.convertString(hData.get("sd11")));
 					break;
 				case "opt13" : 	//내부에서 외부로의 차단 탐지로그 & 이벤트 TOP (차트, 표)
 					push("항목: 내부에서 외부로의 차단 탐지로그 & 이벤트 TOP (차트, 표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd13")));
-					Direction_Action_EventTopN(reportData, OUTBOUND, CUTOFF, assetCode, sStartDay, sEndDay, nChoice, !StringUtil.isEmpty(hData.get("ck13")), Integer.valueOf(StringUtil.convertString(hData.get("sd12"))));
+					Direction_Action_EventTopN(reportData, OUTBOUND, CUTOFF, assetCode, sStartDay, sEndDay, nChoice, !StringUtil.isEmpty(hData.get("ck13")), StringUtil.convertString(hData.get("sd12")));
 					break;
 				case "opt14" : 	//외부에서 내부로의 전체 탐지로그 & 신규 탐지 이벤트 현황 (차트, 표)
 					push("항목: 외부에서 내부로의 전체 탐지로그 & 신규 탐지 이벤트 현황 (차트, 표)");
@@ -172,62 +172,62 @@ public class IpsMonthlyReport extends BaseReport {
 				case "opt17" : 	//외부에서 내부로의 전체 탐지로그 & SIP TOP (표)
 					push("항목: 외부에서 내부로의 전체 탐지로그 & SIP TOP (표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd17")));
-					Action_DetectLog_TopN(reportData, INBOUND, "", assetCode, sStartDay, sEndDay, true, nChoice, !StringUtil.isEmpty(hData.get("ck17")), Integer.valueOf(StringUtil.convertString(hData.get("sd17"))));
+					Action_DetectLog_TopN(reportData, INBOUND, "", assetCode, sStartDay, sEndDay, true, nChoice, !StringUtil.isEmpty(hData.get("ck17")), StringUtil.convertString(hData.get("sd17")));
 					break;
 				case "opt18" : 	//외부에서 내부로의 허용 탐지로그 & SIP TOP (표)
 					push("항목: 외부에서 내부로의 허용 탐지로그 & SIP TOP (표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd18")));
-					Action_DetectLog_TopN(reportData, INBOUND, ALLOW, assetCode, sStartDay, sEndDay, true, nChoice, !StringUtil.isEmpty(hData.get("ck18")), Integer.valueOf(StringUtil.convertString(hData.get("sd18"))));
+					Action_DetectLog_TopN(reportData, INBOUND, ALLOW, assetCode, sStartDay, sEndDay, true, nChoice, !StringUtil.isEmpty(hData.get("ck18")), StringUtil.convertString(hData.get("sd18")));
 					break;
 				case "opt19" : 	//외부에서 내부로의 차단 탐지로그 & SIP TOP (표)
 					push("항목: 외부에서 내부로의 차단 탐지로그 & SIP TOP (표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd19")));
-					Action_DetectLog_TopN(reportData, INBOUND, CUTOFF, assetCode, sStartDay, sEndDay, true, nChoice, !StringUtil.isEmpty(hData.get("ck19")), Integer.valueOf(StringUtil.convertString(hData.get("sd19"))));
+					Action_DetectLog_TopN(reportData, INBOUND, CUTOFF, assetCode, sStartDay, sEndDay, true, nChoice, !StringUtil.isEmpty(hData.get("ck19")), StringUtil.convertString(hData.get("sd19")));
 					break;
 				case "opt20" : 	//내부에서 외부로의 전체 탐지로그 & SIP TOP (표)
 					push("항목: 내부에서 외부로의 전체 탐지로그 & SIP TOP (표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd20")));
-					Action_DetectLog_TopN(reportData, OUTBOUND, "", assetCode, sStartDay, sEndDay, true, nChoice, !StringUtil.isEmpty(hData.get("ck20")), Integer.valueOf(StringUtil.convertString(hData.get("sd20"))));
+					Action_DetectLog_TopN(reportData, OUTBOUND, "", assetCode, sStartDay, sEndDay, true, nChoice, !StringUtil.isEmpty(hData.get("ck20")), StringUtil.convertString(hData.get("sd20")));
 					break;
 				case "opt21" : 	//내부에서 외부로의 허용 탐지로그 & SIP TOP (표)
 					push("항목: 내부에서 외부로의 허용 탐지로그 & SIP TOP (표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd21")));
-					Action_DetectLog_TopN(reportData, OUTBOUND, ALLOW, assetCode, sStartDay, sEndDay, true, nChoice, !StringUtil.isEmpty(hData.get("ck21")), Integer.valueOf(StringUtil.convertString(hData.get("sd21"))));
+					Action_DetectLog_TopN(reportData, OUTBOUND, ALLOW, assetCode, sStartDay, sEndDay, true, nChoice, !StringUtil.isEmpty(hData.get("ck21")), StringUtil.convertString(hData.get("sd21")));
 					break;
 				case "opt22" : 	//내부에서 외부로의 차단 탐지로그 & SIP TOP (표)
 					push("항목: 내부에서 외부로의 차단 탐지로그 & SIP TOP (표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd22")));
-					Action_DetectLog_TopN(reportData, OUTBOUND, CUTOFF, assetCode, sStartDay, sEndDay, true, nChoice, !StringUtil.isEmpty(hData.get("ck22")), Integer.valueOf(StringUtil.convertString(hData.get("sd22"))));
+					Action_DetectLog_TopN(reportData, OUTBOUND, CUTOFF, assetCode, sStartDay, sEndDay, true, nChoice, !StringUtil.isEmpty(hData.get("ck22")), StringUtil.convertString(hData.get("sd22")));
 					break;
 				case "opt23" : 	//외부에서 내부로의 전체 탐지로그 & DIP TOP (표)
 					push("항목: 외부에서 내부로의 전체 탐지로그 & DIP TOP (표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd23")));
-					Action_DetectLog_TopN(reportData, INBOUND, "", assetCode, sStartDay, sEndDay, false, nChoice, false, 0);
+					Action_DetectLog_TopN(reportData, INBOUND, "", assetCode, sStartDay, sEndDay, false, nChoice, false, "");
 					break;
 				case "opt24" : 	//외부에서 내부로의 허용 탐지로그 & DIP TOP (표)
 					push("항목: 외부에서 내부로의 허용 탐지로그 & DIP TOP (표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd24")));
-					Action_DetectLog_TopN(reportData, INBOUND, ALLOW, assetCode, sStartDay, sEndDay, false, nChoice, false, 0);
+					Action_DetectLog_TopN(reportData, INBOUND, ALLOW, assetCode, sStartDay, sEndDay, false, nChoice, false, "");
 					break;
 				case "opt25" : 	//외부에서 내부로의 차단 탐지로그 & DIP TOP (표)
 					push("항목: 외부에서 내부로의 차단 탐지로그 & DIP TOP (표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd25")));
-					Action_DetectLog_TopN(reportData, INBOUND, CUTOFF, assetCode, sStartDay, sEndDay, false, nChoice, false, 0);
+					Action_DetectLog_TopN(reportData, INBOUND, CUTOFF, assetCode, sStartDay, sEndDay, false, nChoice, false, "");
 					break;
 				case "opt26" : 	//내부에서 외부로의 전체 탐지로그 & DIP TOP (표)
 					push("항목: 내부에서 외부로의 전체 탐지로그 & DIP TOP (표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd26")));
-					Action_DetectLog_TopN(reportData, OUTBOUND, "", assetCode, sStartDay, sEndDay, false, nChoice, false, 0);
+					Action_DetectLog_TopN(reportData, OUTBOUND, "", assetCode, sStartDay, sEndDay, false, nChoice, false, "");
 					break;
 				case "opt27" : 	//내부에서 외부로의 허용 탐지로그 & DIP TOP (표)
 					push("항목: 내부에서 외부로의 허용 탐지로그 & DIP TOP (표))");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd27")));
-					Action_DetectLog_TopN(reportData, OUTBOUND, ALLOW, assetCode, sStartDay, sEndDay, false, nChoice, false, 0);
+					Action_DetectLog_TopN(reportData, OUTBOUND, ALLOW, assetCode, sStartDay, sEndDay, false, nChoice, false, "");
 					break;
 				case "opt28" : 	//내부에서 외부로의 차단 탐지로그 & DIP TOP (표)
 					push("항목: 내부에서 외부로의 차단 탐지로그 & DIP TOP (표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd28")));
-					Action_DetectLog_TopN(reportData, OUTBOUND, CUTOFF, assetCode, sStartDay, sEndDay, false, nChoice, false, 0);
+					Action_DetectLog_TopN(reportData, OUTBOUND, CUTOFF, assetCode, sStartDay, sEndDay, false, nChoice, false, "");
 					break;
 				case "opt29" : 	//외부에서 내부로의 전체 탐지로그 & 서비스 TOP10 (차트)
 					push("항목: 외부에서 내부로의 전체 탐지로그 & 서비스 TOP10 (차트)");
@@ -497,7 +497,7 @@ public class IpsMonthlyReport extends BaseReport {
 	}		
 	
 	//외부에서 내부로의 허용/차단 탐지로그 & 이벤트 TOP (차트, 표)
-	private void Direction_Action_EventTopN(HashMap<String, Object> reportData, int nDirection, String sAction, int assetCode, String sStartDay, String sEndDay, int nLimit, boolean bChk, int nOpt) throws Exception {
+	private void Direction_Action_EventTopN(HashMap<String, Object> reportData, int nDirection, String sAction, int assetCode, String sStartDay, String sEndDay, int nLimit, boolean bChk, String sOpt) throws Exception {
 		
 		List<HashMap<String, Object>> dataSource = new ArrayList<HashMap<String, Object>>();
 		List<HashMap<String, Object>> dataSource2 = new ArrayList<HashMap<String, Object>>();
@@ -587,7 +587,7 @@ public class IpsMonthlyReport extends BaseReport {
     	
     	if (bChk) { //Event Top 발생추이
     		
-    		if (nOpt == 1) { //최근 1개월
+    		if (Integer.valueOf(sOpt) == 1) { //최근 1개월
     			
     	    	dbResult = ipsDao.EventTopNTrend("DY", nDirection, sAction, assetCode, sStartDay, sEndDay, saTopN);
     	    	HashMap<String, DBObject> mapResult = new HashMap<String, DBObject>(); 
@@ -863,7 +863,7 @@ public class IpsMonthlyReport extends BaseReport {
 	}		
 	
 	//외부에서 내부로의 전체 탐지로그 & SIP TOP
-	private void Action_DetectLog_TopN(HashMap<String, Object> reportData, int nDirection, String sAction, int assetCode, String sStartDay, String sEndDay, boolean bSrcIp, int nLimit, boolean bChk, int nOpt) throws Exception {
+	private void Action_DetectLog_TopN(HashMap<String, Object> reportData, int nDirection, String sAction, int assetCode, String sStartDay, String sEndDay, boolean bSrcIp, int nLimit, boolean bChk, String sOpt) throws Exception {
 		
 		List<HashMap<String, Object>> dataSource1 = new ArrayList<HashMap<String, Object>>();
 		
@@ -956,7 +956,7 @@ public class IpsMonthlyReport extends BaseReport {
 	    	if (bChk) { //SRC IP TOP10 세션 로그 발생추이 
 	    		ArrayList<HashMap<String, Object>> dataSource2 = new ArrayList<HashMap<String, Object>>();
 	    		
-	    		if (nOpt == 1) { //최근 1개월
+	    		if (Integer.valueOf(sOpt) == 1) { //최근 1개월
 
 		        	Iterable<DBObject> ipTopNTrend = ipsDao.IpTopNTrend("DY", nDirection, sAction, assetCode, sStartDay, sEndDay, topNIps, true);
 		        	

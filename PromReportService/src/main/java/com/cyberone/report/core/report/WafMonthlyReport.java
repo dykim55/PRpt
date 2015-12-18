@@ -97,35 +97,35 @@ public class WafMonthlyReport extends BaseReport {
 		for (Entry<String, Object> e : hData.entrySet()) {
 			
 			switch (e.getKey()) {
-				case "opt1" :	//전체 탐지로그 발생추이
+				case "opt01" :	//전체 탐지로그 발생추이
 					push("항목: 전체 탐지로그 발생추이");
 					All_DetectLog_Trend(reportData, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt2" : 	//전체 탐지로그 & 도메인 TOP10 발생추이 (차트)
+				case "opt02" : 	//전체 탐지로그 & 도메인 TOP10 발생추이 (차트)
 					push("항목: 전체 탐지로그 & 도메인 TOP10 발생추이 (차트)");
 					All_Domain_TopN_Trend(reportData, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt3" : 	//전체 탐지로그 & Event TOP (차트, 표)
+				case "opt03" : 	//전체 탐지로그 & Event TOP (차트, 표)
 					push("항목: 전체 탐지로그 & Event TOP (차트, 표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd3")));
 					ALL_Event_TopN(reportData, assetCode, sStartDay, sEndDay, nChoice);
 					break;
-				case "opt4" :	//전체 탐지로그 & SIP TOP (표)
+				case "opt04" :	//전체 탐지로그 & SIP TOP (표)
 					push("항목: 전체 탐지로그 & SIP TOP (표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd4")));
-					ALL_SrcIp_TopN(reportData, assetCode, sStartDay, sEndDay, nChoice, !StringUtil.isEmpty(hData.get("ck4")), Integer.valueOf(StringUtil.convertString(hData.get("sd4"))));
+					ALL_SrcIp_TopN(reportData, assetCode, sStartDay, sEndDay, nChoice, !StringUtil.isEmpty(hData.get("ck4")), StringUtil.convertString(hData.get("sd4")));
 					break;
-				case "opt5" : 	//도메인 별 탐지로그 & 탐지로그 발생추이
+				case "opt05" : 	//도메인 별 탐지로그 & 탐지로그 발생추이
 					push("항목: 도메인 별 탐지로그 & 탐지로그 발생추이");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd6")));
 					Domain_TopN_Trend(reportData, assetCode, sStartDay, sEndDay, nChoice);
 					break;
-				case "opt6" : 	//도메인 별 탐지로그 & EVT TOP10 발생추이
+				case "opt06" : 	//도메인 별 탐지로그 & EVT TOP10 발생추이
 					push("항목: 도메인 별 탐지로그 & EVT TOP10 발생추이");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd7")));
 					Domain_EventTopN_Trend(reportData, assetCode, sStartDay, sEndDay, nChoice);
 					break;
-				case "opt7" : 	//도메인 별 탐지로그 & EVT TOP10 통계 (차트, 표)
+				case "opt07" : 	//도메인 별 탐지로그 & EVT TOP10 통계 (차트, 표)
 					push("항목: 도메인 별 탐지로그 & EVT TOP10 통계 (차트, 표)");
 					Domain_EventTopN_Condition(reportData, assetCode, sStartDay, sEndDay);
 					break;
@@ -725,7 +725,7 @@ public class WafMonthlyReport extends BaseReport {
 	}
 
 	//전체 탐지로그 & SIP TOP
-	private void ALL_SrcIp_TopN(HashMap<String, Object> reportData, int assetCode, String sStartDay, String sEndDay, int nLimit, boolean bChk, int nOpt) throws Exception {
+	private void ALL_SrcIp_TopN(HashMap<String, Object> reportData, int assetCode, String sStartDay, String sEndDay, int nLimit, boolean bChk, String sOpt) throws Exception {
 
 		List<HashMap<String, Object>> dataSource = new ArrayList<HashMap<String, Object>>();
 		
@@ -776,7 +776,7 @@ public class WafMonthlyReport extends BaseReport {
 		
 		if (bChk) {
 			
-			if (nOpt == 1) { //최근 1개월
+			if (Integer.valueOf(sOpt) == 1) { //최근 1개월
 				
 		    	Iterable<DBObject> dbResult = wafDao.SrcIpTopNTrend("DY", assetCode, sStartDay, sEndDay, saTopN);
 		    	HashMap<String, DBObject> mapResult = new HashMap<String, DBObject>(); 

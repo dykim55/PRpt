@@ -72,111 +72,108 @@ $(document).ready(function(){
 
 <form id="frm" style="font-weight: bold;">
 
-<h2 style="margin-top:0px;">보안관제 장비현황</h2>
-<div class="mb10">
-  <input type="checkbox" id="opt1" name="opt1"><label for="opt1"> 관제대상 장비 (표)</label>
-</div>
-
 <h2 style="margin-top:0px;">보안관제 업무현황</h2>
 <div class="mb10">
-  <input type="checkbox" id="opt2" name="opt2"><label for="opt2"> 보고(비정기) 현황 (표)</label>
-</div>
-
-<div class="mb10">
-  <input type="checkbox" id="opt3" name="opt3"><label for="opt3"> 보고내역 상세 (표)</label>
+  <input type="checkbox" id="opt01" name="opt01"><label for="opt01"> 비정기 보고현황 : 상황/ 장애/ 작업 현황정보 (표)</label>
+  <div style="margin-left: 20px;" class="subpanel">
+    <input type="checkbox" id="ck1" name="ck1"><label for="ck1"> 비정기 보고현황(상세) : 상황/ 장애/ 작업 현황정보 (표)</label>
+  </div>
 </div>
 
 <h2 style="margin-top:0px;">보안장비 운영현황</h2>
 <div class="mb10">
-  <input type="checkbox" id="opt4" name="opt4"><label for="opt4"> 설정변경/운영 현황 (표)</label>
-</div>
-
-<div class="mb10">
-  <input type="checkbox" id="opt5" name="opt5"><label for="opt5"> 운영내역 상세 (표)</label>
+  <input type="checkbox" id="opt02" name="opt02"><label for="opt02"> 설정변경/운영 현황 : 방화벽정책/룰설정/패턴업데이트/패치 현황 (표)</label>
+  <div style="margin-left: 20px;" class="subpanel">
+    <input type="checkbox" id="ck2" name="ck2"><label for="ck2"> 설정변경/운영 현황(상세) (표)</label>
+  </div>
 </div>
 
 <h2 style="margin-top:0px;">고객요청 처리현황</h2>
 <div class="mb10">
-  <input type="checkbox" id="opt6" name="opt6"><label for="opt6"> 요청처리 현황 (표)</label>
-</div>
-
-<div class="mb10">
-  <input type="checkbox" id="opt7" name="opt7"><label for="opt7"> 요청처리 상세 (표)</label>
+  <input type="checkbox" id="opt03" name="opt03"><label for="opt03"> 요청처리 현황 : 일반요청/ 기술지원/ 침해사고 분석 (표)</label>
+  <div style="margin-left: 20px;" class="subpanel">
+    <input type="checkbox" id="ck3" name="ck3"><label for="ck3"> 요청처리 현황(상세) (표)</label>
+  </div>
 </div>
 
 <h2 style="margin-top:0px;">보안정보 제공현황</h2>
 <div class="mb10">
-  <input type="checkbox" id="opt8" name="opt8"><label for="opt8"> 보안정보 제공현황 (표)</label>
+  <input type="checkbox" id="opt04" name="opt04"><label for="opt04"> 보안정보 제공현황 (표)</label>
+</div>
+
+<h2 style="margin-top:0px;">싸이버원 침해위협탐지 동향 요약</h2>
+<div class="mb10">
+  <input type="checkbox" id="opt05" name="opt05"><label for="opt05"> 침해위협 유형별 탐지동향 (표)</label>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt06" name="opt06"><label for="opt06"> 공격지 별 탐지동향 (차트, 표)</label>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt07" name="opt07"><label for="opt07"> 목적지 별 탐지동향 (차트, 표)</label>
 </div>
 
 <h2 style="margin-top:0px;">침해위협 탐지현황</h2>
 <div class="mb10">
-  <input type="checkbox" id="opt9" name="opt9"><label for="opt9"> 침해위협탐지 추이 (차트)</label>
+  <input type="checkbox" id="opt08" name="opt08"><label for="opt08"> 침해위협탐지 추이 : 공격유형별 침해위협통보 추이 (차트)</label>
 </div>
 
 <div class="mb10">
-  <input type="checkbox" id="opt10" name="opt10"><label for="opt10"> 침해위협탐지 분석 (차트, 표)</label>
-</div>
-
-<div class="mb10">
-  <input type="checkbox" id="opt11" name="opt11"><label for="opt11"> 탐지현황 상세 (표)</label>
-</div>
-
-<div class="mb10">
-  <input type="checkbox" id="opt12" name="opt12"><label for="opt12"> 공격IP 탐지동향 (표)</label>
+  <input type="checkbox" id="opt09" name="opt09"><label for="opt09"> 침해위협탐지 분석 : 공격유형별 통계 (차트, 표)</label>
   <div style="margin-left: 20px;" class="subpanel">
-    <input type="radio" name="rd12" id="rd12-1" value="10" checked><label for="rd12-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
-    <input type="radio" name="rd12" id="rd12-2" value="20"><label for="rd12-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
-    <input type="radio" name="rd12" id="rd12-3" value="30"><label for="rd12-3"> TOP 30</label></br>
+    <input type="checkbox" id="ck9" name="ck9"><label for="ck9"> 침해탐지현황(상세) (표)</label>
   </div>
 </div>
 
 <div class="mb10">
-  <input type="checkbox" id="opt13" name="opt13"><label for="opt13"> 공격자IP 침해시도 추이 (차트)</label>
-</div>
-
-<div class="mb10">
-  <input type="checkbox" id="opt14" name="opt14"><label for="opt14"> 공격지 탐지동향 (표)</label>
-</div>
-
-<div class="mb10">
-  <input type="checkbox" id="opt15" name="opt15"><label for="opt15"> 공격지별 침해시도 추이 (차트)</label>
-</div>
-
-<div class="mb10">
-  <input type="checkbox" id="opt16" name="opt16"><label for="opt16"> 목적지 탐지동향 (표)</label>
+  <input type="checkbox" id="opt10" name="opt10"><label for="opt10"> 공격IP 탐지동향 : 침해위협통보건에 대한 SIP TOP (표)</label>
   <div style="margin-left: 20px;" class="subpanel">
-    <input type="radio" name="rd16" id="rd16-1" value="10" checked><label for="rd16-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
-    <input type="radio" name="rd16" id="rd16-2" value="20"><label for="rd16-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
-    <input type="radio" name="rd16" id="rd16-3" value="30"><label for="rd16-3"> TOP 30</label>
+    <input type="radio" name="rd10" id="rd10-1" value="10" checked><label for="rd10-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd10" id="rd10-2" value="20"><label for="rd10-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd10" id="rd10-3" value="30"><label for="rd10-3"> TOP 30</label></br>
+    <input type="checkbox" id="ck10" name="ck10"><label for="ck10"> 공격자IP 침해시도 추이 (차트)</label>
+  </div>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt11" name="opt11"><label for="opt11"> 공격지 탐지동향 : 침해위협통보건에 대한 국가별 통계 (표)</label>
+  <div style="margin-left: 20px;" class="subpanel">
+    <input type="checkbox" id="ck11" name="ck11"><label for="ck11"> 공격지별 침해시도 추이 (차트)</label>
+  </div>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt12" name="opt12"><label for="opt12"> 목적지 탐지동향 : 침해위협통보건에 대한 DIP TOP (표)</label>
+  <div style="margin-left: 20px;" class="subpanel">
+    <input type="radio" name="rd12" id="rd12-1" value="10" checked><label for="rd12-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd12" id="rd12-2" value="20"><label for="rd12-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd12" id="rd12-3" value="30"><label for="rd12-3"> TOP 30</label>
   </div>
 </div>
 
 <h2 style="margin-top:0px;">홈페이지 악성코드 유포탐지 현황</h2>
 <div class="mb10">
-  <input type="checkbox" id="opt17" name="opt17"><label for="opt17"> 탐지보고 현황 (표)</label>
-</div>
-
-<div class="mb10">
-  <input type="checkbox" id="opt18" name="opt18"><label for="opt18"> 탐지현황 상세 (표)</label>
+  <input type="checkbox" id="opt13" name="opt13"><label for="opt13"> 탐지보고 현황 (표)</label>
+  <div style="margin-left: 20px;" class="subpanel">
+    <input type="checkbox" id="ck13" name="ck13"><label for="ck13"> 홈페이지 악성코드 유포 탐지현황(상세) (표)</label>
+  </div>
 </div>
 
 <h2 style="margin-top:0px;">웹쉘 탐지현황</h2>
 <div class="mb10">
-  <input type="checkbox" id="opt19" name="opt19"><label for="opt19"> 탐지보고 현황 (표)</label>
-</div>
-
-<div class="mb10">
-  <input type="checkbox" id="opt20" name="opt20"><label for="opt20"> 탐지현황 상세 (표)</label>
+  <input type="checkbox" id="opt14" name="opt14"><label for="opt14"> 탐지보고 현황 (표)</label>
+  <div style="margin-left: 20px;" class="subpanel">
+    <input type="checkbox" id="ck14" name="ck14"><label for="ck14"> 웹쉘 탐지현황(상세) (표)</label>
+  </div>
 </div>
 
 <h2 style="margin-top:0px;">RAT 의심탐지 현황</h2>
 <div class="mb10">
-  <input type="checkbox" id="opt21" name="opt21"><label for="opt21"> 탐지보고 현황 (표)</label>
-</div>
-
-<div class="mb10">
-  <input type="checkbox" id="opt22" name="opt22"><label for="opt22"> 탐지현황 상세 (표)</label>
+  <input type="checkbox" id="opt15" name="opt15"><label for="opt15"> 탐지보고 현황 (표)</label>
+  <div style="margin-left: 20px;" class="subpanel">
+    <input type="checkbox" id="ck15" name="ck15"><label for="ck15"> RAT 의심 탐지현황(상세) (표)</label>
+  </div>
 </div>
 
 </form>

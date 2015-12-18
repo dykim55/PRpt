@@ -32,10 +32,8 @@ public class BaseDao {
 	protected DB promDB;
 	protected DB reportDB;
 	
-	@SuppressWarnings("unused")
 	private String checkMethodName;
 
-	@SuppressWarnings("unused")
 	private long lLastTime;
 	
 	public BaseDao(DB promDB, DB reportDB) {
@@ -45,9 +43,10 @@ public class BaseDao {
 		//포트 서비스네임 조회
 		portServiceMap = new HashMap<Integer, String>(); 
 		DBCollection dbCollection = promDB.getCollection("PortServiceName");
-		DBCursor dbCursor = dbCollection.find();
-		for (DBObject obj : dbCursor) {
-			portServiceMap.put((Integer)obj.get("port"), (String)obj.get("serviceName"));
+		try (DBCursor dbCursor = dbCollection.find()) {
+			for (DBObject obj : dbCursor) {
+				portServiceMap.put((Integer)obj.get("port"), (String)obj.get("serviceName"));
+			}
 		}
 	}
 	
@@ -252,7 +251,7 @@ public class BaseDao {
 	}
 	
 	public void EndTimeCheck() {
-		//System.out.println("#### " + checkMethodName + " : " + (System.currentTimeMillis() - lLastTime));
+		System.out.println("#### " + checkMethodName + " : " + (System.currentTimeMillis() - lLastTime));
 	}
 	
 	
@@ -330,6 +329,20 @@ public class BaseDao {
 	
 	
 	
+	//자산그룹의 자산리스트
+	public List<DBObject> getGroupAssets(int groupCode) throws Exception {
+		DBObject condition = new BasicDBObject();
+		condition.put("groupCode", groupCode);
+		condition.put("deleted", false);
+		DBCollection collection =  promDB.getCollection("Asset");
+		try (DBCursor dbCursor = collection.find(condition)) {
+			return dbCursor != null ? dbCursor.toArray() : new ArrayList<DBObject>();		
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+		}
+	}
 	
 	//관제대상 장비현황
 	public List<HashMap<String, Object>> getAssetList(String[] arrAssets) throws Exception {
@@ -341,10 +354,12 @@ public class BaseDao {
 		DBCollection dbCollection = promDB.getCollection("Product");
 		BasicDBObject condition = new BasicDBObject();
 		condition.put("deleted", false);
-		DBCursor dbCursor = dbCollection.find(condition);
+		
 		HashMap<String, DBObject> productMap = new HashMap<String, DBObject>();
-		for (DBObject obj : dbCursor) {
-			productMap.put(((Integer)obj.get("productCode")).toString(), obj);
+		try (DBCursor dbCursor = dbCollection.find(condition)) {
+			for (DBObject obj : dbCursor) {
+				productMap.put(((Integer)obj.get("productCode")).toString(), obj);
+			}
 		}
 		
 		dbCollection = promDB.getCollection("Asset");
@@ -417,18 +432,17 @@ public class BaseDao {
 	public DBObject getDetectResult(String strPrefix, String strDateType, int assetCode, String sEndDay) throws Exception {
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+
+		Date tmpDate = sdf.parse(sEndDay);
+		Calendar tmpCal = getCalendar(tmpDate);		
 		
-		try {
-			Date tmpDate = sdf.parse(sEndDay);
-			Calendar tmpCal = getCalendar(tmpDate);		
-			
-			DBCollection dbCollection = reportDB.getCollection(strPrefix + "_" + assetCode + "_" + strDateType);
-			BasicDBObject condition = new BasicDBObject();
-			condition.put("rptGubun", 1);
-			condition.put("year", tmpCal.get(Calendar.YEAR));
-			condition.put("month", tmpCal.get(Calendar.MONTH) + 1);
-			DBCursor dbCursor = dbCollection.find(condition);
-			
+		DBCollection dbCollection = reportDB.getCollection(strPrefix + "_" + assetCode + "_" + strDateType);
+		BasicDBObject condition = new BasicDBObject();
+		condition.put("rptGubun", 1);
+		condition.put("year", tmpCal.get(Calendar.YEAR));
+		condition.put("month", tmpCal.get(Calendar.MONTH) + 1);
+		
+		try (DBCursor dbCursor = dbCollection.find(condition)) {
 			List<DBObject> tmpList = dbCursor.toArray();
 			return tmpList.size() > 0 ? tmpList.get(0) : null;
 		} catch(Exception e) {
@@ -513,70 +527,112 @@ public class BaseDao {
 	}
 
 	//월 성능정보
-	public List<DBObject> getPerformanceMonth(int assetCode, String sEndDay) throws Exception {
+	public Iterable<DBObject> getPerformanceInfo(String sCol, int assetCode, String sStartDay, String sEndDay) throws Exception {
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
 		
 		try {
-			Date tmpDate = sdf.parse(sEndDay);
-			Calendar tmpCal = getCalendar(tmpDate);		
+			Date startDate = sdf.parse(sStartDay);
+			Calendar startCal = getCalendar(startDate);
 			
-			DBCollection dbCollection = reportDB.getCollection("SV_" + assetCode + "_MON");
-			BasicDBObject condition = new BasicDBObject();
-			condition.put("rptGubun", 3);
-			condition.put("year", tmpCal.get(Calendar.YEAR));
-			condition.put("month", tmpCal.get(Calendar.MONTH) + 1);
-			DBCursor dbCursor = dbCollection.find(condition).sort(new BasicDBObject("name", 1));
+			Date endDate = sdf.parse(sEndDay);
+			Calendar endCal = getCalendar(endDate);
+			endCal.add(Calendar.DAY_OF_MONTH, 1);
+			endCal.add(Calendar.SECOND, -1);
+			
+			DBCollection dbCollection = reportDB.getCollection("N_SV_" + assetCode + "_" + sCol);
 
-			return dbCursor.toArray();
+			BasicDBObject condition = new BasicDBObject();
+			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
+			condition.put("rptGubun", 3);
+
+			BasicDBObject keys = new BasicDBObject();
+			keys.put("name", "$name");
+			DBObject groupFields = new BasicDBObject( "_id", keys);
+			groupFields.put("avg", new BasicDBObject( "$avg", "$avg"));
+			groupFields.put("min", new BasicDBObject( "$avg", "$min"));
+			groupFields.put("max", new BasicDBObject( "$avg", "$max"));
+			
+			DBObject fields = new BasicDBObject();
+			fields.put("_id", 0);
+			fields.put("name", "$_id.name");
+			fields.put("avg", 1);
+			fields.put("min", 1);
+			fields.put("max", 1);
+
+			List<DBObject> pipeline = new ArrayList<DBObject>();
+			pipeline.add(new BasicDBObject("$match", condition));
+			pipeline.add(new BasicDBObject("$group", groupFields));
+			pipeline.add(new BasicDBObject("$project", fields));
+			
+			AggregationOutput output = dbCollection.aggregate(pipeline);
+
+			return output.results();
 		} catch(Exception e) {
 			e.printStackTrace();
 			throw e;
 		}
 	}
 	
-	public Iterable<DBObject> getPerformanceChange(int assetCode, String sStartDay, String sEndDay, String sField) throws Exception {
+	public Iterable<DBObject> getPerformanceTrend(String sCol, int assetCode, String sStartDay, String sEndDay, String sField) throws Exception {
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 		try {
 			Date startDate = sdf.parse(sStartDay);
 			Calendar startCal = getCalendar(startDate);
-			startCal.add(Calendar.MONTH, -1);
-			
+
 			Date endDate = sdf.parse(sEndDay);
 			Calendar endCal = getCalendar(endDate);
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 
-			DBCollection dbCollection = reportDB.getCollection("SV_" + assetCode + "_DY");
+			DBCollection dbCollection = reportDB.getCollection("N_SV_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
 			condition.put("rptGubun", 3);
 			condition.put("name", sField);
-			DBObject match = new BasicDBObject("$match", condition);
 			
-			DBObject project = new BasicDBObject();
 			DBObject fields = new BasicDBObject();
-			fields.put("year", 1);
-			fields.put("month", 1);
-			fields.put("day", 1);
+			fields.put("_id", 0);
+			fields.put("year", "$_id.year");
+			switch (sCol) {
+				case "HR" : fields.put("hour", "$_id.hour");
+				case "DY" : fields.put("day", "$_id.day");
+				case "MON" : fields.put("month", "$_id.month");
+			}
 			fields.put("avg", 1);
 			fields.put("max", 1);
-			fields.put("min", 1);
-			project.put("$project", fields);
+			
+			BasicDBObject keys = new BasicDBObject();
+			keys.put("year", "$year");
+			switch (sCol) {
+				case "HR" : keys.put("hour", "$hour");
+				case "DY" : keys.put("day", "$day");
+				case "MON" : keys.put("month", "$month");
+			}
+			DBObject groupFields = new BasicDBObject( "_id", keys);
+			groupFields.put("avg", new BasicDBObject( "$sum", "$avg"));
+			groupFields.put("max", new BasicDBObject( "$sum", "$max"));
 			
 			DBObject sortFields = new BasicDBObject();
 			sortFields.put("year", 1);
-			sortFields.put("month", 1);
-			sortFields.put("day", 1);
-		    DBObject sort = new BasicDBObject("$sort", sortFields );
-
-			AggregationOutput output = dbCollection.aggregate(match, project, sort);
+			switch (sCol) {
+				case "HR" : sortFields.put("hour", 1);
+				case "DY" : sortFields.put("day", 1);
+				case "MON" : sortFields.put("month", 1);
+			}
+			
+			List<DBObject> pipeline = new ArrayList<DBObject>();
+			pipeline.add(new BasicDBObject("$match", condition));
+			pipeline.add(new BasicDBObject("$group", groupFields));
+			pipeline.add(new BasicDBObject("$project", fields));
+			pipeline.add(new BasicDBObject("$sort", sortFields ));
+			
+			AggregationOutput output = dbCollection.aggregate(pipeline);
 
 			return output.results();
-
 		} catch(Exception e) {
 			e.printStackTrace();
 			throw e;

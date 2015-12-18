@@ -68,44 +68,44 @@ public class IdsPeriodReport extends BaseReport {
 		for (Entry<String, Object> e : hData.entrySet()) {
 			
 			switch (e.getKey()) {
-				case "opt1" :	//전체 탐지로그 발생추이
+				case "opt01" :	//전체 탐지로그 발생추이
 					push("항목: 전체 탐지로그 발생추이");
 					All_DetectLog_Trend(reportData, -1, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt2" :	//외부에서 내부로의 전체 탐지로그 발생추이 
+				case "opt02" :	//외부에서 내부로의 전체 탐지로그 발생추이 
 					push("항목: 외부에서 내부로의 전체 탐지로그 발생추이");
 					Direction_DetectLog_Trend(reportData, INBOUND, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt3" : 	//내부에서 외부로의 전체 탐지로그 발생추이
+				case "opt03" : 	//내부에서 외부로의 전체 탐지로그 발생추이
 					push("항목: 내부에서 외부로의 전체 탐지로그 발생추이");
 					Direction_DetectLog_Trend(reportData, OUTBOUND, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt4" : 	//외부에서 내부로의 전체 탐지로그 & 이벤트 TOP (차트, 표)
+				case "opt04" : 	//외부에서 내부로의 전체 탐지로그 & 이벤트 TOP (차트, 표)
 					push("항목: 외부에서 내부로의 전체 탐지로그 & 이벤트 TOP (차트, 표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd4")));
 					Direction_EventTopN(reportData, INBOUND, assetCode, sStartDay, sEndDay, nChoice, !StringUtil.isEmpty(hData.get("ck4")));
 					break;
-				case "opt5" : 	//내부에서 외부로의 전체 탐지로그 & 이벤트 TOP (차트, 표)
+				case "opt05" : 	//내부에서 외부로의 전체 탐지로그 & 이벤트 TOP (차트, 표)
 					push("항목: 내부에서 외부로의 전체 탐지로그 & 이벤트 TOP (차트, 표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd5")));
 					Direction_EventTopN(reportData, OUTBOUND, assetCode, sStartDay, sEndDay, nChoice, !StringUtil.isEmpty(hData.get("ck5")));
 					break;
-				case "opt6" : 	//외부에서 내부로의 전체 탐지로그 & SIP TOP (표)
+				case "opt06" : 	//외부에서 내부로의 전체 탐지로그 & SIP TOP (표)
 					push("항목: 외부에서 내부로의 전체 탐지로그 & SIP TOP (표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd6")));
 					ALL_DetectLog_TopN(reportData, INBOUND, assetCode, sStartDay, sEndDay, true, nChoice, !StringUtil.isEmpty(hData.get("ck6")));
 					break;
-				case "opt7" : 	//내부에서 외부로의 전체 탐지로그 & SIP TOP (표)
+				case "opt07" : 	//내부에서 외부로의 전체 탐지로그 & SIP TOP (표)
 					push("항목: 내부에서 외부로의 전체 탐지로그 & SIP TOP (표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd7")));
 					ALL_DetectLog_TopN(reportData, OUTBOUND, assetCode, sStartDay, sEndDay, true, nChoice, !StringUtil.isEmpty(hData.get("ck7")));
 					break;
-				case "opt8" : 	//외부에서 내부로의 전체 탐지로그 & DIP TOP (표)
+				case "opt08" : 	//외부에서 내부로의 전체 탐지로그 & DIP TOP (표)
 					push("항목: 외부에서 내부로의 전체 탐지로그 & DIP TOP (표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd8")));
 					ALL_DetectLog_TopN(reportData, INBOUND, assetCode, sStartDay, sEndDay, false, nChoice, false);
 					break;
-				case "opt9" : 	//내부에서 외부로의 전체 탐지로그 & DIP TOP (표)
+				case "opt09" : 	//내부에서 외부로의 전체 탐지로그 & DIP TOP (표)
 					push("항목: 내부에서 외부로의 전체 탐지로그 & DIP TOP (표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd9")));
 					ALL_DetectLog_TopN(reportData, OUTBOUND, assetCode, sStartDay, sEndDay, false, nChoice, false);

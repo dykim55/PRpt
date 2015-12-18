@@ -1236,7 +1236,7 @@ input.chkbox {
     background: #E8E8E8;
 }
 
-
+.report_Listdata .jqgrow.ui-row-ltr.ui-state-checked1     { background:none !important; background-color:#dbff00 !important; }
 
 
 

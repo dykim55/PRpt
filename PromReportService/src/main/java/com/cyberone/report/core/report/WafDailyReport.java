@@ -1,8 +1,13 @@
 package com.cyberone.report.core.report;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -34,8 +39,13 @@ public class WafDailyReport extends BaseReport {
 	 * 웹방화벽 일일보고서 통계데이타 생성
 	 */
 	@SuppressWarnings("unchecked")
-	public HashMap<String, Object> getDataSource(String sReportType, String sSearchDate, HashMap<String, Object> hMap) throws Exception {
+	public HashMap<String, Object> getDataSource(String sReportType, String sSearchDate, HashMap<String, Object> hMap, int ItemNo, List<String> contentsList) throws Exception {
 		logger.debug("웹방화벽 일일보고서 통계데이타 생성");
+
+		HashMap<String, Object> reportData = new HashMap<String, Object>();
+		
+		contentsList.add(ItemNo + ". " + (String)hMap.get("assetName") + " 장비의 일간 웹방화벽 탐지로그 분석");
+		reportData.put("RT", ItemNo + ". " + (String)hMap.get("assetName") + " 장비의 일간 웹방화벽 탐지로그 분석"); //Report Title
 		
 		String sStartDay = "";
 		String sEndDay = "";
@@ -54,53 +64,109 @@ public class WafDailyReport extends BaseReport {
 		if (hFormMap == null) {
 			DBObject dbObj = wafDao.selectAutoReportForm(Integer.parseInt(sReportType), assetCode);
 			hData = (new ObjectMapper()).readValue(StringUtil.convertString(dbObj.get("formData")), HashMap.class);
+			
+			List<Map.Entry<String,Object>> list = new LinkedList<>(hData.entrySet());
+			Collections.sort(list, new Comparator<Map.Entry<String, Object>>() {
+		        @Override
+		        public int compare(Map.Entry<String, Object> o1, Map.Entry<String, Object> o2) {
+		            return (o1.getKey()).compareTo(o2.getKey());
+		        }
+		    });
+			hData = new LinkedHashMap<>();
+		    for (Map.Entry<String, Object> entry : list) {
+		    	hData.put(entry.getKey(), entry.getValue());
+		    }
 		} else {
 			hData = (HashMap<String,Object>)hFormMap.get("data");
 			sEtc = StringUtil.convertString(hFormMap.get("etc"));
 		}
 
-		HashMap<String, Object> reportData = new HashMap<String, Object>();
-		
+		int nC1 = 0, nC2 = 0, nC3 = 0, nC4 = 0, nC5 = 0;
+		int nS1 = 1, nS2 = 1, nS3 = 1, nS4 = 1, nS5 = 1;
+
 		int nChoice = 0;
 		for (Entry<String, Object> e : hData.entrySet()) {
 			
 			switch (e.getKey()) {
-				case "opt1" :	//전체 탐지로그 발생추이
-					push("항목: 전체 탐지로그 발생추이");
+				//탐지로그 발생 추이
+				case "opt01" : case "opt02" :
+					if (nC1 == 0) { 
+						contentsList.add("  " + ItemNo + "." + ++nC1 + " 탐지로그 발생추이");
+						reportData.put("C1", "  " + ItemNo + "." + nC1 + " 탐지로그 발생추이");
+					}
+					break;
+				//이벤트 현황
+				case "opt03" :
+					if (nC2 == 0) { 
+						contentsList.add("  " + ItemNo + "." + (++nC2 + nC1) + " 이벤트 현황");
+						reportData.put("C2", "  " + ItemNo + "." + (nC2 + nC1) + " 이벤트 현황");
+					}
+					break;
+				//출발지IP 현황
+				case "opt04" :
+					if (nC3 == 0) { 
+						contentsList.add("  " + ItemNo + "." + (++nC3 + nC2 + nC1) + " 출발지IP 현황");
+						reportData.put("C3", "  " + ItemNo + "." + (nC3 + nC2 + nC1) + " 출발지IP 현황");
+					}
+					break;
+				//도메인별 상세통계
+				case "opt05" : case "opt06" : case "opt07" :
+					if (nC4 == 0) { 
+						contentsList.add("  " + ItemNo + "." + (++nC4 + nC3 + nC2 + nC1) + " 도메인별 상세통계");
+						reportData.put("C4", "  " + ItemNo + "." + (nC4 + nC3 + nC2 + nC1) + " 도메인별 상세통계");
+					}
+					break;
+				//성능정보
+				case "opt99" :
+					if (nC5 == 0) { 
+						contentsList.add("  " + ItemNo + "." + (++nC5 + nC4 + nC3 + nC2 + nC1) + " 성능정보");
+						reportData.put("C5", "  " + ItemNo + "." + (nC5 + nC4 + nC3 + nC2 + nC1) + " 성능정보");
+					}
+					break;
+			}
+			
+			switch (e.getKey()) {
+				case "opt01" :	//전체 탐지로그 발생추이
+					push(contentsList, "    ", ItemNo, nC1, nS1++, " 전체 탐지로그 발생추이");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd1")));
 					All_DetectLog_Trend(reportData, assetCode, sStartDay, sEndDay, nChoice);
 					break;
-				case "opt2" : 	//전체 탐지로그 & 도메인 TOP10 발생추이 (차트)
-					push("항목: 전체 탐지로그 & 도메인 TOP10 발생추이 (차트)");
+				case "opt02" : 	//전체 탐지로그 & 도메인 TOP10 발생추이 (차트)
+					push(contentsList, "    ", ItemNo, nC1, nS1++, " 전체 탐지로그 & 도메인 TOP10 발생추이");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd2")));
 					All_Domain_TopN_Trend(reportData, assetCode, sStartDay, sEndDay, nChoice);
 					break;
-				case "opt3" : 	//전체 탐지로그 & Event TOP (차트, 표)
-					push("항목: 전체 탐지로그 & Event TOP (차트, 표)");
+				case "opt03" : 	//전체 탐지로그 & Event TOP (차트, 표)
+					push(contentsList, "    ", ItemNo, nC2 + nC1, nS2++, " 전체 탐지로그 & 이벤트 TOP");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd3")));
 					ALL_Event_TopN(reportData, assetCode, sStartDay, sEndDay, nChoice);
 					break;
-				case "opt4" :	//전체 탐지로그 & SIP TOP (표)
-					push("항목: 전체 탐지로그 & SIP TOP (표)");
+				case "opt04" :	//전체 탐지로그 & SIP TOP (표)
+					push(contentsList, "    ", ItemNo, nC3 + nC2 + nC1, nS3++, " 전체 탐지로그 & 출발지IP TOP");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd4")));
-					ALL_SrcIp_TopN(reportData, assetCode, sStartDay, sEndDay, nChoice, !StringUtil.isEmpty(hData.get("ck4")), Integer.valueOf(StringUtil.convertString(hData.get("sd4"))));
+					ALL_SrcIp_TopN(reportData, assetCode, sStartDay, sEndDay, nChoice, !StringUtil.isEmpty(hData.get("ck4")), StringUtil.convertString(hData.get("sd4")));
 					break;
-				case "opt5" : 	//도메인 별 탐지로그 & 탐지로그 발생추이
-					push("항목: 도메인 별 탐지로그 & 탐지로그 발생추이");
+				case "opt05" : 	//도메인 별 탐지로그 & 탐지로그 발생추이
+					push(contentsList, "    ", ItemNo, nC4 + nC3 + nC2 + nC1, nS4++, " 도메인별 탐지로그 발생추이");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd5")));
 					Domain_TopN_Trend(reportData, assetCode, sStartDay, sEndDay, nChoice);
 					break;
-				case "opt6" : 	//도메인 별 탐지로그 & EVT TOP10 발생추이
-					push("항목: 도메인 별 탐지로그 & EVT TOP10 발생추이");
+				case "opt06" : 	//도메인 별 탐지로그 & EVT TOP10 발생추이
+					push(contentsList, "    ", ItemNo, nC4 + nC3 + nC2 + nC1, nS4++, " 도메인별 이벤트 TOP 발생추이");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd6")));
 					Domain_EventTopN_Trend(reportData, assetCode, sStartDay, sEndDay, nChoice);
 					break;
-				case "opt7" : 	//도메인 별 탐지로그 & EVT TOP10 통계 (차트, 표)
-					push("항목: 도메인 별 탐지로그 & EVT TOP10 통계 (차트, 표)");
+				case "opt07" : 	//도메인 별 탐지로그 & EVT TOP10 통계 (차트, 표)
+					push(contentsList, "    ", ItemNo, nC4 + nC3 + nC2 + nC1, nS4++, " 도메인별 이벤트 TOP 통계");
 					Domain_EventTopN_Condition(reportData, assetCode, sStartDay, sEndDay);
+					break;
+				case "opt99" :	//성능정보
+					//push(contentsList, "    ", ItemNo, nC5 + nC4 + nC3 + nC2 + nC1, nS5++, " 성능 정보");
+					PerformanceInfo(wafDao, reportData, assetCode, sStartDay, sEndDay, "HR");
 					break;
 			}
 		}
+		
 		return reportData;
 	}
 
@@ -752,7 +818,7 @@ public class WafDailyReport extends BaseReport {
 	}
 
 	//전체 탐지로그 & SIP TOP
-	private void ALL_SrcIp_TopN(HashMap<String, Object> reportData, int assetCode, String sStartDay, String sEndDay, int nLimit, boolean bChk, int nOpt) throws Exception {
+	private void ALL_SrcIp_TopN(HashMap<String, Object> reportData, int assetCode, String sStartDay, String sEndDay, int nLimit, boolean bChk, String sOpt) throws Exception {
 
 		List<HashMap<String, Object>> dataSource = new ArrayList<HashMap<String, Object>>();
 		
@@ -803,7 +869,7 @@ public class WafDailyReport extends BaseReport {
 		
 		if (bChk) {
 			
-			if (nOpt == 1) { //해당일
+			if (Integer.valueOf(sOpt) == 1) { //해당일
 				
 		    	Iterable<DBObject> dbResult = wafDao.SrcIpTopNTrend("HR", assetCode, sStartDay, sEndDay, saTopN);
 		    	HashMap<String, DBObject> mapResult = new HashMap<String, DBObject>(); 
@@ -871,9 +937,11 @@ public class WafDailyReport extends BaseReport {
 		
 	}
 	
-	public void push(String msg) {
+	public void push(List<String> contentsList, String sIdt, int n1, int n2, int n3, String msg) {
+		String sTitle = sIdt + n1 + "." + n2 + "." + n3 + msg;    
+		contentsList.add(sTitle);
 		HashMap<String, Object> pMap = new HashMap<String, Object>();
-    	pMap.put("message", msg);
+    	pMap.put("message", sTitle);
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			userInfo.getWsSession().sendMessage(new TextMessage(mapper.writeValueAsString(pMap)));

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Cover" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="b6cfd3e5-a4f2-4369-8a40-0826d90f7c18">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="83"/>
+	<parameter name="JASPER_DIR" class="java.lang.String" isForPrompting="false">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="basicMap" class="java.util.Map"/>
+	<parameter name="reportMap" class="java.util.Map"/>
+	<parameter name="IMAGES_DIR" class="java.lang.String"/>
+	<parameter name="coverMap" class="java.util.Map"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch">
+			<printWhenExpression><![CDATA[false]]></printWhenExpression>
+		</band>
+	</background>
+	<title>
+		<band height="770" splitType="Stretch">
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Bottom" isUsingCache="false">
+				<reportElement x="0" y="515" width="595" height="60" uuid="0226025e-88c1-4d22-b1b5-725cfaa04ce1">
+					<printWhenExpression><![CDATA[$P{coverMap}.get("ciType").equals("text") ? false : true]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA[new File($P{IMAGES_DIR}, $P{coverMap}.get( "ciGroup" ) + "/ci")]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="0" y="515" width="595" height="60" uuid="f785bac7-2424-4158-86c9-3534abb24941">
+					<printWhenExpression><![CDATA[$P{coverMap}.get("ciType").equals("text") ? true : false]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="SansSerif" size="18" isBold="true" isItalic="false" isStrikeThrough="false" pdfFontName="malgunbd.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{coverMap}.get( "ciText" )]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="304" width="595" height="26" uuid="d66c88d7-e956-4415-835d-0cae0516edc5"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="SansSerif" size="18" isBold="true" isItalic="false" isStrikeThrough="false" pdfFontName="malgunbd.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{coverMap}.get( "searchPeriod" )]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="142" y="235" width="300" height="1" uuid="a91d6723-5a15-45b9-bfa8-dd1205183227"/>
+				<graphicElement>
+					<pen lineWidth="1.5"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="142" y="239" width="300" height="1" uuid="abb505b1-667b-44cb-a63b-412b0d9d8c86"/>
+				<graphicElement>
+					<pen lineWidth="3.0"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement x="0" y="159" width="595" height="74" uuid="33498d56-f924-406e-8e93-8eb49f7bb677"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="맑은 고딕" size="54" isBold="true" isItalic="false" isStrikeThrough="false" pdfFontName="malgunbd.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[((String)$P{coverMap}.get("reportType")).equals("1") ? "Daily Report" : ((String)$P{coverMap}.get("reportType")).equals("2") ? "Weekly Report" : ((String)$P{coverMap}.get("reportType")).equals("3") ? "Monthly Report" : ((String)$P{coverMap}.get("reportType")).equals("4") ? "Report" : ""]]></textFieldExpression>
+			</textField>
+			<image hAlign="Left">
+				<reportElement x="0" y="0" width="595" height="157" uuid="4cfaff53-65cf-4fbf-8386-18b5cbcdfe46"/>
+				<imageExpression><![CDATA[$P{IMAGES_DIR} + "cv_top.png"]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="56" y="705" width="475" height="45" uuid="396ffcf1-f60c-410c-8f65-5cc3652d2bc6"/>
+				<imageExpression><![CDATA[$P{IMAGES_DIR} +  "cv_bottom.png"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch">
+			<printWhenExpression><![CDATA[false]]></printWhenExpression>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch">
+			<printWhenExpression><![CDATA[false]]></printWhenExpression>
+		</band>
+	</columnHeader>
+	<detail>
+		<band>
+			<subreport>
+				<reportElement x="0" y="0" width="595" height="0" uuid="806fb71a-309e-49d1-b023-ac0aa747464c"/>
+				<subreportParameter name="IMAGES_DIR">
+					<subreportParameterExpression><![CDATA[$P{IMAGES_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="basicMap">
+					<subreportParameterExpression><![CDATA[$P{basicMap}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="reportMap">
+					<subreportParameterExpression><![CDATA[$P{reportMap}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="JASPER_DIR">
+					<subreportParameterExpression><![CDATA[$P{JASPER_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="coverMap">
+					<subreportParameterExpression><![CDATA[$P{coverMap}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource()]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{JASPER_DIR} + "Contents.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch">
+			<printWhenExpression><![CDATA[false]]></printWhenExpression>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch">
+			<printWhenExpression><![CDATA[false]]></printWhenExpression>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch">
+			<printWhenExpression><![CDATA[false]]></printWhenExpression>
+		</band>
+	</summary>
+</jasperReport>

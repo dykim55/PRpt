@@ -11,7 +11,6 @@ import com.mongodb.AggregationOutput;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
 public class FwDao extends BaseDao {
@@ -38,7 +37,7 @@ public class FwDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 
-			DBCollection dbCollection = reportDB.getCollection("FW_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_FW_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
@@ -85,7 +84,9 @@ public class FwDao extends BaseDao {
     /*
      * 서비스 TOP10 시간대별 발생추이
      */
-	public  Iterable<DBObject> ServiceTopNTrend(String sCol, int nDirection, String sAction, int assetCode, String sStartDay, String sEndDay, List<Integer> ports) throws Exception {
+	public Iterable<DBObject> ServiceTopNTrend(String sCol, int nDirection, String sAction, int assetCode, String sStartDay, String sEndDay, List<Integer> ports) throws Exception {
+		
+		StartTimeCheck("ServiceTopNTrend");
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -98,7 +99,7 @@ public class FwDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 			
-			DBCollection dbCollection = reportDB.getCollection("FW_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_FW_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
@@ -152,9 +153,13 @@ public class FwDao extends BaseDao {
 			e.printStackTrace();
 			throw e;
 		} finally {
+			EndTimeCheck();
 		}
 	}
 	
+    /*
+     * 서비스 세션로그 건수
+     */
 	public Iterable<DBObject> ServiceSessionLog(String sCol, int nDirection, String sAction, int assetCode, String sStartDay, String sEndDay) throws Exception {
 		
 		StartTimeCheck("ServiceSessionLog");
@@ -170,7 +175,7 @@ public class FwDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 			
-			DBCollection dbCollection = reportDB.getCollection("FW_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_FW_" + assetCode + "_" + sCol);
 			
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
@@ -200,7 +205,6 @@ public class FwDao extends BaseDao {
 			
 			AggregationOutput output = dbCollection.aggregate(pipeline);
 
-			
 			return output.results();
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -215,6 +219,8 @@ public class FwDao extends BaseDao {
 	 */
 	public Iterable<DBObject> IpTopNTrend(String sCol, int nDirection, String sAction, int assetCode, String sStartDay, String sEndDay, List<String> ips, boolean bSrcIp) throws Exception {
 		
+		StartTimeCheck("IpTopNTrend");
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		
 		try {
@@ -226,7 +232,7 @@ public class FwDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 
-			DBCollection dbCollection = reportDB.getCollection("FW_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_FW_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
@@ -296,6 +302,7 @@ public class FwDao extends BaseDao {
 			e.printStackTrace();
 			throw e;
 		} finally {
+			EndTimeCheck();
 		}
 	}
 	
@@ -303,6 +310,8 @@ public class FwDao extends BaseDao {
      * 증감현황 조회
      */
 	public Iterable<DBObject> IpSessionLogCount(String sCol, int nDirection, String sAction, int assetCode, String sStartDay, String sEndDay, boolean bSrcIp, String sIp) throws Exception {
+		
+		StartTimeCheck("IpSessionLogCount");
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		
@@ -315,7 +324,7 @@ public class FwDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 			
-			DBCollection dbCollection = reportDB.getCollection("FW_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_FW_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
@@ -366,6 +375,8 @@ public class FwDao extends BaseDao {
 	
 	public Iterable<DBObject> BeforeIpCondition(String sCol, int nDirection, String sAction, int assetCode, String sStartDay, String sEndDay, boolean bSrcIp, String sIp) throws Exception {
 		
+		StartTimeCheck("BeforeIpCondition");
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		
 		try {
@@ -377,7 +388,7 @@ public class FwDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 
-			DBCollection dbCollection = reportDB.getCollection("FW_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_FW_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
@@ -434,6 +445,8 @@ public class FwDao extends BaseDao {
      */
 	public Iterable<DBObject> IpTopN(String sCol, int nDirection, String sAction, int assetCode, String sStartDay, String sEndDay, boolean bSrcIp, int nLimit) throws Exception {
 		
+		StartTimeCheck("IpTopN");
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		
 		try {
@@ -445,7 +458,7 @@ public class FwDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 			
-			DBCollection dbCollection = reportDB.getCollection("FW_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_FW_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
@@ -506,6 +519,8 @@ public class FwDao extends BaseDao {
 	
 	public Iterable<DBObject> IpTopNCondition(String sCol, int nDirection, String sAction, int assetCode, String sStartDay, String sEndDay, String ip, boolean bSrcIp) throws Exception {
 		
+		StartTimeCheck("IpTopNCondition");
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		
 		try {
@@ -517,7 +532,7 @@ public class FwDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 
-			DBCollection dbCollection = reportDB.getCollection("FW_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_FW_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
@@ -573,7 +588,9 @@ public class FwDao extends BaseDao {
     /*
      * 전체 허용/차단로그 발생추이 전일/해당일 시간대별 비교
      */
-	public  Iterable<DBObject> CompareSessionLogTrend(String sCol, int nDirection, String sAction, int assetCode, String sStartDay, String sEndDay) throws Exception {
+	public Iterable<DBObject> CompareSessionLogTrend(String sCol, int nDirection, String sAction, int assetCode, String sStartDay, String sEndDay) throws Exception {
+		
+		StartTimeCheck("CompareSessionLogTrend");
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -586,7 +603,7 @@ public class FwDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 			
-			DBCollection dbCollection = reportDB.getCollection("FW_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_FW_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
@@ -639,13 +656,16 @@ public class FwDao extends BaseDao {
 			e.printStackTrace();
 			throw e;
 		} finally {
+			EndTimeCheck();
 		}
 	}
 	
     /*
      * 전체세션로그 해당일-시간대별 발생추이
      */
-	public  Iterable<DBObject> SessionLogTrend(String sCol, int nDirection, String sAction, int assetCode, String sStartDay, String sEndDay, int nPort) throws Exception {
+	public Iterable<DBObject> SessionLogTrend(String sCol, int nDirection, String sAction, int assetCode, String sStartDay, String sEndDay, int nPort) throws Exception {
+		
+		StartTimeCheck("SessionLogTrend");
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -658,7 +678,7 @@ public class FwDao extends BaseDao {
 			endCal.add(Calendar.DAY_OF_MONTH, 1);
 			endCal.add(Calendar.SECOND, -1);
 			
-			DBCollection dbCollection = reportDB.getCollection("FW_" + assetCode + "_" + sCol);
+			DBCollection dbCollection = reportDB.getCollection("N_FW_" + assetCode + "_" + sCol);
 
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
@@ -719,6 +739,7 @@ public class FwDao extends BaseDao {
 			e.printStackTrace();
 			throw e;
 		} finally {
+			EndTimeCheck();
 		}
 	}
 	

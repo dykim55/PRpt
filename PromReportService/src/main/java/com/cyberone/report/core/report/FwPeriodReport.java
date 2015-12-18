@@ -9,12 +9,13 @@ import java.util.Set;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.socket.TextMessage;
 
 import com.cyberone.report.Constants;
 import com.cyberone.report.core.dao.FwDao;
 import com.cyberone.report.core.datasource.SynthesisDataSource;
+import com.cyberone.report.model.UserInfo;
 import com.cyberone.report.utils.StringUtil;
-import com.mongodb.DB;
 import com.mongodb.DBObject;
 
 public class FwPeriodReport extends BaseReport {
@@ -23,8 +24,11 @@ public class FwPeriodReport extends BaseReport {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
-	public FwPeriodReport(DB promDB, DB reportDB) {
-		this.fwDao = new FwDao(promDB, reportDB);
+	private UserInfo userInfo;
+	
+	public FwPeriodReport(UserInfo userInfo) {
+		this.userInfo = userInfo;
+		this.fwDao = new FwDao(userInfo.getPromDb(), userInfo.getReportDb());
 	}
 	
 	/* 
@@ -63,46 +67,46 @@ public class FwPeriodReport extends BaseReport {
 		for (Entry<String, Object> e : hData.entrySet()) {
 			
 			switch (e.getKey()) {
-				case "opt1" :	//전체 세션로그 발생추이
+				case "opt01" :	//전체 세션로그 발생추이
 					logger.debug("항목: 전체 세션로그 발생추이");
 					All_SessionLog_Trend(reportData, -1, assetCode, sStartDay, sEndDay, sEtc);
 					break;
-				case "opt2" :	//외부에서 내부로의 전체 세션 로그 발생추이
+				case "opt02" :	//외부에서 내부로의 전체 세션 로그 발생추이
 					logger.debug("항목: 외부에서 내부로의 전체 세션 로그 발생추이");
 					logger.debug("옵션:" + nChoice);
 					All_SessionLog_Trend(reportData, INBOUND, assetCode, sStartDay, sEndDay, sEtc);
 					break;
-				case "opt3" : 	//내부에서 외부로의 전체 세션 로그 발생추이
+				case "opt03" : 	//내부에서 외부로의 전체 세션 로그 발생추이
 					logger.debug("항목: 내부에서 외부로의 전체 세션 로그 발생추이");
 					logger.debug("옵션:" + nChoice);
 					All_SessionLog_Trend(reportData, OUTBOUND, assetCode, sStartDay, sEndDay, sEtc);
 					break;
-				case "opt4" : 	//외부에서 내부로의 전체 세션로그 & SIP TOP (표)
+				case "opt04" : 	//외부에서 내부로의 전체 세션로그 & SIP TOP (표)
 					logger.debug("항목: 외부에서 내부로의 전체 세션로그 & SIP TOP (표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd4")));
 					Action_SessionLog_TopN(reportData, INBOUND, "", assetCode, sStartDay, sEndDay, true, nChoice, false);
 					break;
-				case "opt5" : 	//외부에서 내부로의 허용 세션로그 & SIP TOP (표)
+				case "opt05" : 	//외부에서 내부로의 허용 세션로그 & SIP TOP (표)
 					logger.debug("항목: 외부에서 내부로의 허용 세션로그 & SIP TOP (표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd5")));
 					Action_SessionLog_TopN(reportData, INBOUND, ALLOW, assetCode, sStartDay, sEndDay, true, nChoice, false);
 					break;
-				case "opt6" : 	//외부에서 내부로의 차단 세션로그 & SIP TOP (표)
+				case "opt06" : 	//외부에서 내부로의 차단 세션로그 & SIP TOP (표)
 					logger.debug("항목: 외부에서 내부로의 차단 세션로그 & SIP TOP (표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd6")));
 					Action_SessionLog_TopN(reportData, INBOUND, CUTOFF, assetCode, sStartDay, sEndDay, true, nChoice, !StringUtil.isEmpty(hData.get("ck6")));
 					break;
-				case "opt7" : 	//내부에서 외부로의 전체 세션로그 & SIP TOP (표)
+				case "opt07" : 	//내부에서 외부로의 전체 세션로그 & SIP TOP (표)
 					logger.debug("항목: 내부에서 외부로의 전체 세션로그 & SIP TOP (표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd7")));
 					Action_SessionLog_TopN(reportData, OUTBOUND, "", assetCode, sStartDay, sEndDay, true, nChoice, false);
 					break;
-				case "opt8" : 	//내부에서 외부로의 허용 세션로그 & SIP TOP (표)
+				case "opt08" : 	//내부에서 외부로의 허용 세션로그 & SIP TOP (표)
 					logger.debug("항목: 내부에서 외부로의 허용 세션로그 & SIP TOP (표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd8")));
 					Action_SessionLog_TopN(reportData, OUTBOUND, ALLOW, assetCode, sStartDay, sEndDay, true, nChoice, false);
 					break;
-				case "opt9" : 	//내부에서 외부로의 차단 세션로그 & SIP TOP (표)
+				case "opt09" : 	//내부에서 외부로의 차단 세션로그 & SIP TOP (표)
 					logger.debug("항목: 내부에서 외부로의 차단 세션로그 & SIP TOP (표)");
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd9")));
 					Action_SessionLog_TopN(reportData, OUTBOUND, CUTOFF, assetCode, sStartDay, sEndDay, true, nChoice, !StringUtil.isEmpty(hData.get("ck9")));
@@ -598,6 +602,19 @@ public class FwPeriodReport extends BaseReport {
 			reportData.put("OPT24", new SynthesisDataSource(dataSource));
 		} else if (nDirection == OUTBOUND && sAction.equals(CUTOFF)) {
 			reportData.put("OPT27", new SynthesisDataSource(dataSource));
+		}
+	}
+
+	public void push(String msg) {
+		logger.debug(msg);
+		
+		HashMap<String, Object> pMap = new HashMap<String, Object>();
+    	pMap.put("message", msg);
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			userInfo.getWsSession().sendMessage(new TextMessage(mapper.writeValueAsString(pMap)));
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	

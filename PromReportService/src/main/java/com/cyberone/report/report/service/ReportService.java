@@ -1,5 +1,6 @@
 package com.cyberone.report.report.service;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,10 @@ public class ReportService {
 		return reportDao.selectAssetsProduct(db, groupCode, productCode);
 	}
 	
+	public DBObject selectAsset(DB db, int assetCode) throws Exception {
+		return reportDao.selectAsset(db, assetCode);
+	}
+	
 	public DBObject selectAssetPolicy(DB db, int assetCode) throws Exception {
 		return reportDao.selectAssetPolicy(db, assetCode);
 	}
@@ -55,5 +60,9 @@ public class ReportService {
 
 	public DBObject selectReportOption(DB db, int groupCode) throws Exception {
 		return reportDao.selectReportOption(db, groupCode);
+	}
+	
+	public List<HashMap<String, Object>> getCscoCd(List<String> assetCodes) throws Exception {
+		return reportDao.getCscoCd(assetCodes);
 	}
 }

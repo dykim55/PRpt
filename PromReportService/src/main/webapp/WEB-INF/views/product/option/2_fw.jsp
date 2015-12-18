@@ -122,39 +122,39 @@ $(document).ready(function(){
 
 <h2 style="margin-top:0px;">세션로그 발생추이</h2>
 <div class="mb10">
-  <input type="checkbox" id="opt1" name="opt1"><label for="opt1"> 전체 세션로그 발생추이 (차트, 표)</label>
+  <input type="checkbox" id="opt01" name="opt01"><label for="opt01"> 전체 세션로그 발생추이 (차트, 표)</label>
 </div>
 
 <div class="mb10">
-  <input type="checkbox" id="opt2" name="opt2"><label for="opt2"> 전체 허용로그 발생추이 (차트)</label>
+  <input type="checkbox" id="opt02" name="opt02"><label for="opt02"> 전체 허용로그 발생추이 (차트)</label>
 </div>
 
 <div class="mb10">
-  <input type="checkbox" id="opt3" name="opt3"><label for="opt3"> 전체 차단로그 발생추이 (차트)</label>
+  <input type="checkbox" id="opt03" name="opt03"><label for="opt03"> 전체 차단로그 발생추이 (차트)</label>
 </div>
 
 <div class="mb10">
-  <input type="checkbox" id="opt4" name="opt4"><label for="opt4"> 외부에서 내부로의 전체 세션 로그 발생추이 (차트, 표)</label>
+  <input type="checkbox" id="opt04" name="opt04"><label for="opt04"> 외부에서 내부로의 전체 세션 로그 발생추이 (차트, 표)</label>
 </div>
 
 <div class="mb10">
-  <input type="checkbox" id="opt5" name="opt5"><label for="opt5"> 외부에서 내부로의 허용 세션 로그 발생추이 (차트)</label>
+  <input type="checkbox" id="opt05" name="opt05"><label for="opt05"> 외부에서 내부로의 허용 세션 로그 발생추이 (차트)</label>
 </div>
 
 <div class="mb10">
-  <input type="checkbox" id="opt6" name="opt6"><label for="opt6"> 외부에서 내부로의 차단 세션 로그 발생추이 (차트)</label>
+  <input type="checkbox" id="opt06" name="opt06"><label for="opt06"> 외부에서 내부로의 차단 세션 로그 발생추이 (차트)</label>
 </div>
 
 <div class="mb10">
-  <input type="checkbox" id="opt7" name="opt7"><label for="opt7"> 내부에서 외부로의 전체 세션 로그 발생추이 (차트, 표)</label>
+  <input type="checkbox" id="opt07" name="opt07"><label for="opt07"> 내부에서 외부로의 전체 세션 로그 발생추이 (차트, 표)</label>
 </div>
 
 <div class="mb10">
-  <input type="checkbox" id="opt8" name="opt8"><label for="opt8"> 내부에서 외부로의 허용 세션 로그 발생추이 (차트)</label>
+  <input type="checkbox" id="opt08" name="opt08"><label for="opt08"> 내부에서 외부로의 허용 세션 로그 발생추이 (차트)</label>
 </div>
 
 <div class="mb10">
-  <input type="checkbox" id="opt9" name="opt9"><label for="opt9"> 내부에서 외부로의 차단 세션 로그 발생추이 (차트)</label>
+  <input type="checkbox" id="opt09" name="opt09"><label for="opt09"> 내부에서 외부로의 차단 세션 로그 발생추이 (차트)</label>
 </div>
 
 

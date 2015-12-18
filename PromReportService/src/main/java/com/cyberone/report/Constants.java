@@ -11,6 +11,11 @@ public class Constants {
 	public static final String	REPORT_MONTHLY = "3";	//월간보고서
 	public static final String	REPORT_PERIOD = "4";	//기간보고서
 	
+	/** 침해위협연동구분 */
+	public static final int	DTCTGEAR_CODEPRO = 1;
+	public static final int	DTCTGEAR_WSD = 2;
+	public static final int	DTCTGEAR_SNORT = 3;
+	
     private static LookupService cl = null;
     
 	public static String getReportTypeName(String type){
@@ -38,7 +43,7 @@ public class Constants {
 		} catch (Exception e) {
 			return "";
 		}
-		return cl.getCountry(sIp).getCode().equals("--") ? "" : cl.getCountry(sIp).getCode();
+		return cl.getCountry(sIp).getCode().equals("--") ? "-" : cl.getCountry(sIp).getCode();
 	}
 	
 }

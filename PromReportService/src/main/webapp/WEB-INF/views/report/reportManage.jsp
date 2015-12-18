@@ -42,6 +42,8 @@
 
 $(document).ready(function(){
 	
+	stop();
+	
     $("label").bind("mouseover", function () {
         $(this).addClass("labelHover");
     });
@@ -234,9 +236,17 @@ $(document).ready(function(){
             {name:'prefix',        index:'prefix',        width:80, align:'center', sortable: false,
             	formatter: function (cellvalue, options, rowObject) {
             		if (cellvalue) {
-            			  return cellvalue.toUpperCase();
+            			if (cellvalue=="servicedesk") {
+            				return "";
+            			}
+            			return cellvalue.toUpperCase();
             		}
             		return "";
+            	},
+            	unformat: function (cellval,options,pos,cnt) {
+            		var row = $(this).jqGrid("getLocalRow", options.rowId);
+            		console.log(row.prefix);
+            		return row.prefix;
             	}
             },
             {name:'assetType',     index:'assetType',     width:80, align:'center', sortable: false, 
@@ -312,6 +322,9 @@ $(document).ready(function(){
         			setChildrenItems($(this), $(this).jqGrid("getNodeChildren", $(this).jqGrid("getLocalRow", rowid)),  $(e.target).is(':checked'));
         		}
         		
+        		$("#"+ _slct_rowid, this).removeClass("ui-state-checked1");
+        		$("#"+ rowid, this).addClass("ui-state-checked1"); 
+        		
         		gridInitSelectedRowData();
         		reloadReportOption(rowid);
         		
@@ -325,6 +338,9 @@ $(document).ready(function(){
                     if (e.target.type != 'checkbox') {
                         $("#"+ rowid, this).find('input[type=checkbox]').prop("checked", !$("#"+ rowid, this).find('input[type=checkbox]').prop("checked"));
                     }
+
+                    $("#"+ _slct_rowid, this).removeClass("ui-state-checked1");
+                    $("#"+ pNode.id, this).addClass("ui-state-checked1"); 
                     
                     reloadReportOption(pNode.id);
                     

@@ -9,12 +9,13 @@ import java.util.Set;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.socket.TextMessage;
 
 import com.cyberone.report.Constants;
 import com.cyberone.report.core.dao.FwDao;
 import com.cyberone.report.core.datasource.SynthesisDataSource;
+import com.cyberone.report.model.UserInfo;
 import com.cyberone.report.utils.StringUtil;
-import com.mongodb.DB;
 import com.mongodb.DBObject;
 
 public class FwWeeklyReport extends BaseReport {
@@ -23,8 +24,11 @@ public class FwWeeklyReport extends BaseReport {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
-	public FwWeeklyReport(DB promDB, DB reportDB) {
-		this.fwDao = new FwDao(promDB, reportDB);
+	private UserInfo userInfo;
+	
+	public FwWeeklyReport(UserInfo userInfo) {
+		this.userInfo = userInfo;
+		this.fwDao = new FwDao(userInfo.getPromDb(), userInfo.getReportDb());
 	}
 	
 	/* 
@@ -64,39 +68,39 @@ public class FwWeeklyReport extends BaseReport {
 			
 			switch (e.getKey()) {
 
-				case "opt1" :	//전체 세션로그 발생추이
+				case "opt01" :	//전체 세션로그 발생추이
 					logger.debug("항목: 전체 세션로그 발생추이");
 					All_SessionLog_Trend(reportData, -1, assetCode, sStartDay, sEndDay, sEtc);
 					break;
-				case "opt2" :	//전체 허용로그 발생추이 (차트) 
+				case "opt02" :	//전체 허용로그 발생추이 (차트) 
 					logger.debug("항목: 전체 허용로그 발생추이 (차트)");
 					Action_SessionLog_Trend(reportData, -1, ALLOW, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt3" : 	//전체 차단로그 발생추이 (차트)
+				case "opt03" : 	//전체 차단로그 발생추이 (차트)
 					logger.debug("항목: 전체 차단로그 발생추이 (차트)");
 					Action_SessionLog_Trend(reportData, -1, CUTOFF, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt4" :	//외부에서 내부로의 전체 세션 로그 발생추이
+				case "opt04" :	//외부에서 내부로의 전체 세션 로그 발생추이
 					logger.debug("항목: 외부에서 내부로의 전체 세션 로그 발생추이");
 					All_SessionLog_Trend(reportData, INBOUND, assetCode, sStartDay, sEndDay, sEtc);
 					break;
-				case "opt5" : 	//외부에서 내부로의 허용 세션 로그 발생추이 (차트)
+				case "opt05" : 	//외부에서 내부로의 허용 세션 로그 발생추이 (차트)
 					logger.debug("항목: 외부에서 내부로의 허용 세션 로그 발생추이 (차트)");
 					Action_SessionLog_Trend(reportData, INBOUND, ALLOW, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt6" : 	//외부에서 내부로의 차단 세션 로그 발생추이 (차트)
+				case "opt06" : 	//외부에서 내부로의 차단 세션 로그 발생추이 (차트)
 					logger.debug("항목: 외부에서 내부로의 차단 세션 로그 발생추이 (차트)");
 					Action_SessionLog_Trend(reportData, INBOUND, CUTOFF, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt7" : 	//내부에서 외부로의 전체 세션 로그 발생추이
+				case "opt07" : 	//내부에서 외부로의 전체 세션 로그 발생추이
 					logger.debug("항목: 내부에서 외부로의 전체 세션 로그 발생추이");
 					All_SessionLog_Trend(reportData, OUTBOUND, assetCode, sStartDay, sEndDay, sEtc);
 					break;
-				case "opt8" : 	//내부에서 외부로의 허용 세션 로그 발생추이 (차트)
+				case "opt08" : 	//내부에서 외부로의 허용 세션 로그 발생추이 (차트)
 					logger.debug("항목: 내부에서 외부로의 허용 세션 로그 발생추이 (차트)");
 					Action_SessionLog_Trend(reportData, OUTBOUND, ALLOW, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt9" : 	//내부에서 외부로의 차단 세션 로그 발생추이 (차트)
+				case "opt09" : 	//내부에서 외부로의 차단 세션 로그 발생추이 (차트)
 					logger.debug("항목: 내부에서 외부로의 차단 세션 로그 발생추이 (차트)");
 					Action_SessionLog_Trend(reportData, OUTBOUND, CUTOFF, assetCode, sStartDay, sEndDay);
 					break;
@@ -697,6 +701,19 @@ public class FwWeeklyReport extends BaseReport {
 			reportData.put("OPT24", new SynthesisDataSource(dataSource));
 		} else if (nDirection == OUTBOUND && sAction.equals(CUTOFF)) {
 			reportData.put("OPT27", new SynthesisDataSource(dataSource));
+		}
+	}
+
+	public void push(String msg) {
+		logger.debug(msg);
+		
+		HashMap<String, Object> pMap = new HashMap<String, Object>();
+    	pMap.put("message", msg);
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			userInfo.getWsSession().sendMessage(new TextMessage(mapper.writeValueAsString(pMap)));
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
