@@ -131,6 +131,15 @@ public class SynthesisDataSource implements JRDataSource {
 		else if ("domainUrl".equals(fieldName)) {
 			value = StringUtil.convertString(data.get(index).get("domainUrl"));
 		}
+		else if ("host".equals(fieldName)) {
+			value = (String)data.get(index).get("host");
+		}
+		else if ("allow".equals(fieldName)) {
+			value = (Float)data.get(index).get("allow");
+		}
+		else if ("cutoff".equals(fieldName)) {
+			value = (Float)data.get(index).get("cutoff");
+		}
 		
 		
 		
@@ -190,9 +199,6 @@ public class SynthesisDataSource implements JRDataSource {
 		else if ("avg".equals(fieldName)) {
 			value = (Long)data.get(index).get("avg");
 		}
-		else if ("host".equals(fieldName)) {
-			value = (String)data.get(index).get("host");
-		}
 		else if ("eventName".equals(fieldName)) {
 			value = (String)data.get(index).get("eventName");
 		}
@@ -215,4 +221,9 @@ public class SynthesisDataSource implements JRDataSource {
 	public boolean isEmpty() {
 		return data.size() > 0 ? false : true;
 	}
+	
+	public int size() {
+		return data.size();
+	}
+	
 }

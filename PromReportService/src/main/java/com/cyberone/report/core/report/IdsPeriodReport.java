@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -36,8 +39,15 @@ public class IdsPeriodReport extends BaseReport {
 	 * 침입탐지(IDS) 임의기간보고서 통계데이타 생성
 	 */
 	@SuppressWarnings("unchecked")
-	public HashMap<String, Object> getDataSource(String sReportType, String sSearchDate, HashMap<String, Object> hMap) throws Exception {
+	public HashMap<String, Object> getDataSource(String sReportType, String sSearchDate, HashMap<String, Object> hMap, int ItemNo, List<String> contentsList) throws Exception {
 		logger.debug("침입탐지(IDS) 임의기간보고서 통계데이타 생성");
+
+		HashMap<String, Object> reportData = new HashMap<String, Object>();
+		
+		reportData.put("reportType", sReportType);
+		
+		contentsList.add(ItemNo + ". " + (String)hMap.get("assetName") + " 장비의 침입탐지(IDS) 탐지로그 분석");
+		reportData.put("RT", ItemNo + ". " + (String)hMap.get("assetName") + " 장비의 침입탐지(IDS) 탐지로그 분석");
 		
 		String sStartDay = "";
 		String sEndDay = "";
@@ -57,70 +67,131 @@ public class IdsPeriodReport extends BaseReport {
 		if (hFormMap == null) {
 			DBObject dbObj = idsDao.selectAutoReportForm(Integer.parseInt(sReportType), assetCode);
 			hData = (new ObjectMapper()).readValue(StringUtil.convertString(dbObj.get("formData")), HashMap.class);
+			
+			List<Map.Entry<String,Object>> list = new LinkedList<>(hData.entrySet());
+			Collections.sort(list, new Comparator<Map.Entry<String, Object>>() {
+		        @Override
+		        public int compare(Map.Entry<String, Object> o1, Map.Entry<String, Object> o2) {
+		            return (o1.getKey()).compareTo(o2.getKey());
+		        }
+		    });
+			hData = new LinkedHashMap<>();
+		    for (Map.Entry<String, Object> entry : list) {
+		    	hData.put(entry.getKey(), entry.getValue());
+		    }
 		} else {
 			hData = (HashMap<String,Object>)hFormMap.get("data");
 			sEtc = StringUtil.convertString(hFormMap.get("etc"));
 		}
 
-		HashMap<String, Object> reportData = new HashMap<String, Object>();
+		int nC1 = 0, nC2 = 0, nC3 = 0, nC4 = 0, nC5 = 0, nC6 = 0;
+		int nS1 = 1, nS2 = 1, nS3 = 1, nS4 = 1, nS5 = 1, nS6 = 1;
 		
 		int nChoice = 0;
 		for (Entry<String, Object> e : hData.entrySet()) {
 			
 			switch (e.getKey()) {
+				//탐지로그 발생 추이
+				case "opt01" : case "opt02" : case "opt03" :  
+					if (nC1 == 0) { 
+						contentsList.add("  " + ItemNo + "." + ++nC1 + " 탐지로그 발생추이");
+						reportData.put("C1", "  " + ItemNo + "." + nC1 + " 탐지로그 발생추이");
+					}
+					break;
+				//이벤트 현황
+				case "opt04" : case "opt05" :   
+					if (nC2 == 0) { 
+						contentsList.add("  " + ItemNo + "." + (++nC2 + nC1) + " 이벤트 현황");
+						reportData.put("C2", "  " + ItemNo + "." + (nC2 + nC1) + " 이벤트 현황");
+					}
+					break;
+				//출발지IP 현황
+				case "opt06" : case "opt07" :   
+					if (nC3 == 0) { 
+						contentsList.add("  " + ItemNo + "." + (++nC3 + nC2 + nC1) + " 출발지IP 현황");
+						reportData.put("C3", "  " + ItemNo + "." + (nC3 + nC2 + nC1) + " 출발지IP 현황");
+					}
+					break;
+				//목적지IP 현황
+				case "opt08" : case "opt09" :   
+					if (nC4 == 0) { 
+						contentsList.add("  " + ItemNo + "." + (++nC4 + nC3 + nC2 + nC1) + " 목적지IP 현황");
+						reportData.put("C4", "  " + ItemNo + "." + (nC4 + nC3 + nC2 + nC1) + " 목적지IP 현황");
+					}
+					break;
+				//서비스 현황
+				case "opt10" : case "opt11" :   
+					if (nC5 == 0) { 
+						contentsList.add("  " + ItemNo + "." + (++nC5 + nC4 + nC3 + nC2 + nC1) + " 서비스 현황");
+						reportData.put("C5", "  " + ItemNo + "." + (nC5 + nC4 + nC3 + nC2 + nC1) + " 서비스 현황");
+					}
+					break;
+				//성능정보
+				case "opt99" :
+					if (nC6 == 0) { 
+						contentsList.add("  " + ItemNo + "." + (++nC6 + nC5 + nC4 + nC3 + nC2 + nC1) + " 성능현황");
+						reportData.put("C6", "  " + ItemNo + "." + (nC6 + nC5 + nC4 + nC3 + nC2 + nC1) + " 성능현황");
+					}
+					break;
+			}
+			
+			switch (e.getKey()) {
 				case "opt01" :	//전체 탐지로그 발생추이
-					push("항목: 전체 탐지로그 발생추이");
+					reportData.put("opt01", push(contentsList, "    ", ItemNo, nC1, nS1++, " 전체 탐지로그 발생추이"));
 					All_DetectLog_Trend(reportData, -1, assetCode, sStartDay, sEndDay);
 					break;
 				case "opt02" :	//외부에서 내부로의 전체 탐지로그 발생추이 
-					push("항목: 외부에서 내부로의 전체 탐지로그 발생추이");
+					reportData.put("opt02", push(contentsList, "    ", ItemNo, nC1, nS1++, " 외부에서 내부로의 전체 탐지로그 발생추이"));
 					Direction_DetectLog_Trend(reportData, INBOUND, assetCode, sStartDay, sEndDay);
 					break;
 				case "opt03" : 	//내부에서 외부로의 전체 탐지로그 발생추이
-					push("항목: 내부에서 외부로의 전체 탐지로그 발생추이");
+					reportData.put("opt03", push(contentsList, "    ", ItemNo, nC1, nS1++, " 내부에서 외부로의 전체 탐지로그 발생추이"));
 					Direction_DetectLog_Trend(reportData, OUTBOUND, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt04" : 	//외부에서 내부로의 전체 탐지로그 & 이벤트 TOP (차트, 표)
-					push("항목: 외부에서 내부로의 전체 탐지로그 & 이벤트 TOP (차트, 표)");
+				case "opt04" : 	//외부에서 내부로의 전체 탐지로그 & 이벤트 TOP
+					reportData.put("opt04", push(contentsList, "    ", ItemNo, nC2 + nC1, nS2++, " 외부에서 내부로의 전체 탐지로그 & 이벤트 TOP"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd4")));
 					Direction_EventTopN(reportData, INBOUND, assetCode, sStartDay, sEndDay, nChoice, !StringUtil.isEmpty(hData.get("ck4")));
 					break;
-				case "opt05" : 	//내부에서 외부로의 전체 탐지로그 & 이벤트 TOP (차트, 표)
-					push("항목: 내부에서 외부로의 전체 탐지로그 & 이벤트 TOP (차트, 표)");
+				case "opt05" : 	//내부에서 외부로의 전체 탐지로그 & 이벤트 TOP
+					reportData.put("opt05", push(contentsList, "    ", ItemNo, nC2 + nC1, nS2++, " 내부에서 외부로의 전체 탐지로그 & 이벤트 TOP"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd5")));
 					Direction_EventTopN(reportData, OUTBOUND, assetCode, sStartDay, sEndDay, nChoice, !StringUtil.isEmpty(hData.get("ck5")));
 					break;
-				case "opt06" : 	//외부에서 내부로의 전체 탐지로그 & SIP TOP (표)
-					push("항목: 외부에서 내부로의 전체 탐지로그 & SIP TOP (표)");
+				case "opt06" : 	//외부에서 내부로의 전체 탐지로그 & SIP TOP
+					reportData.put("opt06", push(contentsList, "    ", ItemNo, nC3 + nC2 + nC1, nS3++, " 외부에서 내부로의 전체 탐지로그 & SIP TOP"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd6")));
 					ALL_DetectLog_TopN(reportData, INBOUND, assetCode, sStartDay, sEndDay, true, nChoice, !StringUtil.isEmpty(hData.get("ck6")));
 					break;
-				case "opt07" : 	//내부에서 외부로의 전체 탐지로그 & SIP TOP (표)
-					push("항목: 내부에서 외부로의 전체 탐지로그 & SIP TOP (표)");
+				case "opt07" : 	//내부에서 외부로의 전체 탐지로그 & SIP TOP
+					reportData.put("opt07", push(contentsList, "    ", ItemNo, nC3 + nC2 + nC1, nS3++, " 내부에서 외부로의 전체 탐지로그 & SIP TOP"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd7")));
 					ALL_DetectLog_TopN(reportData, OUTBOUND, assetCode, sStartDay, sEndDay, true, nChoice, !StringUtil.isEmpty(hData.get("ck7")));
 					break;
-				case "opt08" : 	//외부에서 내부로의 전체 탐지로그 & DIP TOP (표)
-					push("항목: 외부에서 내부로의 전체 탐지로그 & DIP TOP (표)");
+				case "opt08" : 	//외부에서 내부로의 전체 탐지로그 & DIP TOP
+					reportData.put("opt08", push(contentsList, "    ", ItemNo, nC4 + nC3 + nC2 + nC1, nS4++, " 외부에서 내부로의 전체 탐지로그 & DIP TOP"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd8")));
 					ALL_DetectLog_TopN(reportData, INBOUND, assetCode, sStartDay, sEndDay, false, nChoice, false);
 					break;
-				case "opt09" : 	//내부에서 외부로의 전체 탐지로그 & DIP TOP (표)
-					push("항목: 내부에서 외부로의 전체 탐지로그 & DIP TOP (표)");
+				case "opt09" : 	//내부에서 외부로의 전체 탐지로그 & DIP TOP
+					reportData.put("opt09", push(contentsList, "    ", ItemNo, nC4 + nC3 + nC2 + nC1, nS4++, " 내부에서 외부로의 전체 탐지로그 & DIP TOP"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd9")));
 					ALL_DetectLog_TopN(reportData, OUTBOUND, assetCode, sStartDay, sEndDay, false, nChoice, false);
 					break;
-				case "opt10" : 	//외부에서 내부로의 전체 탐지로그 & 서비스 TOP10 (차트)
-					push("항목: 외부에서 내부로의 전체 탐지로그 & 서비스 TOP10 (차트)");
+				case "opt10" : 	//외부에서 내부로의 전체 탐지로그 & 서비스 TOP10
+					reportData.put("opt10", push(contentsList, "    ", ItemNo, nC5 + nC4 + nC3 + nC2 + nC1, nS5++, " 외부에서 내부로의 전체 탐지로그 & 서비스 TOP10"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd10")));
 					ALL_ServiceTop10(reportData, INBOUND, assetCode, sStartDay, sEndDay, !StringUtil.isEmpty(hData.get("ck10")));
 					break;
-				case "opt11" : 	//내부에서 외부로의 전체 탐지로그 & 서비스 TOP10 (차트)
-					push("항목: 내부에서 외부로의 전체 탐지로그 & 서비스 TOP10 (차트)");
+				case "opt11" : 	//내부에서 외부로의 전체 탐지로그 & 서비스 TOP10
+					reportData.put("opt11", push(contentsList, "    ", ItemNo, nC5 + nC4 + nC3 + nC2 + nC1, nS5++, " 내부에서 외부로의 전체 탐지로그 & 서비스 TOP10"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd11")));
 					ALL_ServiceTop10(reportData, OUTBOUND, assetCode, sStartDay, sEndDay, !StringUtil.isEmpty(hData.get("ck11")));
 					break;
-					
+				case "opt99" :	//성능정보
+					//reportData.put("opt99", push(contentsList, "    ", ItemNo, nC6 + nC5 + nC4 + nC3 + nC2 + nC1, nS6++, " 성능 정보"));
+					PerformanceInfo(idsDao, reportData, ItemNo, nC6 + nC5 + nC4 + nC3 + nC2 + nC1, assetCode, sStartDay, sEndDay);
+					break;
 			}
 		}
 		return reportData;
@@ -150,9 +221,9 @@ public class IdsPeriodReport extends BaseReport {
     		for (String tDay : dayPeriod) {
 	    		HashMap<String, Object> map = new HashMap<String, Object>();
 	    		DBObject val = mapResult.get(String.valueOf(direction) + tDay);
-	    		map.put("gubun", saGubun[direction]);
-	    		map.put("day", Integer.valueOf(tDay));
-	    		map.put("count", val != null ? ((Number)val.get("count")).longValue() : 0);
+	    		map.put("series", saGubun[direction]);
+	    		map.put("category", tDay);
+	    		map.put("value", val != null ? ((Number)val.get("count")).longValue() : 0);
 
 	    		dataSource.add(map);
 	    		logger.debug(map.toString());
@@ -174,9 +245,9 @@ public class IdsPeriodReport extends BaseReport {
 		for (String tDay : dayPeriod) {
     		HashMap<String, Object> map = new HashMap<String, Object>();
     		DBObject val = mapResult.get(tDay);
-    		map.put("gubun", "전체");
-    		map.put("day", Integer.valueOf(tDay));
-    		map.put("count", val != null ? ((Number)val.get("count")).longValue() : 0);
+    		map.put("series", "전체");
+    		map.put("category", tDay);
+    		map.put("value", val != null ? ((Number)val.get("count")).longValue() : 0);
     		
     		dataSource.add(map);
     		logger.debug(map.toString());
@@ -206,9 +277,9 @@ public class IdsPeriodReport extends BaseReport {
 		for (String tDay : dayPeriod) {
     		HashMap<String, Object> map = new HashMap<String, Object>();
     		DBObject val = mapResult.get(tDay);
-    		map.put("gubun", "전체");
-    		map.put("day", Integer.valueOf(tDay));
-    		map.put("count", val != null ? ((Number)val.get("count")).longValue() : 0);
+    		map.put("series", "전체");
+    		map.put("category", tDay);
+    		map.put("value", val != null ? ((Number)val.get("count")).longValue() : 0);
     		
     		dataSource.add(map);
     		logger.debug(map.toString());
@@ -221,7 +292,7 @@ public class IdsPeriodReport extends BaseReport {
 		}
 	}
 	
-	//외부에서 내부로의 전체 탐지로그 & 이벤트 TOP (차트, 표)
+	//외부에서 내부로의 전체 탐지로그 & 이벤트 TOP
 	private void Direction_EventTopN(HashMap<String, Object> reportData, int nDirection, int assetCode, String sStartDay, String sEndDay, int nLimit, boolean bChk) throws Exception {
 		
 		List<HashMap<String, Object>> dataSource1 = new ArrayList<HashMap<String, Object>>();
@@ -308,9 +379,9 @@ public class IdsPeriodReport extends BaseReport {
 	    		for (String tDay : dayPeriod) {
 		    		DBObject val = mapResult.get(sMessage + "-" + tDay);
 		    		HashMap<String, Object> map = new HashMap<String, Object>();
-		    		map.put("gubun", sMessage);
-		    		map.put("day", Integer.valueOf(tDay));
-		    		map.put("count", val != null ? ((Number)val.get("count")).longValue() : 0);
+		    		map.put("series", sMessage);
+		    		map.put("category", tDay);
+		    		map.put("value", val != null ? ((Number)val.get("count")).longValue() : 0);
 		    		
 		    		dataSource3.add(map);
 		    		logger.debug(map.toString());
@@ -378,9 +449,9 @@ public class IdsPeriodReport extends BaseReport {
     	}
     	
     	if (bSrcIp) {
-	    	if (nDirection == INBOUND) { //외부에서 내부로의 전체 세션로그 & SIP TOP (표)
+	    	if (nDirection == INBOUND) { //외부에서 내부로의 전체 세션로그 & SIP TOP
 	    		reportData.put("OPT9_1", new SynthesisDataSource(dataSource1));
-	    	} else if (nDirection == OUTBOUND) { //내부에서 외부로의 전체 세션로그 & SIP TOP (표)
+	    	} else if (nDirection == OUTBOUND) { //내부에서 외부로의 전체 세션로그 & SIP TOP
 	    		reportData.put("OPT10_1", new SynthesisDataSource(dataSource1));
 	    	}
 	    	
@@ -424,10 +495,10 @@ public class IdsPeriodReport extends BaseReport {
 		    	}
 	    	}
     	} else {
-	    	if (nDirection == INBOUND) { //외부에서 내부로의 전체 탐지로그 & DIP TOP (표)
-	    		reportData.put("OPT11", new SynthesisDataSource(dataSource1));
-	    	} else if (nDirection == OUTBOUND) { //내부에서 외부로의 전체 탐지로그 & DIP TOP (표)
-	    		reportData.put("OPT12", new SynthesisDataSource(dataSource1));
+	    	if (nDirection == INBOUND) { //외부에서 내부로의 전체 탐지로그 & DIP TOP
+	    		reportData.put("OPT11_1", new SynthesisDataSource(dataSource1));
+	    	} else if (nDirection == OUTBOUND) { //내부에서 외부로의 전체 탐지로그 & DIP TOP
+	    		reportData.put("OPT12_1", new SynthesisDataSource(dataSource1));
 	    	}
     	}
 	}
@@ -510,15 +581,18 @@ public class IdsPeriodReport extends BaseReport {
     	}
 	}
 	
-	public void push(String msg) {
+	public String push(List<String> contentsList, String sIdt, int n1, int n2, int n3, String msg) {
+		String sTitle = sIdt + n1 + "." + n2 + "." + n3 + msg;    
+		contentsList.add(sTitle);
 		HashMap<String, Object> pMap = new HashMap<String, Object>();
-    	pMap.put("message", msg);
+    	pMap.put("message", sTitle);
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			userInfo.getWsSession().sendMessage(new TextMessage(mapper.writeValueAsString(pMap)));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return sTitle;
 	}
 	
 }

@@ -1,6 +1,8 @@
 package com.cyberone.report;
 
+import java.io.InputStream;
 import java.net.URL;
+import java.util.Properties;
 
 import com.maxmind.geoip.LookupService;
 
@@ -17,6 +19,8 @@ public class Constants {
 	public static final int	DTCTGEAR_SNORT = 3;
 	
     private static LookupService cl = null;
+    
+    private static Boolean bUseServiceDesk = null;
     
 	public static String getReportTypeName(String type){
 		String result;
@@ -44,6 +48,20 @@ public class Constants {
 			return "";
 		}
 		return cl.getCountry(sIp).getCode().equals("--") ? "-" : cl.getCountry(sIp).getCode();
+	}
+
+	public static boolean isUseServiceDesk() {
+		try {
+			if (bUseServiceDesk == null) {
+				Properties properties = new Properties();
+				InputStream inputStream= Constants.class.getClassLoader().getResourceAsStream("server.properties");
+				properties.load(inputStream);
+				bUseServiceDesk = Boolean.parseBoolean(properties.getProperty("useServiceDesk", "false"));
+			}
+		} catch (Exception e) {
+			return false;
+		}
+		return bUseServiceDesk;
 	}
 	
 }

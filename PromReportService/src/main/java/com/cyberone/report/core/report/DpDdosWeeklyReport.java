@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -36,8 +39,15 @@ public class DpDdosWeeklyReport extends BaseReport {
 	 * DDoS_DP 주간보고서 통계데이타 생성
 	 */
 	@SuppressWarnings("unchecked")
-	public HashMap<String, Object> getDataSource(String sReportType, String sSearchDate, HashMap<String, Object> hMap) throws Exception {
+	public HashMap<String, Object> getDataSource(String sReportType, String sSearchDate, HashMap<String, Object> hMap, int ItemNo, List<String> contentsList) throws Exception {
 		logger.debug("DDoS_DP 주간보고서 통계데이타 생성");
+		
+		HashMap<String, Object> reportData = new HashMap<String, Object>();
+		
+		reportData.put("reportType", sReportType);
+		
+		contentsList.add(ItemNo + ". " + (String)hMap.get("assetName") + " 장비의 주간 탐지로그 분석");
+		reportData.put("RT", ItemNo + ". " + (String)hMap.get("assetName") + " 장비의 주간 탐지로그 분석");
 		
 		String sStartDay = "";
 		String sEndDay = "";
@@ -57,115 +67,177 @@ public class DpDdosWeeklyReport extends BaseReport {
 		if (hFormMap == null) {
 			DBObject dbObj = ddosDao.selectAutoReportForm(Integer.parseInt(sReportType), assetCode);
 			hData = (new ObjectMapper()).readValue(StringUtil.convertString(dbObj.get("formData")), HashMap.class);
+			
+			List<Map.Entry<String,Object>> list = new LinkedList<>(hData.entrySet());
+			Collections.sort(list, new Comparator<Map.Entry<String, Object>>() {
+		        @Override
+		        public int compare(Map.Entry<String, Object> o1, Map.Entry<String, Object> o2) {
+		            return (o1.getKey()).compareTo(o2.getKey());
+		        }
+		    });
+			hData = new LinkedHashMap<>();
+		    for (Map.Entry<String, Object> entry : list) {
+		    	hData.put(entry.getKey(), entry.getValue());
+		    }
 		} else {
 			hData = (HashMap<String,Object>)hFormMap.get("data");
 			sEtc = StringUtil.convertString(hFormMap.get("etc"));
 		}
 
-		HashMap<String, Object> reportData = new HashMap<String, Object>();
+		int nC1 = 0, nC2 = 0, nC3 = 0, nC4 = 0, nC5 = 0, nC6 = 0;
+		int nS1 = 1, nS2 = 1, nS3 = 1, nS4 = 1, nS5 = 1, nS6 = 1;
 		
 		int nChoice = 0;
 		for (Entry<String, Object> e : hData.entrySet()) {
 			
 			switch (e.getKey()) {
+				//탐지로그 발생 추이
+				case "opt01" : case "opt02" : case "opt03" : case "opt04" : case "opt05" : case "opt06" : case "opt07" : 
+					if (nC1 == 0) { 
+						contentsList.add("  " + ItemNo + "." + ++nC1 + " 탐지로그 발생추이");
+						reportData.put("C1", "  " + ItemNo + "." + nC1 + " 탐지로그 발생추이");
+					}
+					break;
+				//이벤트 현황
+				case "opt08" : case "opt09" : case "opt10" : case "opt11" : case "opt12" : case "opt13" :  
+					if (nC2 == 0) { 
+						contentsList.add("  " + ItemNo + "." + (++nC2 + nC1) + " 이벤트 현황");
+						reportData.put("C2", "  " + ItemNo + "." + (nC2 + nC1) + " 이벤트 현황");
+					}
+					break;
+				//출발지IP 현황
+				case "opt14" : case "opt15" : case "opt16" :  
+					if (nC3 == 0) { 
+						contentsList.add("  " + ItemNo + "." + (++nC3 + nC2 + nC1) + " 출발지IP 현황");
+						reportData.put("C3", "  " + ItemNo + "." + (nC3 + nC2 + nC1) + " 출발지IP 현황");
+					}
+					break;
+				//목적지IP 현황
+				case "opt17" : case "opt18" : case "opt19" :  
+					if (nC4 == 0) { 
+						contentsList.add("  " + ItemNo + "." + (++nC4 + nC3 + nC2 + nC1) + " 목적지IP 현황");
+						reportData.put("C4", "  " + ItemNo + "." + (nC4 + nC3 + nC2 + nC1) + " 목적지IP 현황");
+					}
+					break;
+				//서비스 현황
+				case "opt20" : case "opt21" : case "opt22" :  
+					if (nC5 == 0) { 
+						contentsList.add("  " + ItemNo + "." + (++nC5 + nC4 + nC3 + nC2 + nC1) + " 서비스 현황");
+						reportData.put("C5", "  " + ItemNo + "." + (nC5 + nC4 + nC3 + nC2 + nC1) + " 서비스 현황");
+					}
+					break;
+				//성능정보
+				case "opt99" :
+					if (nC6 == 0) { 
+						contentsList.add("  " + ItemNo + "." + (++nC6 + nC5 + nC4 + nC3 + nC2 + nC1) + " 성능현황");
+						reportData.put("C6", "  " + ItemNo + "." + (nC6 + nC5 + nC4 + nC3 + nC2 + nC1) + " 성능현황");
+					}
+					break;
+			}
+			
+			switch (e.getKey()) {
 				case "opt01" :	//전체 탐지로그 발생추이 - 로그건
-					push("항목: 전체 탐지로그 발생추이 - 로그건");
+					reportData.put("opt01", push(contentsList, "    ", ItemNo, nC1, nS1++, " 전체 탐지로그 발생추이 - 로그건"));
 					All_DetectLog_Trend(reportData, assetCode, sStartDay, sEndDay);
 					break;
 				case "opt02" :	//전체 탐지로그 발생추이 - 유형건 
-					push("항목: 전체 탐지로그 발생추이 - 유형건");
+					reportData.put("opt02", push(contentsList, "    ", ItemNo, nC1, nS1++, " 전체 탐지로그 발생추이 - 유형건"));
 					All_DetectGroup_Trend(reportData, assetCode, sStartDay, sEndDay);
 					break;
 				case "opt03" : 	//전체 공격규모 추이 - 로그건
-					push("항목: 전체 공격규모 추이 - 로그건");
+					reportData.put("opt03", push(contentsList, "    ", ItemNo, nC1, nS1++, " 전체 공격규모 추이 - 로그건"));
 					All_DetectAttack_Trend(reportData, assetCode, sStartDay, sEndDay);
 					break;
 				case "opt04" :	//전체 공격규모 추이 - 유형 & Drop Packet Cnt
-					push("항목: 전체 공격규모 추이 - 유형 & Drop Packet Cnt");
+					reportData.put("opt04", push(contentsList, "    ", ItemNo, nC1, nS1++, " 전체 공격규모 추이 - 유형 & Drop Packet Cnt"));
 					Group_DetectAttack_Trend(reportData, assetCode, sStartDay, sEndDay, "pktCnt");
 					break;
 				case "opt05" : 	//전체 공격규모 추이 - 유형 & BandWidth
-					push("항목: 전체 공격규모 추이 - 유형 & BandWidth");
+					reportData.put("opt05", push(contentsList, "    ", ItemNo, nC1, nS1++, " 전체 공격규모 추이 - 유형 & BandWidth"));
 					Group_DetectAttack_Trend(reportData, assetCode, sStartDay, sEndDay, "bandwidth");
 					break;
-				case "opt06" : 	//전체 공격규모 추이 - Drop packet Cnt 비교 (차트)
-					push("항목: 전체 공격규모 추이 - Drop packet Cnt 비교 (차트)");
+				case "opt06" : 	//전체 공격규모 추이 - Drop packet Cnt 비교
+					reportData.put("opt06", push(contentsList, "    ", ItemNo, nC1, nS1++, " 전체 공격규모 추이 - Drop packet Cnt 비교"));
 					Compare_DetectAttack_Trend(reportData, assetCode, sStartDay, sEndDay, "pktCnt");
 					break;
-				case "opt07" : 	//전체 공격규모 추이 - Bandwidth 비교 (차트)
-					push("항목: 전체 공격규모 추이 - Bandwidth 비교 (차트)");
+				case "opt07" : 	//전체 공격규모 추이 - Bandwidth 비교
+					reportData.put("opt07", push(contentsList, "    ", ItemNo, nC1, nS1++, " 전체 공격규모 추이 - Bandwidth 비교"));
 					Compare_DetectAttack_Trend(reportData, assetCode, sStartDay, sEndDay, "bandwidth");
 					break;
-				case "opt08" : 	//전체 탐지로그 & 공격 유형별 TOP#10 (차트, 표)
-					push("항목: 전체 탐지로그 & 공격 유형별 TOP#10 (차트, 표)");
+				case "opt08" : 	//전체 탐지로그 & 공격 유형별 TOP#10
+					reportData.put("opt08", push(contentsList, "    ", ItemNo, nC2 + nC1, nS2++, " 전체 탐지로그 & 공격 유형별 TOP#10"));
 					Attact_GroupTopN(reportData, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt09" : 	//전체 탐지로그 & 이벤트 TOP - 로그건 (차트, 표)
-					push("항목: 전체 탐지로그 & 이벤트 TOP - 로그건 (차트, 표)");
+				case "opt09" : 	//전체 탐지로그 & 이벤트 TOP - 로그건
+					reportData.put("opt09", push(contentsList, "    ", ItemNo, nC2 + nC1, nS2++, " 전체 탐지로그 & 이벤트 TOP - 로그건"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd9")));
 					All_EventTopN(reportData, assetCode, sStartDay, sEndDay, "count", nChoice);
 					break;
-				case "opt10" : 	//전체 탐지로그 & 이벤트 TOP - Drop Packet Cnt (차트, 표)
-					push("항목: 전체 탐지로그 & 이벤트 TOP - Drop Packet Cnt (차트, 표)");
+				case "opt10" : 	//전체 탐지로그 & 이벤트 TOP - Drop Packet Cnt
+					reportData.put("opt10", push(contentsList, "    ", ItemNo, nC2 + nC1, nS2++, " 전체 탐지로그 & 이벤트 TOP - Drop Packet Cnt"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd10")));
 					All_EventTopN(reportData, assetCode, sStartDay, sEndDay, "pktCnt", nChoice);
 					break;
-				case "opt11" : 	//전체 탐지로그 & 이벤트 TOP - Bandwidth (차트, 표)
-					push("항목: 전체 탐지로그 & 이벤트 TOP - Bandwidth (차트, 표)");
+				case "opt11" : 	//전체 탐지로그 & 이벤트 TOP - Bandwidth
+					reportData.put("opt11", push(contentsList, "    ", ItemNo, nC2 + nC1, nS2++, " 전체 탐지로그 & 이벤트 TOP - Bandwidth"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd11")));
 					All_EventTopN(reportData, assetCode, sStartDay, sEndDay, "bandWidth", nChoice);
 					break;
-				case "opt12" : 	//전체 탐지로그 & 신규 탐지 이벤트 현황 (차트, 표)
-					push("항목: 전체 탐지로그 & 신규 탐지 이벤트 현황 (차트, 표)");
+				case "opt12" : 	//전체 탐지로그 & 신규 탐지 이벤트 현황
+					reportData.put("opt12", push(contentsList, "    ", ItemNo, nC2 + nC1, nS2++, " 전체 탐지로그 & 신규 탐지 이벤트 현황"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd12")));
 					New_DetectLog_Condition(reportData, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt13" : 	//전체 탐지로그 & 이전대비 2배증가된 이벤트 현황 (차트, 표)
-					push("항목: 전체 탐지로그 & 이전대비 2배증가된 이벤트 현황 (차트, 표)");
+				case "opt13" : 	//전체 탐지로그 & 이전대비 2배증가된 이벤트 현황
+					reportData.put("opt13", push(contentsList, "    ", ItemNo, nC2 + nC1, nS2++, " 전체 탐지로그 & 이전대비 2배증가된 이벤트 현황"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd13")));
 					Double_DetectLog_Condition(reportData, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt14" : 	//전체 탐지로그 & SIP TOP - 로그건 (표)
-					push("항목: 전체 탐지로그 & SIP TOP - 로그건 (표)");
+				case "opt14" : 	//전체 탐지로그 & SIP TOP - 로그건
+					reportData.put("opt14", push(contentsList, "    ", ItemNo, nC3 + nC2 + nC1, nS3++, " 전체 탐지로그 & SIP TOP - 로그건"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd14")));
 					DetectLog_IpTopN(reportData, assetCode, sStartDay, sEndDay, true, "count", nChoice, !StringUtil.isEmpty(hData.get("ck14")));
 					break;
-				case "opt15" : 	//전체 탐지로그 & SIP TOP - Drop Packet Cnt (표)
-					push("항목: 전체 탐지로그 & SIP TOP - Drop Packet Cnt (표)");
+				case "opt15" : 	//전체 탐지로그 & SIP TOP - Drop Packet Cnt
+					reportData.put("opt15", push(contentsList, "    ", ItemNo, nC3 + nC2 + nC1, nS3++, " 전체 탐지로그 & SIP TOP - Drop Packet Cnt"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd15")));
 					DetectLog_IpTopN(reportData, assetCode, sStartDay, sEndDay, true, "pktCnt", nChoice, !StringUtil.isEmpty(hData.get("ck15")));
 					break;
-				case "opt16" : 	//전체 탐지로그 & SIP TOP - BandWidth (표)
-					push("항목: 전체 탐지로그 & SIP TOP - BandWidth (표)");
+				case "opt16" : 	//전체 탐지로그 & SIP TOP - BandWidth
+					reportData.put("opt16", push(contentsList, "    ", ItemNo, nC3 + nC2 + nC1, nS3++, " 전체 탐지로그 & SIP TOP - BandWidth"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd16")));
 					DetectLog_IpTopN(reportData, assetCode, sStartDay, sEndDay, true, "bandWidth", nChoice, !StringUtil.isEmpty(hData.get("ck16")));
 					break;
-				case "opt17" : 	//전체 탐지로그 & DIP TOP - 로그건 (표)
-					push("항목: 전체 탐지로그 & DIP TOP - 로그건 (표)");
+				case "opt17" : 	//전체 탐지로그 & DIP TOP - 로그건
+					reportData.put("opt17", push(contentsList, "    ", ItemNo, nC4 + nC3 + nC2 + nC1, nS4++, " 전체 탐지로그 & DIP TOP - 로그건"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd17")));
 					DetectLog_IpTopN(reportData, assetCode, sStartDay, sEndDay, false, "count", nChoice, false);
 					break;
-				case "opt18" : 	//전체 탐지로그 & DIP TOP - Drop Packet Cnt (표)
-					push("항목: 전체 탐지로그 & DIP TOP - Drop Packet Cnt (표)");
+				case "opt18" : 	//전체 탐지로그 & DIP TOP - Drop Packet Cnt
+					reportData.put("opt18", push(contentsList, "    ", ItemNo, nC4 + nC3 + nC2 + nC1, nS4++, " 전체 탐지로그 & DIP TOP - Drop Packet Cnt"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd18")));
 					DetectLog_IpTopN(reportData, assetCode, sStartDay, sEndDay, false, "pktCnt", nChoice, false);
 					break;
-				case "opt19" : 	//전체 탐지로그 & DIP TOP - BandWidth (표)
-					push("항목: 전체 탐지로그 & DIP TOP - BandWidth (표)");
+				case "opt19" : 	//전체 탐지로그 & DIP TOP - BandWidth
+					reportData.put("opt19", push(contentsList, "    ", ItemNo, nC4 + nC3 + nC2 + nC1, nS4++, " 전체 탐지로그 & DIP TOP - BandWidth"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd19")));
 					DetectLog_IpTopN(reportData, assetCode, sStartDay, sEndDay, false, "bandWidth", nChoice, false);
 					break;
-				case "opt20" : 	//전체 탐지로그 & 서비스 TOP10 - 로그건 (차트, 표)
-					push("항목: 전체 탐지로그 & 서비스 TOP10 - 로그건 (차트, 표)");
+				case "opt20" : 	//전체 탐지로그 & 서비스 TOP10 - 로그건
+					reportData.put("opt20", push(contentsList, "    ", ItemNo, nC5 + nC4 + nC3 + nC2 + nC1, nS5++, " 전체 탐지로그 & 서비스 TOP10 - 로그건"));
 					DetectLog_ServiceTopN(reportData, assetCode, sStartDay, sEndDay, "count");
 					break;
-				case "opt21" : 	//전체 탐지로그 & 서비스 TOP10 - Drop Packet Cnt (차트, 표)
-					push("항목: 전체 탐지로그 & 서비스 TOP10 - Drop Packet Cnt (차트, 표)");
+				case "opt21" : 	//전체 탐지로그 & 서비스 TOP10 - Drop Packet Cnt
+					reportData.put("opt21", push(contentsList, "    ", ItemNo, nC5 + nC4 + nC3 + nC2 + nC1, nS5++, " 전체 탐지로그 & 서비스 TOP10 - Drop Packet Cnt"));
 					DetectLog_ServiceTopN(reportData, assetCode, sStartDay, sEndDay, "pktCnt");
 					break;
-				case "opt22" : 	//전체 탐지로그 & 서비스 TOP10 - BandWidth (차트, 표)
-					push("항목: 전체 탐지로그 & 서비스 TOP10 - BandWidth (차트, 표)");
+				case "opt22" : 	//전체 탐지로그 & 서비스 TOP10 - BandWidth
+					reportData.put("opt22", push(contentsList, "    ", ItemNo, nC5 + nC4 + nC3 + nC2 + nC1, nS5++, " 전체 탐지로그 & 서비스 TOP10 - BandWidth"));
 					DetectLog_ServiceTopN(reportData, assetCode, sStartDay, sEndDay, "bandWidth");
+					break;
+				case "opt99" :	//성능정보
+					//reportData.put("opt99", push(contentsList, "    ", ItemNo, nC6 + nC5 + nC4 + nC3 + nC2 + nC1, nS6++, " 성능 정보"));
+					PerformanceInfo(ddosDao, reportData, ItemNo, nC6 + nC5 + nC4 + nC3 + nC2 + nC1, assetCode, sStartDay, sEndDay);
 					break;
 			}
 		}
@@ -196,9 +268,9 @@ public class DpDdosWeeklyReport extends BaseReport {
     		for (String tDay : dayPeriod) {
 	    		HashMap<String, Object> map = new HashMap<String, Object>();
 	    		DBObject val = mapResult.get(String.valueOf(action) + tDay);
-	    		map.put("gubun", saGubun[action]);
-	    		map.put("day", Integer.valueOf(tDay));
-	    		map.put("count", val != null ? ((Number)val.get("count")).longValue() : 0);
+	    		map.put("series", saGubun[action]);
+	    		map.put("category", tDay);
+	    		map.put("value", val != null ? ((Number)val.get("count")).longValue() : 0);
 
 	    		dataSource.add(map);
 	    		logger.debug(map.toString());
@@ -220,9 +292,9 @@ public class DpDdosWeeklyReport extends BaseReport {
 		for (String tDay : dayPeriod) {
     		HashMap<String, Object> map = new HashMap<String, Object>();
     		DBObject val = mapResult.get(tDay);
-    		map.put("gubun", "전체");
-    		map.put("day", Integer.valueOf(tDay));
-    		map.put("count", val != null ? ((Number)val.get("count")).longValue() : 0);
+    		map.put("series", "전체");
+    		map.put("category", tDay);
+    		map.put("value", val != null ? ((Number)val.get("count")).longValue() : 0);
     		
     		dataSource.add(map);
     		logger.debug(map.toString());
@@ -259,9 +331,9 @@ public class DpDdosWeeklyReport extends BaseReport {
     		for (String tDay : dayPeriod) {
 	    		HashMap<String, Object> map = new HashMap<String, Object>();
 	    		DBObject val = mapResult.get(sGroup + "-" + tDay);
-	    		map.put("gubun", sGroup);
-	    		map.put("day", Integer.valueOf(tDay));
-	    		map.put("count", val != null ? ((Number)val.get("count")).longValue() : 0);
+	    		map.put("series", sGroup);
+	    		map.put("category", tDay);
+	    		map.put("value", val != null ? ((Number)val.get("count")).longValue() : 0);
 
 	    		dataSource.add(map);
 	    		logger.debug(map.toString());
@@ -292,9 +364,9 @@ public class DpDdosWeeklyReport extends BaseReport {
 		for (String tDay : dayPeriod) {
     		HashMap<String, Object> map = new HashMap<String, Object>();
     		DBObject val = mapResult.get(tDay);
-    		map.put("gubun", "Drop Packet");
-    		map.put("day", Integer.valueOf(tDay));
-    		map.put("count", val != null ? ((Number)val.get("pktCnt")).longValue() : 0);
+    		map.put("series", "Drop Packet");
+    		map.put("category", tDay);
+    		map.put("value", val != null ? ((Number)val.get("pktCnt")).longValue() : 0);
 
     		dataSource.add(map);
     		logger.debug(map.toString());
@@ -315,9 +387,9 @@ public class DpDdosWeeklyReport extends BaseReport {
 		for (String tDay : dayPeriod) {
     		HashMap<String, Object> map = new HashMap<String, Object>();
     		DBObject val = mapResult.get(tDay);
-    		map.put("gubun", "Bandwidth");
-    		map.put("day", Integer.valueOf(tDay));
-    		map.put("count", val != null ? ((Number)val.get("bandwidth")).longValue() : 0);
+    		map.put("series", "Bandwidth");
+    		map.put("category", tDay);
+    		map.put("value", val != null ? ((Number)val.get("bandwidth")).longValue() : 0);
 
     		dataSource.add(map);
     		logger.debug(map.toString());
@@ -353,9 +425,9 @@ public class DpDdosWeeklyReport extends BaseReport {
     		for (String tDay : dayPeriod) {
 	    		HashMap<String, Object> map = new HashMap<String, Object>();
 	    		DBObject val = mapResult.get(sGroup + "-" + tDay);
-	    		map.put("gubun", sGroup);
-	    		map.put("day", Integer.valueOf(tDay));
-	    		map.put("count", val != null ? ((Number)val.get(sSortField)).longValue() : 0);
+	    		map.put("series", sGroup);
+	    		map.put("category", tDay);
+	    		map.put("value", val != null ? ((Number)val.get(sSortField)).longValue() : 0);
 
 	    		dataSource.add(map);
 	    		logger.debug(map.toString());
@@ -392,9 +464,9 @@ public class DpDdosWeeklyReport extends BaseReport {
 			nDayCount++;
     		HashMap<String, Object> map = new HashMap<String, Object>();
     		DBObject val = mapResult.get(tDay);
-    		map.put("gubun", (nDayCount <= 7) ? "전주" : "금주");
-    		map.put("day", Integer.valueOf(tDay));
-    		map.put("count", val != null ? ((Number)val.get(sSortField)).longValue() : 0);
+    		map.put("series", (nDayCount <= 7) ? "전주" : "금주");
+    		map.put("category", tDay);
+    		map.put("value", val != null ? ((Number)val.get(sSortField)).longValue() : 0);
     		
     		dataSource.add(map);
     		logger.debug(map.toString());
@@ -638,9 +710,9 @@ public class DpDdosWeeklyReport extends BaseReport {
     		for (String tDay : dayPeriod) {
 	    		DBObject pVal = mapResult.get(tDay);
 	    		HashMap<String, Object> map = new HashMap<String, Object>();
-	    		map.put("gubun", sMessage);
-	    		map.put("day", Integer.valueOf(tDay));
-	    		map.put("count", pVal != null ? ((Number)pVal.get("count")).longValue() : 0);
+	    		map.put("series", sMessage);
+	    		map.put("category", tDay);
+	    		map.put("value", pVal != null ? ((Number)pVal.get("count")).longValue() : 0);
 	    		
 	    		dataSource1.add(map);
 	    		logger.debug(map.toString());
@@ -731,9 +803,9 @@ public class DpDdosWeeklyReport extends BaseReport {
     		for (String tDay : dayPeriod) {
 	    		DBObject val = mapResult.get(tDay);
 	    		HashMap<String, Object> map = new HashMap<String, Object>();
-	    		map.put("gubun", sMessage);
-	    		map.put("day", Integer.valueOf(tDay));
-	    		map.put("count", val != null ? ((Number)val.get("count")).longValue() : 0);
+	    		map.put("series", sMessage);
+	    		map.put("category", tDay);
+	    		map.put("value", val != null ? ((Number)val.get("count")).longValue() : 0);
 	    		
 	    		dataSource1.add(map);
 	    		logger.debug(map.toString());
@@ -948,15 +1020,18 @@ public class DpDdosWeeklyReport extends BaseReport {
     	}
 	}
 	
-	public void push(String msg) {
+	public String push(List<String> contentsList, String sIdt, int n1, int n2, int n3, String msg) {
+		String sTitle = sIdt + n1 + "." + n2 + "." + n3 + msg;    
+		contentsList.add(sTitle);
 		HashMap<String, Object> pMap = new HashMap<String, Object>();
-    	pMap.put("message", msg);
+    	pMap.put("message", sTitle);
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			userInfo.getWsSession().sendMessage(new TextMessage(mapper.writeValueAsString(pMap)));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return sTitle;
 	}
 	
 }

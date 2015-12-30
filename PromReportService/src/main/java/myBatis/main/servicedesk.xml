@@ -6,6 +6,7 @@
         SELECT
               B.cscoCd,
               B.cscoNm,
+              B.statMonthBaseDay,
               A.eqpmNm,
               A.eqpmIp,
               A.rqrNm,
@@ -28,89 +29,84 @@
     <select id="selectWorkCondition" resultType="java.util.HashMap">
 		SELECT rptTp, count(*) AS CNT
 		FROM ScrtCtrlRptTbl
-        WHERE cpcgDtime BETWEEN #{startDtime} AND #{endDtime}
-           AND cpcgYn = 'y'
+        WHERE regDtime BETWEEN #{startDtime} AND #{endDtime}
+           AND procSt NOT IN (1, 9)
            AND cscoCd = #{cscoCd}   
         GROUP BY rptTp    
     </select>   
 
     <select id="selectWorkDetail" resultType="java.util.HashMap">
 		SELECT
-		    rptTp, DATE_FORMAT(cpcgDtime, '%Y-%m-%d') AS dateValue, rptTit AS contValue
+		    rptTp, DATE_FORMAT(regDtime, '%m-%d') AS dateValue, rptTit AS contValue
 		FROM ScrtCtrlRptTbl
 		WHERE 1 = 1
-		    AND cpcgDtime BETWEEN #{startDtime} AND #{endDtime}
-		    AND cpcgYn = 'y'
+		    AND regDtime BETWEEN #{startDtime} AND #{endDtime}
+		    AND procSt NOT IN (1, 9)
 		    AND cscoCd = #{cscoCd}
-		ORDER BY cpcgDtime ASC
+		ORDER BY regDtime ASC
 	</select>
 
 	<select id="selectOperCondition" resultType="java.util.HashMap">
-		SELECT
-		    SCT, CNT
-		FROM (
-		    SELECT dryTp AS SCT, COUNT(*) AS CNT
-		    FROM WkDryTbl
-		    WHERE procDtime BETWEEN #{startDtime} AND #{endDtime}
-		        AND procSt = '2'
-		        AND dryTp in ('6','7','8')
-		        AND cscoCd = #{cscoCd}
-		    GROUP BY dryTp
-		            
-		    UNION ALL
-		
-		    SELECT reqSct AS SCT, COUNT(*) AS CNT
-		    FROM CscoFwReqTbl A LEFT JOIN FwSetTbl B ON A.tcktCd = B.tcktCd
-		    WHERE A.cpcgDtime BETWEEN #{startDtime} AND #{endDtime}
-		        AND A.cpcgYn = 'y'
-		        AND A.disposer IS NOT NULL
-		        AND A.procDtime IS NOT NULL
-		        AND A.cscoCd = #{cscoCd}
-		) T
+        SELECT
+            SCT, CNT
+        FROM (
+            SELECT A.dryTp AS SCT, COUNT(*) AS CNT
+            FROM WkDryTbl A, BbsBaseTbl B
+            WHERE A.bbsId = B.bbsId
+                AND B.regDtime BETWEEN #{startDtime} AND #{endDtime}
+                AND A.dryTp IN ('6','7','8')
+                AND A.cscoCd = #{cscoCd}
+            GROUP BY A.dryTp
+                    
+            UNION ALL
+        
+            SELECT A.reqSct AS SCT, COUNT(*) AS CNT
+            FROM CscoFwReqTbl A LEFT JOIN FwSetTbl B ON A.tcktCd = B.tcktCd
+            WHERE A.regDtime BETWEEN #{startDtime} AND #{endDtime}
+                AND procSt NOT IN (1, 9)
+                AND A.cscoCd = #{cscoCd}
+        ) T
 	</select>
 
 	<select id="selectOperDetail" resultType="java.util.HashMap">
-		SELECT
-		    SCT, DATE_FORMAT(DT, '%Y-%m-%d') AS dateValue, contValue, eqpmNm, srcIp, destIp, destPort, prtcl, execSct
-		FROM (
-			SELECT A.dryTp AS SCT, A.procDtime AS DT, B.bbsTit AS contValue, IF(ISNULL(A.tgtEqpmNm)||LENGTH(A.tgtEqpmNm)=0, A.etcEqpm, A.tgtEqpmNm) AS eqpmNm, '' AS srcIp, '' AS destIp, '' AS destPort, '' AS prtcl, '' AS execSct
-			FROM WkDryTbl A LEFT JOIN BbsBaseTbl B ON A.bbsId = B.bbsId
-			WHERE A.procDtime BETWEEN #{startDtime} AND #{endDtime}
-			    AND A.procSt = '2'
-			    AND A.dryTp in ('6','7','8')
-			    AND cscoCd = #{cscoCd}
-			
-			UNION ALL
-			             
-			SELECT A.reqSct AS SCT, A.cpcgDtime AS DT, '' AS contValue, C.rqrNm AS eqpmNm, B.srcIp AS srcIp, B.destIp AS destIp, B.destPort AS destPort, B.prtcl AS prtcl, B.execSct AS execSct
-			FROM CscoFwReqTbl A LEFT JOIN FwSetTbl B ON A.tcktCd = B.tcktCd LEFT JOIN CscoEqpmTbl C ON B.cscoCd = C.cscoCd AND B.eqpmCd = C.eqpmCd
-			WHERE A.cpcgDtime BETWEEN #{startDtime} AND #{endDtime}
-			    AND A.cpcgYn = 'y'
-			    AND A.disposer IS NOT NULL
-			    AND A.procDtime IS NOT NULL
-			    AND A.cscoCd = #{cscoCd}
-		) T
-		ORDER BY T.DT
+        SELECT
+            SCT, DATE_FORMAT(DT, '%m-%d') AS dateValue, contValue, eqpmNm, srcIp, destIp, destPort, prtcl, execSct
+        FROM (
+            SELECT A.dryTp AS SCT, B.regDtime AS DT, B.bbsTit AS contValue, IF(ISNULL(A.tgtEqpmNm)||LENGTH(A.tgtEqpmNm)=0, A.etcEqpm, A.tgtEqpmNm) AS eqpmNm, '' AS srcIp, '' AS destIp, '' AS destPort, '' AS prtcl, '' AS execSct
+            FROM WkDryTbl A LEFT JOIN BbsBaseTbl B ON A.bbsId = B.bbsId
+            WHERE B.regDtime BETWEEN #{startDtime} AND #{endDtime}
+                AND A.dryTp in ('6','7','8')
+                AND A.cscoCd = #{cscoCd}
+            
+            UNION ALL
+                         
+            SELECT A.reqSct AS SCT, A.regDtime AS DT, '' AS contValue, C.rqrNm AS eqpmNm, B.srcIp AS srcIp, B.destIp AS destIp, B.destPort AS destPort, B.prtcl AS prtcl, B.execSct AS execSct
+            FROM CscoFwReqTbl A LEFT JOIN FwSetTbl B ON A.tcktCd = B.tcktCd LEFT JOIN CscoEqpmTbl C ON B.cscoCd = C.cscoCd AND B.eqpmCd = C.eqpmCd
+            WHERE A.regDtime BETWEEN #{startDtime} AND #{endDtime}
+                AND procSt NOT IN (1, 9)
+                AND A.cscoCd = #{cscoCd}
+        ) T
+        ORDER BY T.DT
 	</select>
 	
     <select id="selectRequestCondition" resultType="java.util.HashMap">
         SELECT reqSct, count(*) AS CNT
         FROM CscoReqTbl
-        WHERE cpcgDtime BETWEEN #{startDtime} AND #{endDtime}
-           AND cpcgYn = 'y'
+        WHERE regDtime BETWEEN #{startDtime} AND #{endDtime}
+           AND procSt NOT IN (1, 9)
            AND cscoCd = #{cscoCd}   
         GROUP BY reqSct    
     </select>   
 
     <select id="selectRequestDetail" resultType="java.util.HashMap">
         SELECT
-            reqSct, DATE_FORMAT(cpcgDtime, '%Y-%m-%d') AS dateValue, reqTit AS contValue
+            reqSct, DATE_FORMAT(regDtime, '%m-%d') AS dateValue, reqTit AS contValue
         FROM CscoReqTbl
         WHERE 1 = 1
-            AND cpcgDtime BETWEEN #{startDtime} AND #{endDtime}
-            AND cpcgYn = 'y'
+            AND regDtime BETWEEN #{startDtime} AND #{endDtime}
+            AND procSt NOT IN (1, 9)
             AND cscoCd = #{cscoCd}
-        ORDER BY cpcgDtime ASC
+        ORDER BY regDtime ASC
     </select>
 	
 	<select id="selectNewsCondition" resultType="java.util.HashMap">	
@@ -231,7 +227,7 @@
         SELECT
             A.esmAssetNm
             ,B.rqrNm
-            ,DATE_FORMAT(A.occurDtime, '%Y-%m-%d') AS dateValue            
+            ,DATE_FORMAT(A.occurDtime, '%m-%d') AS dateValue            
             ,A.esmRuleGroupPrntNm
             ,A.esmRuleGroupNm
             ,A.srcIp
@@ -429,7 +425,7 @@
 	
     <select id="selectGearTypeDetail" resultType="java.util.HashMap">
         SELECT
-            DATE_FORMAT(A.occurDtime, '%Y-%m-%d') AS dateValue
+            DATE_FORMAT(A.occurDtime, '%m-%d') AS dateValue
             ,A.etcFields
             ,A.esmAssetNm
             ,B.rqrNm

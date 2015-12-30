@@ -129,92 +129,93 @@ $(document).ready(function(){
   <input type="checkbox" id="opt04" name="opt04"><label for="opt04"> 보안정보 제공현황 (표)</label>
 </div>
 
-<h2 style="margin-top:0px;">싸이버원 침해위협탐지 동향 요약</h2>
-<div class="mb10">
-  <input type="checkbox" id="opt05" name="opt05"><label for="opt05"> 침해위협 유형별 탐지동향 (표)</label>
-</div>
-
-<div class="mb10">
-  <input type="checkbox" id="opt06" name="opt06"><label for="opt06"> 공격지 별 탐지동향 (차트, 표)</label>
-</div>
-
-<div class="mb10">
-  <input type="checkbox" id="opt07" name="opt07"><label for="opt07"> 목적지 별 탐지동향 (차트, 표)</label>
-</div>
-
 <h2 style="margin-top:0px;">침해위협 탐지현황</h2>
 <div class="mb10">
-  <input type="checkbox" id="opt08" name="opt08"><label for="opt08"> 침해위협탐지 추이 : 공격유형별 침해위협통보 추이 (차트)</label>
+  <input type="checkbox" id="opt05" name="opt05"><label for="opt05"> 침해위협탐지 추이 : 공격유형별 침해위협통보 추이 (차트)</label>
   <div style="margin-left: 20px;" class="subpanel">
-    <input type="radio" name="rd8" id="rd8-1" value="1" checked><label for="rd8-1"> 최근 1개월</label>&nbsp;&nbsp;&nbsp;&nbsp;
-    <input type="radio" name="rd8" id="rd8-2" value="2"><label for="rd8-2"> 최근 6개월</label>
+    <input type="radio" name="rd5" id="rd5-1" value="1" checked><label for="rd5-1"> 최근 1개월</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd5" id="rd5-2" value="2"><label for="rd5-2"> 최근 6개월</label>
   </div>
 </div>
 
 <div class="mb10">
-  <input type="checkbox" id="opt09" name="opt09"><label for="opt09"> 침해위협탐지 분석 : 공격유형별 통계 (차트, 표)</label>
+  <input type="checkbox" id="opt06" name="opt06"><label for="opt06"> 침해위협탐지 분석 : 공격유형별 통계 (차트, 표)</label>
   <div style="margin-left: 20px;" class="subpanel">
-    <input type="checkbox" id="ck9" name="ck9"><label for="ck9"> 침해탐지현황(상세) (표)</label>
+    <input type="checkbox" id="ck6" name="ck6"><label for="ck6"> 침해탐지현황(상세) (표)</label>
   </div>
 </div>
 
 <div class="mb10">
-  <input type="checkbox" id="opt10" name="opt10"><label for="opt10"> 공격IP 탐지동향 : 침해위협통보건에 대한 SIP TOP (표)</label>
+  <input type="checkbox" id="opt07" name="opt07"><label for="opt07"> 공격IP 탐지동향 : 침해위협통보건에 대한 SIP TOP (표)</label>
   <div style="margin-left: 20px;" class="subpanel">
-    <input type="radio" name="rd10" id="rd10-1" value="10" checked><label for="rd10-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
-    <input type="radio" name="rd10" id="rd10-2" value="20"><label for="rd10-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
-    <input type="radio" name="rd10" id="rd10-3" value="30"><label for="rd10-3"> TOP 30</label></br>
-    <input type="checkbox" id="ck10" name="ck10"><label for="ck10"> 공격자IP 침해시도 추이 (차트)</label>
+    <input type="radio" name="rd7" id="rd7-1" value="10" checked><label for="rd7-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd7" id="rd7-2" value="20"><label for="rd7-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd7" id="rd7-3" value="30"><label for="rd7-3"> TOP 30</label></br>
+    <input type="checkbox" id="ck7" name="ck7"><label for="ck7"> 공격자IP 침해시도 추이 (차트)</label>
     <div style="margin-left: 20px;" class="subpanel">
-        <input type="radio" name="sd10" id="sd10-1" value="1" checked><label for="sd10-1"> 최근 1개월</label>&nbsp;&nbsp;&nbsp;&nbsp;
-        <input type="radio" name="sd10" id="sd10-2" value="2"><label for="sd10-2"> 최근 6개월</label>&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="radio" name="sd7" id="sd7-1" value="1" checked><label for="sd7-1"> 최근 1개월</label>&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="radio" name="sd7" id="sd7-2" value="2"><label for="sd7-2"> 최근 6개월</label>&nbsp;&nbsp;&nbsp;&nbsp;
     </div>
   </div>
 </div>
 
 <div class="mb10">
-  <input type="checkbox" id="opt11" name="opt11"><label for="opt11"> 공격지 탐지동향 : 침해위협통보건에 대한 국가별 통계 (표)</label>
+  <input type="checkbox" id="opt08" name="opt08"><label for="opt08"> 공격지 탐지동향 : 침해위협통보건에 대한 국가별 통계 (표)</label>
   <div style="margin-left: 20px;" class="subpanel">
-    <input type="checkbox" id="ck11" name="ck11"><label for="ck11"> 공격지별 침해시도 추이 (차트)</label>
+    <input type="checkbox" id="ck8" name="ck8"><label for="ck8"> 공격지별 침해시도 추이 (차트)</label>
     <div style="margin-left: 20px;" class="subpanel">
-        <input type="radio" name="sd11" id="sd11-1" value="1" checked><label for="sd11-1"> 최근 1개월</label>&nbsp;&nbsp;&nbsp;&nbsp;
-        <input type="radio" name="sd11" id="sd11-2" value="2"><label for="sd11-2"> 최근 6개월</label>&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="radio" name="sd8" id="sd8-1" value="1" checked><label for="sd8-1"> 최근 1개월</label>&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="radio" name="sd8" id="sd8-2" value="2"><label for="sd8-2"> 최근 6개월</label>&nbsp;&nbsp;&nbsp;&nbsp;
     </div>
   </div>
 </div>
 
 <div class="mb10">
-  <input type="checkbox" id="opt12" name="opt12"><label for="opt12"> 목적지 탐지동향 : 침해위협통보건에 대한 DIP TOP (표)</label>
+  <input type="checkbox" id="opt09" name="opt09"><label for="opt09"> 목적지 탐지동향 : 침해위협통보건에 대한 DIP TOP (표)</label>
   <div style="margin-left: 20px;" class="subpanel">
-    <input type="radio" name="rd12" id="rd12-1" value="10" checked><label for="rd12-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
-    <input type="radio" name="rd12" id="rd12-2" value="20"><label for="rd12-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
-    <input type="radio" name="rd12" id="rd12-3" value="30"><label for="rd12-3"> TOP 30</label>
+    <input type="radio" name="rd9" id="rd9-1" value="10" checked><label for="rd9-1"> TOP 10</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd9" id="rd9-2" value="20"><label for="rd9-2"> TOP 20</label>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="rd9" id="rd9-3" value="30"><label for="rd9-3"> TOP 30</label>
   </div>
 </div>
 
 <h2 style="margin-top:0px;">홈페이지 악성코드 유포탐지 현황</h2>
 <div class="mb10">
-  <input type="checkbox" id="opt13" name="opt13"><label for="opt13"> 탐지보고 현황 (표)</label>
+  <input type="checkbox" id="opt10" name="opt10"><label for="opt10"> 탐지보고 현황 (표)</label>
   <div style="margin-left: 20px;" class="subpanel">
-    <input type="checkbox" id="ck13" name="ck13"><label for="ck13"> 홈페이지 악성코드 유포 탐지현황(상세) (표)</label>
+    <input type="checkbox" id="ck10" name="ck10"><label for="ck10"> 홈페이지 악성코드 유포 탐지현황(상세) (표)</label>
   </div>
 </div>
 
 <h2 style="margin-top:0px;">웹쉘 탐지현황</h2>
 <div class="mb10">
-  <input type="checkbox" id="opt14" name="opt14"><label for="opt14"> 탐지보고 현황 (표)</label>
+  <input type="checkbox" id="opt11" name="opt11"><label for="opt11"> 탐지보고 현황 (표)</label>
   <div style="margin-left: 20px;" class="subpanel">
-    <input type="checkbox" id="ck14" name="ck14"><label for="ck14"> 웹쉘 탐지현황(상세) (표)</label>
+    <input type="checkbox" id="ck11" name="ck11"><label for="ck11"> 웹쉘 탐지현황(상세) (표)</label>
   </div>
 </div>
 
 <h2 style="margin-top:0px;">RAT 의심탐지 현황</h2>
 <div class="mb10">
-  <input type="checkbox" id="opt15" name="opt15"><label for="opt15"> 탐지보고 현황 (표)</label>
+  <input type="checkbox" id="opt12" name="opt12"><label for="opt12"> 탐지보고 현황 (표)</label>
   <div style="margin-left: 20px;" class="subpanel">
-    <input type="checkbox" id="ck15" name="ck15"><label for="ck15"> RAT 의심 탐지현황(상세) (표)</label>
+    <input type="checkbox" id="ck12" name="ck12"><label for="ck12"> RAT 의심 탐지현황(상세) (표)</label>
   </div>
 </div>
+
+<h2 style="margin-top:0px;">싸이버원 침해위협탐지 동향 요약</h2>
+<div class="mb10">
+  <input type="checkbox" id="opt13" name="opt13"><label for="opt13"> 침해위협 유형별 탐지동향 (차트, 표)</label>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt14" name="opt14"><label for="opt14"> 공격지 별 탐지동향 (차트, 표)</label>
+</div>
+
+<div class="mb10">
+  <input type="checkbox" id="opt15" name="opt15"><label for="opt15"> 목적지 별 탐지동향 (차트, 표)</label>
+</div>
+
 
 </form>
 

@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Report" pageWidth="539" pageHeight="726" columnWidth="539" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="f79d3e7a-7900-4ac0-86ee-c0b7ef020292">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="2669"/>
+	<property name="ireport.y" value="0"/>
 	<style name="table_CH" mode="Opaque" backcolor="#CCCCCC" hAlign="Center" vAlign="Middle">
 		<box>
 			<pen lineWidth="0.5" lineStyle="Dotted" lineColor="#006600"/>
@@ -43,6 +43,7 @@
 		<field name="series" class="java.lang.String"/>
 		<field name="category" class="java.lang.String"/>
 		<field name="value" class="java.lang.Long"/>
+		<field name="gubun" class="java.lang.String"/>
 	</subDataset>
 	<subDataset name="DS2" uuid="fddfb57b-c28d-47a6-aced-985a142181d0">
 		<field name="no" class="java.lang.Integer"/>
@@ -99,6 +100,9 @@
 		<group name="destIpGroup">
 			<groupExpression><![CDATA[$F{destIp}]]></groupExpression>
 		</group>
+		<group name="2stGroup">
+			<groupExpression><![CDATA[$F{destIp} + $F{category}]]></groupExpression>
+		</group>
 	</subDataset>
 	<subDataset name="DS6" uuid="81ab6501-8bc4-4a64-a1d1-26e0f1cc05b3">
 		<field name="no" class="java.lang.Integer"/>
@@ -138,26 +142,25 @@
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="25" splitType="Stretch">
-			<textField>
-				<reportElement x="0" y="0" width="539" height="20" uuid="a7f3ab78-98ce-4f0f-85d7-212900bdd748"/>
-				<textElement>
-					<font pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{reportInfo}.get("RT")]]></textFieldExpression>
-			</textField>
-		</band>
-		<band height="25" splitType="Stretch">
+		<band height="70" splitType="Stretch">
 			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "C1" )]]></printWhenExpression>
 			<textField>
 				<reportElement x="0" y="0" width="539" height="20" uuid="417ef185-e7ed-4733-8228-cf90e7a9f65e"/>
 				<textElement>
-					<font pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<font isBold="true" pdfFontName="malgunbd.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{reportInfo}.get("C1")]]></textFieldExpression>
 			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="0" y="20" width="539" height="35" uuid="1fd089e7-4857-4c27-996e-647e724a965c"/>
+				<textElement>
+					<font pdfFontName="malgun.ttf" pdfEncoding="Identity-H"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["이 항목은 보고서 작성 기간 내에 보고 또는 제공된 비정기 산출물 현황과 보안관제 대상 장비들에 대한 운영현황을 제공합니다."]]></textFieldExpression>
+			</textField>
 		</band>
-		<band height="85">
+		<band height="90">
 			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "opt01" )]]></printWhenExpression>
 			<textField>
 				<reportElement x="0" y="0" width="539" height="20" uuid="4fa18639-d317-4182-ab27-469a5e78a182"/>
@@ -167,7 +170,7 @@
 				<textFieldExpression><![CDATA[$P{reportInfo}.get( "opt01" )]]></textFieldExpression>
 			</textField>
 			<crosstab>
-				<reportElement style="table" x="20" y="20" width="500" height="45" uuid="3f5f7b53-8a64-4257-a3ec-1800a403c890"/>
+				<reportElement style="table" x="0" y="25" width="539" height="40" uuid="3f5f7b53-8a64-4257-a3ec-1800a403c890"/>
 				<crosstabDataset>
 					<dataset>
 						<datasetRun subDataset="DS1" uuid="0298850c-5534-4c8b-a05f-d7a3b5db36db">
@@ -178,7 +181,7 @@
 				<crosstabHeaderCell>
 					<cellContents mode="Opaque" style="table_CH">
 						<staticText>
-							<reportElement x="0" y="0" width="100" height="20" uuid="c315b9db-246f-48fa-af48-e9fa13e43823"/>
+							<reportElement x="0" y="0" width="99" height="20" uuid="c315b9db-246f-48fa-af48-e9fa13e43823"/>
 							<textElement textAlignment="Center" verticalAlignment="Middle">
 								<font size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 							</textElement>
@@ -186,7 +189,7 @@
 						</staticText>
 					</cellContents>
 				</crosstabHeaderCell>
-				<rowGroup name="series" width="100">
+				<rowGroup name="series" width="99">
 					<bucket class="java.lang.String">
 						<bucketExpression><![CDATA[$F{series}]]></bucketExpression>
 					</bucket>
@@ -200,7 +203,7 @@
 								<rightPen lineWidth="0.5" lineStyle="Dotted"/>
 							</box>
 							<textField>
-								<reportElement x="0" y="0" width="100" height="20" uuid="22cb6d6a-2f57-4813-849b-2033cbb2dc33"/>
+								<reportElement x="0" y="0" width="99" height="20" uuid="22cb6d6a-2f57-4813-849b-2033cbb2dc33"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 								</textElement>
@@ -214,7 +217,7 @@
 				</rowGroup>
 				<columnGroup name="category" height="20">
 					<bucket class="java.lang.String">
-						<bucketExpression><![CDATA[$F{category}]]></bucketExpression>
+						<bucketExpression><![CDATA[$F{gubun} + $F{category}]]></bucketExpression>
 					</bucket>
 					<crosstabColumnHeader>
 						<cellContents mode="Opaque" style="table_CH">
@@ -226,11 +229,11 @@
 								<rightPen lineWidth="0.5" lineStyle="Dotted"/>
 							</box>
 							<textField>
-								<reportElement x="0" y="0" width="100" height="20" uuid="fe1402e7-22e5-4254-9db2-cd8e57e1c425"/>
+								<reportElement x="0" y="0" width="110" height="20" uuid="fe1402e7-22e5-4254-9db2-cd8e57e1c425"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$V{category}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$V{category}.substring( 1 )]]></textFieldExpression>
 							</textField>
 						</cellContents>
 					</crosstabColumnHeader>
@@ -241,7 +244,7 @@
 				<measure name="valueMeasure" class="java.lang.Long">
 					<measureExpression><![CDATA[$F{value}]]></measureExpression>
 				</measure>
-				<crosstabCell width="100" height="21">
+				<crosstabCell width="110" height="21">
 					<cellContents>
 						<box>
 							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
@@ -251,7 +254,7 @@
 							<rightPen lineWidth="0.5" lineStyle="Dotted"/>
 						</box>
 						<textField>
-							<reportElement x="0" y="0" width="100" height="20" uuid="ab33f119-b669-4d3a-969f-f2591b7b9880"/>
+							<reportElement x="0" y="0" width="110" height="20" uuid="ab33f119-b669-4d3a-969f-f2591b7b9880"/>
 							<textElement textAlignment="Center" verticalAlignment="Middle">
 								<font size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 							</textElement>
@@ -294,17 +297,7 @@
 				</crosstabCell>
 			</crosstab>
 		</band>
-		<band height="25" splitType="Stretch">
-			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "C2" )]]></printWhenExpression>
-			<textField>
-				<reportElement x="0" y="0" width="539" height="20" uuid="417ef185-e7ed-4733-8228-cf90e7a9f65e"/>
-				<textElement>
-					<font pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{reportInfo}.get("C2")]]></textFieldExpression>
-			</textField>
-		</band>
-		<band height="85">
+		<band height="90">
 			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "opt02" )]]></printWhenExpression>
 			<textField>
 				<reportElement x="0" y="0" width="539" height="20" uuid="2232308b-4eb0-4fea-95b4-be2b117563f6"/>
@@ -314,7 +307,7 @@
 				<textFieldExpression><![CDATA[$P{reportInfo}.get( "opt02" )]]></textFieldExpression>
 			</textField>
 			<crosstab>
-				<reportElement style="table" x="20" y="20" width="500" height="45" uuid="3f5f7b53-8a64-4257-a3ec-1800a403c890"/>
+				<reportElement style="table" x="0" y="25" width="539" height="40" uuid="3f5f7b53-8a64-4257-a3ec-1800a403c890"/>
 				<crosstabDataset>
 					<dataset>
 						<datasetRun subDataset="DS1" uuid="0298850c-5534-4c8b-a05f-d7a3b5db36db">
@@ -325,7 +318,7 @@
 				<crosstabHeaderCell>
 					<cellContents mode="Opaque" style="table_CH">
 						<staticText>
-							<reportElement x="0" y="0" width="100" height="20" uuid="c315b9db-246f-48fa-af48-e9fa13e43823"/>
+							<reportElement x="0" y="0" width="99" height="20" uuid="c315b9db-246f-48fa-af48-e9fa13e43823"/>
 							<textElement textAlignment="Center" verticalAlignment="Middle">
 								<font size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 							</textElement>
@@ -333,7 +326,7 @@
 						</staticText>
 					</cellContents>
 				</crosstabHeaderCell>
-				<rowGroup name="series" width="100">
+				<rowGroup name="series" width="99">
 					<bucket class="java.lang.String">
 						<bucketExpression><![CDATA[$F{series}]]></bucketExpression>
 					</bucket>
@@ -347,7 +340,7 @@
 								<rightPen lineWidth="0.5" lineStyle="Dotted"/>
 							</box>
 							<textField>
-								<reportElement x="0" y="0" width="100" height="20" uuid="22cb6d6a-2f57-4813-849b-2033cbb2dc33"/>
+								<reportElement x="0" y="0" width="99" height="20" uuid="22cb6d6a-2f57-4813-849b-2033cbb2dc33"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 								</textElement>
@@ -361,7 +354,7 @@
 				</rowGroup>
 				<columnGroup name="category" height="20">
 					<bucket class="java.lang.String">
-						<bucketExpression><![CDATA[$F{category}]]></bucketExpression>
+						<bucketExpression><![CDATA[$F{gubun} + $F{category}]]></bucketExpression>
 					</bucket>
 					<crosstabColumnHeader>
 						<cellContents mode="Opaque" style="table_CH">
@@ -373,11 +366,11 @@
 								<rightPen lineWidth="0.5" lineStyle="Dotted"/>
 							</box>
 							<textField>
-								<reportElement x="0" y="0" width="100" height="20" uuid="fe1402e7-22e5-4254-9db2-cd8e57e1c425"/>
+								<reportElement x="0" y="0" width="110" height="20" uuid="fe1402e7-22e5-4254-9db2-cd8e57e1c425"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$V{category}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$V{category}.substring( 1 )]]></textFieldExpression>
 							</textField>
 						</cellContents>
 					</crosstabColumnHeader>
@@ -388,7 +381,7 @@
 				<measure name="valueMeasure" class="java.lang.Long">
 					<measureExpression><![CDATA[$F{value}]]></measureExpression>
 				</measure>
-				<crosstabCell width="100" height="21">
+				<crosstabCell width="110" height="21">
 					<cellContents>
 						<box>
 							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
@@ -398,7 +391,7 @@
 							<rightPen lineWidth="0.5" lineStyle="Dotted"/>
 						</box>
 						<textField>
-							<reportElement x="0" y="0" width="100" height="20" uuid="ab33f119-b669-4d3a-969f-f2591b7b9880"/>
+							<reportElement x="0" y="0" width="110" height="20" uuid="ab33f119-b669-4d3a-969f-f2591b7b9880"/>
 							<textElement textAlignment="Center" verticalAlignment="Middle">
 								<font size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 							</textElement>
@@ -441,17 +434,7 @@
 				</crosstabCell>
 			</crosstab>
 		</band>
-		<band height="25" splitType="Stretch">
-			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "C3" )]]></printWhenExpression>
-			<textField>
-				<reportElement x="0" y="0" width="539" height="20" uuid="417ef185-e7ed-4733-8228-cf90e7a9f65e"/>
-				<textElement>
-					<font pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{reportInfo}.get("C3")]]></textFieldExpression>
-			</textField>
-		</band>
-		<band height="85">
+		<band height="90">
 			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "opt03" )]]></printWhenExpression>
 			<textField>
 				<reportElement x="0" y="0" width="539" height="20" uuid="2232308b-4eb0-4fea-95b4-be2b117563f6"/>
@@ -461,7 +444,7 @@
 				<textFieldExpression><![CDATA[$P{reportInfo}.get( "opt03" )]]></textFieldExpression>
 			</textField>
 			<crosstab>
-				<reportElement style="table" x="20" y="20" width="500" height="45" uuid="3f5f7b53-8a64-4257-a3ec-1800a403c890"/>
+				<reportElement style="table" x="0" y="25" width="539" height="40" uuid="3f5f7b53-8a64-4257-a3ec-1800a403c890"/>
 				<crosstabDataset>
 					<dataset>
 						<datasetRun subDataset="DS1" uuid="0298850c-5534-4c8b-a05f-d7a3b5db36db">
@@ -472,7 +455,7 @@
 				<crosstabHeaderCell>
 					<cellContents mode="Opaque" style="table_CH">
 						<staticText>
-							<reportElement x="0" y="0" width="100" height="20" uuid="c315b9db-246f-48fa-af48-e9fa13e43823"/>
+							<reportElement x="0" y="0" width="98" height="20" uuid="c315b9db-246f-48fa-af48-e9fa13e43823"/>
 							<textElement textAlignment="Center" verticalAlignment="Middle">
 								<font size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 							</textElement>
@@ -480,7 +463,7 @@
 						</staticText>
 					</cellContents>
 				</crosstabHeaderCell>
-				<rowGroup name="series" width="100">
+				<rowGroup name="series" width="98">
 					<bucket class="java.lang.String">
 						<bucketExpression><![CDATA[$F{series}]]></bucketExpression>
 					</bucket>
@@ -494,7 +477,7 @@
 								<rightPen lineWidth="0.5" lineStyle="Dotted"/>
 							</box>
 							<textField>
-								<reportElement x="0" y="0" width="100" height="20" uuid="22cb6d6a-2f57-4813-849b-2033cbb2dc33"/>
+								<reportElement x="0" y="0" width="98" height="20" uuid="22cb6d6a-2f57-4813-849b-2033cbb2dc33"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 								</textElement>
@@ -508,7 +491,7 @@
 				</rowGroup>
 				<columnGroup name="category" height="20">
 					<bucket class="java.lang.String">
-						<bucketExpression><![CDATA[$F{category}]]></bucketExpression>
+						<bucketExpression><![CDATA[$F{gubun} + $F{category}]]></bucketExpression>
 					</bucket>
 					<crosstabColumnHeader>
 						<cellContents mode="Opaque" style="table_CH">
@@ -520,11 +503,11 @@
 								<rightPen lineWidth="0.5" lineStyle="Dotted"/>
 							</box>
 							<textField>
-								<reportElement x="0" y="0" width="100" height="20" uuid="fe1402e7-22e5-4254-9db2-cd8e57e1c425"/>
+								<reportElement x="0" y="0" width="147" height="20" uuid="fe1402e7-22e5-4254-9db2-cd8e57e1c425"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$V{category}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$V{category}.substring( 1 )]]></textFieldExpression>
 							</textField>
 						</cellContents>
 					</crosstabColumnHeader>
@@ -535,7 +518,7 @@
 				<measure name="valueMeasure" class="java.lang.Long">
 					<measureExpression><![CDATA[$F{value}]]></measureExpression>
 				</measure>
-				<crosstabCell width="100" height="21">
+				<crosstabCell width="147" height="21">
 					<cellContents>
 						<box>
 							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
@@ -545,7 +528,7 @@
 							<rightPen lineWidth="0.5" lineStyle="Dotted"/>
 						</box>
 						<textField>
-							<reportElement x="0" y="0" width="100" height="20" uuid="ab33f119-b669-4d3a-969f-f2591b7b9880"/>
+							<reportElement x="0" y="0" width="147" height="20" uuid="ab33f119-b669-4d3a-969f-f2591b7b9880"/>
 							<textElement textAlignment="Center" verticalAlignment="Middle">
 								<font size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 							</textElement>
@@ -588,17 +571,7 @@
 				</crosstabCell>
 			</crosstab>
 		</band>
-		<band height="25" splitType="Stretch">
-			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "C4" )]]></printWhenExpression>
-			<textField>
-				<reportElement x="0" y="0" width="539" height="20" uuid="417ef185-e7ed-4733-8228-cf90e7a9f65e"/>
-				<textElement>
-					<font pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{reportInfo}.get("C4")]]></textFieldExpression>
-			</textField>
-		</band>
-		<band height="85">
+		<band height="90">
 			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "opt04" )]]></printWhenExpression>
 			<textField>
 				<reportElement x="0" y="0" width="539" height="20" uuid="2232308b-4eb0-4fea-95b4-be2b117563f6"/>
@@ -608,7 +581,7 @@
 				<textFieldExpression><![CDATA[$P{reportInfo}.get( "opt04" )]]></textFieldExpression>
 			</textField>
 			<crosstab>
-				<reportElement style="table" x="20" y="20" width="500" height="45" uuid="3f5f7b53-8a64-4257-a3ec-1800a403c890"/>
+				<reportElement style="table" x="0" y="25" width="539" height="40" uuid="3f5f7b53-8a64-4257-a3ec-1800a403c890"/>
 				<crosstabDataset>
 					<dataset>
 						<datasetRun subDataset="DS1" uuid="0298850c-5534-4c8b-a05f-d7a3b5db36db">
@@ -619,7 +592,7 @@
 				<crosstabHeaderCell>
 					<cellContents mode="Opaque" style="table_CH">
 						<staticText>
-							<reportElement x="0" y="0" width="100" height="20" uuid="c315b9db-246f-48fa-af48-e9fa13e43823"/>
+							<reportElement x="0" y="0" width="99" height="20" uuid="c315b9db-246f-48fa-af48-e9fa13e43823"/>
 							<textElement textAlignment="Center" verticalAlignment="Middle">
 								<font size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 							</textElement>
@@ -627,7 +600,7 @@
 						</staticText>
 					</cellContents>
 				</crosstabHeaderCell>
-				<rowGroup name="series" width="100">
+				<rowGroup name="series" width="99">
 					<bucket class="java.lang.String">
 						<bucketExpression><![CDATA[$F{series}]]></bucketExpression>
 					</bucket>
@@ -641,7 +614,7 @@
 								<rightPen lineWidth="0.5" lineStyle="Dotted"/>
 							</box>
 							<textField>
-								<reportElement x="0" y="0" width="100" height="20" uuid="22cb6d6a-2f57-4813-849b-2033cbb2dc33"/>
+								<reportElement x="0" y="0" width="99" height="20" uuid="22cb6d6a-2f57-4813-849b-2033cbb2dc33"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 								</textElement>
@@ -667,7 +640,7 @@
 								<rightPen lineWidth="0.5" lineStyle="Dotted"/>
 							</box>
 							<textField>
-								<reportElement x="0" y="0" width="100" height="20" uuid="fe1402e7-22e5-4254-9db2-cd8e57e1c425"/>
+								<reportElement x="0" y="0" width="110" height="20" uuid="fe1402e7-22e5-4254-9db2-cd8e57e1c425"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 								</textElement>
@@ -682,7 +655,7 @@
 				<measure name="valueMeasure" class="java.lang.Long">
 					<measureExpression><![CDATA[$F{value}]]></measureExpression>
 				</measure>
-				<crosstabCell width="100" height="21">
+				<crosstabCell width="110" height="21">
 					<cellContents>
 						<box>
 							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
@@ -692,7 +665,7 @@
 							<rightPen lineWidth="0.5" lineStyle="Dotted"/>
 						</box>
 						<textField>
-							<reportElement x="0" y="0" width="100" height="20" uuid="ab33f119-b669-4d3a-969f-f2591b7b9880"/>
+							<reportElement x="0" y="0" width="110" height="20" uuid="ab33f119-b669-4d3a-969f-f2591b7b9880"/>
 							<textElement textAlignment="Center" verticalAlignment="Middle">
 								<font size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 							</textElement>
@@ -735,17 +708,17 @@
 				</crosstabCell>
 			</crosstab>
 		</band>
-		<band height="25" splitType="Stretch">
-			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "C5" )]]></printWhenExpression>
+		<band height="30" splitType="Stretch">
+			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "C2" )]]></printWhenExpression>
 			<textField>
 				<reportElement x="0" y="0" width="539" height="20" uuid="417ef185-e7ed-4733-8228-cf90e7a9f65e"/>
 				<textElement>
-					<font pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<font isBold="true" pdfFontName="malgunbd.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{reportInfo}.get("C5")]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{reportInfo}.get("C2")]]></textFieldExpression>
 			</textField>
 		</band>
-		<band height="235">
+		<band height="275">
 			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "opt05" )]]></printWhenExpression>
 			<textField>
 				<reportElement x="0" y="0" width="539" height="20" uuid="0eacd15d-b6b9-4346-9a12-4ea7d826c551"/>
@@ -756,8 +729,10 @@
 			</textField>
 			<lineChart>
 				<chart customizerClass="com.cyberone.report.core.customize.ChartBorderRemoveCustom" renderType="draw">
-					<reportElement x="0" y="25" width="539" height="200" uuid="f47090d5-4187-4e96-94c0-e5785245090e"/>
-					<chartTitle>
+					<reportElement x="0" y="65" width="539" height="200" uuid="f47090d5-4187-4e96-94c0-e5785245090e">
+						<propertyExpression name="fileFormat"><![CDATA[$P{reportInfo}.get("fileFormat")]]></propertyExpression>
+					</reportElement>
+					<chartTitle position="Top">
 						<font fontName="맑은 고딕" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 					</chartTitle>
 					<chartSubtitle>
@@ -779,17 +754,25 @@
 						<valueExpression><![CDATA[$F{value}]]></valueExpression>
 					</categorySeries>
 				</categoryDataset>
-				<linePlot isShowShapes="false">
+				<linePlot isShowShapes="true">
 					<plot/>
+					<categoryAxisLabelExpression><![CDATA["일"]]></categoryAxisLabelExpression>
 					<categoryAxisFormat>
-						<axisFormat>
+						<axisFormat verticalTickLabels="true">
+							<labelFont>
+								<font pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+							</labelFont>
 							<tickLabelFont>
 								<font fontName="맑은 고딕" size="10" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 							</tickLabelFont>
 						</axisFormat>
 					</categoryAxisFormat>
+					<valueAxisLabelExpression><![CDATA["건"]]></valueAxisLabelExpression>
 					<valueAxisFormat>
 						<axisFormat tickLabelMask="#,##0" verticalTickLabels="false">
+							<labelFont>
+								<font pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+							</labelFont>
 							<tickLabelFont>
 								<font fontName="맑은 고딕" size="10" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 							</tickLabelFont>
@@ -797,8 +780,16 @@
 					</valueAxisFormat>
 				</linePlot>
 			</lineChart>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="0" y="20" width="539" height="35" uuid="52c142c5-1edf-4227-9a6e-31988226afbb"/>
+				<textElement>
+					<font pdfFontName="malgun.ttf" pdfEncoding="Identity-H"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["보고 기간 내 탐지된 전체 침해위협 건을 사이버 침해유형별로 구분하여 추이를 표현한 것으로 침해유형별 발생 빈도와 특정 기간 일시적으로 발생했거나 지속된 위협에 대한 현황을 제공합니다."]]></textFieldExpression>
+			</textField>
 		</band>
-		<band height="285">
+		<band height="340">
 			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "opt06" )]]></printWhenExpression>
 			<textField>
 				<reportElement x="0" y="0" width="539" height="20" uuid="72d8a051-c5bb-44df-808d-4f8704e26a4c"/>
@@ -809,7 +800,7 @@
 			</textField>
 			<pieChart>
 				<chart isShowLegend="false" customizerClass="com.cyberone.report.core.customize.ChartBorderRemoveCustom">
-					<reportElement x="0" y="25" width="539" height="200" uuid="d696e8d9-de80-4e00-bd29-5dd84efb0957"/>
+					<reportElement x="0" y="65" width="539" height="200" uuid="d696e8d9-de80-4e00-bd29-5dd84efb0957"/>
 					<chartTitle position="Top"/>
 					<chartSubtitle/>
 					<chartLegend/>
@@ -822,7 +813,7 @@
 					</dataset>
 					<keyExpression><![CDATA[$F{category}]]></keyExpression>
 					<valueExpression><![CDATA[$F{count}]]></valueExpression>
-					<labelExpression><![CDATA[$F{category} + " " + $F{count} + " [" + String.format("%.1f", $F{ratio}) +"%]"]]></labelExpression>
+					<labelExpression><![CDATA[$F{category} + " " + $F{count} + "건 [" + String.format("%.1f", $F{ratio}) +"%]"]]></labelExpression>
 				</pieDataset>
 				<piePlot isShowLabels="true">
 					<plot/>
@@ -832,7 +823,7 @@
 				</piePlot>
 			</pieChart>
 			<componentElement>
-				<reportElement key="table" style="table" x="0" y="225" width="539" height="50" uuid="ecacf53f-cfd0-45cc-9515-d120e27ae64f"/>
+				<reportElement key="table" style="table" x="0" y="265" width="539" height="50" uuid="ecacf53f-cfd0-45cc-9515-d120e27ae64f"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<datasetRun subDataset="DS2" uuid="45d28611-67b8-42ee-91d1-f13d97d3734e">
 						<dataSourceExpression><![CDATA[$P{reportInfo}.get("OPT6_2")]]></dataSourceExpression>
@@ -857,12 +848,12 @@
 								<text><![CDATA[순번]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<box>
 								<leftPen lineWidth="0.5"/>
 							</box>
 							<textField>
-								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="30" height="19" isRemoveLineWhenBlank="true" uuid="9c532d52-2301-4a90-b690-56d51802e7c4"/>
+								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="30" height="20" isRemoveLineWhenBlank="true" uuid="9c532d52-2301-4a90-b690-56d51802e7c4"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -890,9 +881,9 @@
 								<text><![CDATA[위협카테고리]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField isStretchWithOverflow="true">
-								<reportElement positionType="Float" stretchType="RelativeToTallestObject" isPrintRepeatedValues="false" x="0" y="0" width="140" height="19" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="5388df23-c853-4d75-bdb8-ce56bbc2d2fe"/>
+								<reportElement positionType="Float" stretchType="RelativeToTallestObject" isPrintRepeatedValues="false" x="0" y="0" width="140" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="5388df23-c853-4d75-bdb8-ce56bbc2d2fe"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -903,10 +894,10 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="80" uuid="ae6a17c5-fd4a-4167-9544-e5cfb0ca2a3e">
+					<jr:column width="60" uuid="ae6a17c5-fd4a-4167-9544-e5cfb0ca2a3e">
 						<jr:columnHeader style="table_TH" height="20" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="80" height="20" uuid="9ffc630a-6c28-4065-be75-aec04f05ed16"/>
+								<reportElement x="0" y="0" width="60" height="20" uuid="9ffc630a-6c28-4065-be75-aec04f05ed16"/>
 								<box>
 									<pen lineWidth="0.0"/>
 									<topPen lineWidth="0.0"/>
@@ -920,25 +911,26 @@
 								<text><![CDATA[탐지건수]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField pattern="#,##0">
-								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="80" height="19" isRemoveLineWhenBlank="true" uuid="78a0c641-759e-42ff-9cc9-15198a8ceaf2">
+								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="60" height="20" isRemoveLineWhenBlank="true" uuid="78a0c641-759e-42ff-9cc9-15198a8ceaf2">
 									<printWhenExpression><![CDATA[$V{categoryGroup_COUNT} == 1]]></printWhenExpression>
 								</reportElement>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+									<paragraph rightIndent="5"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{count}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="80" uuid="87091f7e-145a-4abc-9034-c06c187966c1">
+					<jr:column width="60" uuid="87091f7e-145a-4abc-9034-c06c187966c1">
 						<jr:columnHeader style="table_TH" height="20" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="80" height="20" uuid="43a78d2e-086b-4c8d-9935-7adb079260f0"/>
+								<reportElement x="0" y="0" width="60" height="20" uuid="43a78d2e-086b-4c8d-9935-7adb079260f0"/>
 								<box>
 									<pen lineWidth="0.0"/>
 									<topPen lineWidth="0.0"/>
@@ -952,9 +944,42 @@
 								<text><![CDATA[증감현황]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0">
-								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="80" height="19" isRemoveLineWhenBlank="true" uuid="d5537307-23ea-4f14-a167-08a7a8800815">
+								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="60" height="20" isRemoveLineWhenBlank="true" uuid="d5537307-23ea-4f14-a167-08a7a8800815">
+									<printWhenExpression><![CDATA[$V{categoryGroup_COUNT} == 1]]></printWhenExpression>
+								</reportElement>
+								<box>
+									<topPen lineWidth="0.5" lineStyle="Dotted"/>
+								</box>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="SansSerif" size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+									<paragraph rightIndent="5"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{countVariation}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="40" uuid="32b75e7e-e79a-4343-b41e-a7c861c08137">
+						<jr:columnHeader style="table_TH" height="20" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="40" height="20" uuid="c05859b7-4b68-4c36-8d05-6adb2641edc4"/>
+								<box>
+									<pen lineWidth="0.0"/>
+									<topPen lineWidth="0.0"/>
+									<leftPen lineWidth="0.0"/>
+									<bottomPen lineWidth="0.0"/>
+									<rightPen lineWidth="0.0"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="SansSerif" size="8" isBold="false" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+								</textElement>
+								<text><![CDATA[순위변화]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
+							<textField isStretchWithOverflow="true" pattern="">
+								<reportElement positionType="Float" stretchType="RelativeToTallestObject" isPrintRepeatedValues="false" x="0" y="0" width="40" height="20" isRemoveLineWhenBlank="true" uuid="30a8386e-54ca-4c7d-8d12-9cca7d4e055a">
 									<printWhenExpression><![CDATA[$V{categoryGroup_COUNT} == 1]]></printWhenExpression>
 								</reportElement>
 								<box>
@@ -963,7 +988,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{countVariation}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{rank}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -987,12 +1012,12 @@
 								<text><![CDATA[공격유형]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<box>
 								<rightPen lineWidth="0.0"/>
 							</box>
 							<textField isStretchWithOverflow="true" pattern="">
-								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="140" height="19" isPrintWhenDetailOverflows="true" uuid="7929fb95-dca6-4c41-acbe-501725a9f812"/>
+								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="140" height="20" isPrintWhenDetailOverflows="true" uuid="7929fb95-dca6-4c41-acbe-501725a9f812"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -1020,14 +1045,15 @@
 								<text><![CDATA[비율(%)]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0">
-								<reportElement x="0" y="0" width="69" height="19" uuid="c1437b64-a10d-4aea-8f19-b038ec6a162f"/>
+								<reportElement x="0" y="0" width="69" height="20" uuid="c1437b64-a10d-4aea-8f19-b038ec6a162f"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+									<paragraph rightIndent="5"/>
 								</textElement>
 								<textFieldExpression><![CDATA[String.format("%.1f", $F{ratio}) +"%"]]></textFieldExpression>
 							</textField>
@@ -1035,8 +1061,16 @@
 					</jr:column>
 				</jr:table>
 			</componentElement>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="0" y="20" width="539" height="35" uuid="821f0cd5-164d-46ec-8bca-f6871b95a45a"/>
+				<textElement>
+					<font pdfFontName="malgun.ttf" pdfEncoding="Identity-H"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["보고 기간 내 탐지된 전체 침해위협을 사이버 침해유형 별 비율과 공격행위로 분류하여 고객사를 대상으로 발생한 위협의 동향 정보를 제공합니다."]]></textFieldExpression>
+			</textField>
 		</band>
-		<band height="80">
+		<band height="110">
 			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "opt07" )]]></printWhenExpression>
 			<textField>
 				<reportElement x="0" y="0" width="539" height="20" uuid="9f526649-7615-4892-85c8-49955c167869"/>
@@ -1046,7 +1080,7 @@
 				<textFieldExpression><![CDATA[$P{reportInfo}.get( "opt07" )]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement key="table" style="table" x="0" y="20" width="539" height="50" uuid="cf302c25-dc8a-4996-a8ee-f23971be8d7a"/>
+				<reportElement key="table" style="table" x="0" y="45" width="539" height="50" uuid="cf302c25-dc8a-4996-a8ee-f23971be8d7a"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<datasetRun subDataset="DS3" uuid="7e04fa73-5b0a-42bd-8912-f50eb8f9d25e">
 						<dataSourceExpression><![CDATA[$P{reportInfo}.get("OPT7_1")]]></dataSourceExpression>
@@ -1071,12 +1105,12 @@
 								<text><![CDATA[순번]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<box>
 								<leftPen lineWidth="0.5"/>
 							</box>
 							<textField>
-								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="30" height="19" isRemoveLineWhenBlank="true" uuid="22a6a6ee-d46e-4ae8-b4ee-d3168f766dbb"/>
+								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="30" height="20" isRemoveLineWhenBlank="true" uuid="22a6a6ee-d46e-4ae8-b4ee-d3168f766dbb"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -1104,9 +1138,9 @@
 								<text><![CDATA[출발지]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField>
-								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="100" height="19" isRemoveLineWhenBlank="true" uuid="0174a7e8-e370-45a8-8944-6d4e230c8977"/>
+								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="100" height="20" isRemoveLineWhenBlank="true" uuid="0174a7e8-e370-45a8-8944-6d4e230c8977"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -1134,9 +1168,9 @@
 								<text><![CDATA[국가정보]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField>
-								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="40" height="19" isRemoveLineWhenBlank="true" uuid="5e9472bf-3e22-4987-af7e-a3a18a3c99ac">
+								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="40" height="20" isRemoveLineWhenBlank="true" uuid="5e9472bf-3e22-4987-af7e-a3a18a3c99ac">
 									<printWhenExpression><![CDATA[$V{srcIpGroup_COUNT} == 1]]></printWhenExpression>
 								</reportElement>
 								<box>
@@ -1166,16 +1200,17 @@
 								<text><![CDATA[탐지건수]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField pattern="#,##0">
-								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="80" height="19" isRemoveLineWhenBlank="true" uuid="1b2bb325-54c6-403a-a9ca-58542cc47b89">
+								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="80" height="20" isRemoveLineWhenBlank="true" uuid="1b2bb325-54c6-403a-a9ca-58542cc47b89">
 									<printWhenExpression><![CDATA[$V{srcIpGroup_COUNT} == 1]]></printWhenExpression>
 								</reportElement>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+									<paragraph rightIndent="5"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{count}]]></textFieldExpression>
 							</textField>
@@ -1198,16 +1233,17 @@
 								<text><![CDATA[증감현황]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0">
-								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="80" height="19" isRemoveLineWhenBlank="true" uuid="5ad8d8c1-f937-4e47-83cf-34ee364c6d6b">
+								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="80" height="20" isRemoveLineWhenBlank="true" uuid="5ad8d8c1-f937-4e47-83cf-34ee364c6d6b">
 									<printWhenExpression><![CDATA[$V{srcIpGroup_COUNT} == 1]]></printWhenExpression>
 								</reportElement>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+									<paragraph rightIndent="5"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{countVariation}]]></textFieldExpression>
 							</textField>
@@ -1233,12 +1269,12 @@
 								<text><![CDATA[위협카테고리]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<box>
 								<rightPen lineWidth="0.0"/>
 							</box>
 							<textField isStretchWithOverflow="true" pattern="">
-								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="140" height="19" isPrintWhenDetailOverflows="true" uuid="c3a84120-ebc1-482b-ab15-21e5a63c2d69"/>
+								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="140" height="20" isPrintWhenDetailOverflows="true" uuid="c3a84120-ebc1-482b-ab15-21e5a63c2d69"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -1266,14 +1302,15 @@
 								<text><![CDATA[비율(%)]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0">
-								<reportElement x="0" y="0" width="69" height="19" uuid="31877c2b-cd7d-4f46-bc62-dd54e02766df"/>
+								<reportElement x="0" y="0" width="69" height="20" uuid="31877c2b-cd7d-4f46-bc62-dd54e02766df"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+									<paragraph rightIndent="5"/>
 								</textElement>
 								<textFieldExpression><![CDATA[String.format("%.1f", $F{ratio}) +"%"]]></textFieldExpression>
 							</textField>
@@ -1281,13 +1318,26 @@
 					</jr:column>
 				</jr:table>
 			</componentElement>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="0" y="20" width="539" height="20" uuid="545e3959-f2a0-4eb4-9b39-3cde9c22cb72"/>
+				<textElement>
+					<font pdfFontName="malgun.ttf" pdfEncoding="Identity-H"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["주요(TOP) 공격(출발지)IP 와 해당 공격IP가 시도한 침해유형 및 공격행위 정보를 제공합니다."]]></textFieldExpression>
+			</textField>
 		</band>
 		<band height="215">
 			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "opt07" )]]></printWhenExpression>
 			<lineChart>
 				<chart customizerClass="com.cyberone.report.core.customize.ChartBorderRemoveCustom" renderType="draw">
-					<reportElement x="0" y="5" width="539" height="200" uuid="2a7c4c62-547e-4f84-bcf7-150de2c3a665"/>
-					<chartTitle/>
+					<reportElement x="0" y="0" width="539" height="200" uuid="2a7c4c62-547e-4f84-bcf7-150de2c3a665">
+						<propertyExpression name="fileFormat"><![CDATA[$P{reportInfo}.get("fileFormat")]]></propertyExpression>
+					</reportElement>
+					<chartTitle position="Bottom">
+						<font pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+						<titleExpression><![CDATA["[차트] 주요 공격IP 별 침해위협 시도추이"]]></titleExpression>
+					</chartTitle>
 					<chartSubtitle/>
 					<chartLegend position="Bottom">
 						<font fontName="SansSerif" size="10" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
@@ -1305,17 +1355,25 @@
 						<valueExpression><![CDATA[$F{value}]]></valueExpression>
 					</categorySeries>
 				</categoryDataset>
-				<linePlot isShowShapes="false">
+				<linePlot isShowShapes="true">
 					<plot/>
+					<categoryAxisLabelExpression><![CDATA["일"]]></categoryAxisLabelExpression>
 					<categoryAxisFormat>
 						<axisFormat>
+							<labelFont>
+								<font pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+							</labelFont>
 							<tickLabelFont>
 								<font fontName="SansSerif" size="10" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 							</tickLabelFont>
 						</axisFormat>
 					</categoryAxisFormat>
+					<valueAxisLabelExpression><![CDATA["건"]]></valueAxisLabelExpression>
 					<valueAxisFormat>
 						<axisFormat tickLabelMask="#,##0" verticalTickLabels="false">
+							<labelFont>
+								<font pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+							</labelFont>
 							<tickLabelFont>
 								<font fontName="SansSerif" size="10" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 							</tickLabelFont>
@@ -1324,7 +1382,7 @@
 				</linePlot>
 			</lineChart>
 		</band>
-		<band height="80">
+		<band height="125">
 			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "opt08" )]]></printWhenExpression>
 			<textField>
 				<reportElement x="0" y="0" width="539" height="20" uuid="6b8c7782-1eee-4cb3-ac76-bfa915f62e6d"/>
@@ -1334,7 +1392,7 @@
 				<textFieldExpression><![CDATA[$P{reportInfo}.get( "opt08" )]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement key="table" style="table" x="0" y="20" width="539" height="50" uuid="82424e9f-5e50-4845-9b7b-e10e8bc2177c"/>
+				<reportElement key="table" style="table" x="0" y="60" width="539" height="50" uuid="82424e9f-5e50-4845-9b7b-e10e8bc2177c"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<datasetRun subDataset="DS4" uuid="caa8813b-9d44-47ca-828c-83891f280d6d">
 						<dataSourceExpression><![CDATA[$P{reportInfo}.get("OPT8_1")]]></dataSourceExpression>
@@ -1359,12 +1417,12 @@
 								<text><![CDATA[순번]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<box>
 								<leftPen lineWidth="0.5"/>
 							</box>
 							<textField>
-								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="30" height="19" isRemoveLineWhenBlank="true" uuid="a7bcdbae-c534-489e-8efe-f33bf7168954"/>
+								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="30" height="20" isRemoveLineWhenBlank="true" uuid="a7bcdbae-c534-489e-8efe-f33bf7168954"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -1392,9 +1450,9 @@
 								<text><![CDATA[국가정보]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField>
-								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="80" height="19" isRemoveLineWhenBlank="true" uuid="744047a3-25d9-49a9-984f-294a966ae802"/>
+								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="80" height="20" isRemoveLineWhenBlank="true" uuid="744047a3-25d9-49a9-984f-294a966ae802"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -1422,16 +1480,17 @@
 								<text><![CDATA[탐지건수]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField pattern="#,##0">
-								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="80" height="19" isRemoveLineWhenBlank="true" uuid="addfe1b2-97e8-4fc2-bd42-c366dfa60b5b">
+								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="80" height="20" isRemoveLineWhenBlank="true" uuid="addfe1b2-97e8-4fc2-bd42-c366dfa60b5b">
 									<printWhenExpression><![CDATA[$V{geoGroup_COUNT} == 1]]></printWhenExpression>
 								</reportElement>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+									<paragraph rightIndent="5"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{count}]]></textFieldExpression>
 							</textField>
@@ -1454,16 +1513,17 @@
 								<text><![CDATA[증감현황]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0">
-								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="80" height="19" isRemoveLineWhenBlank="true" uuid="21ac5cc6-256e-48de-a588-679016e2ed74">
+								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="80" height="20" isRemoveLineWhenBlank="true" uuid="21ac5cc6-256e-48de-a588-679016e2ed74">
 									<printWhenExpression><![CDATA[$V{geoGroup_COUNT} == 1]]></printWhenExpression>
 								</reportElement>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+									<paragraph rightIndent="5"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{countVariation}]]></textFieldExpression>
 							</textField>
@@ -1489,12 +1549,12 @@
 								<text><![CDATA[위협카테고리]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<box>
 								<rightPen lineWidth="0.0"/>
 							</box>
 							<textField isStretchWithOverflow="true" pattern="">
-								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="200" height="19" isPrintWhenDetailOverflows="true" uuid="e9fa995c-5f78-454a-ae41-6f9ae4ffe039"/>
+								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="200" height="20" isPrintWhenDetailOverflows="true" uuid="e9fa995c-5f78-454a-ae41-6f9ae4ffe039"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -1522,14 +1582,15 @@
 								<text><![CDATA[비율(%)]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0">
-								<reportElement x="0" y="0" width="69" height="19" uuid="60cfb608-434c-430f-b3fe-e55bf6d6300e"/>
+								<reportElement x="0" y="0" width="69" height="20" uuid="60cfb608-434c-430f-b3fe-e55bf6d6300e"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+									<paragraph rightIndent="5"/>
 								</textElement>
 								<textFieldExpression><![CDATA[String.format("%.1f", $F{ratio}) +"%"]]></textFieldExpression>
 							</textField>
@@ -1537,14 +1598,25 @@
 					</jr:column>
 				</jr:table>
 			</componentElement>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="0" y="20" width="539" height="35" uuid="b7b6506e-dcc5-4f1d-bec0-3c6ff6623f15"/>
+				<textElement>
+					<font pdfFontName="malgun.ttf" pdfEncoding="Identity-H"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["보고 기간 내 탐지된 전체 침해위협의 공격IP를 국가별로 분류하여 가장 많은 공격을 시도한 출발지 국가 정보를 제공합니다."]]></textFieldExpression>
+			</textField>
 		</band>
 		<band height="215">
 			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "opt08" )]]></printWhenExpression>
 			<lineChart>
 				<chart customizerClass="com.cyberone.report.core.customize.ChartBorderRemoveCustom" renderType="draw">
-					<reportElement x="0" y="5" width="539" height="200" uuid="64855444-78d4-4a88-bdd6-9498b74f7c53"/>
-					<chartTitle>
-						<font fontName="맑은 고딕" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<reportElement x="0" y="0" width="539" height="200" uuid="64855444-78d4-4a88-bdd6-9498b74f7c53">
+						<propertyExpression name="fileFormat"><![CDATA[$P{reportInfo}.get("fileFormat")]]></propertyExpression>
+					</reportElement>
+					<chartTitle position="Bottom">
+						<font fontName="SansSerif" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+						<titleExpression><![CDATA["[차트] 주요 공격지 국가별 침해위협 시도추이"]]></titleExpression>
 					</chartTitle>
 					<chartSubtitle>
 						<font fontName="맑은 고딕" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
@@ -1565,20 +1637,25 @@
 						<valueExpression><![CDATA[$F{value}]]></valueExpression>
 					</categorySeries>
 				</categoryDataset>
-				<linePlot isShowShapes="false">
+				<linePlot isShowShapes="true">
 					<plot/>
+					<categoryAxisLabelExpression><![CDATA["일"]]></categoryAxisLabelExpression>
 					<categoryAxisFormat>
 						<axisFormat>
 							<labelFont>
-								<font fontName="맑은 고딕"/>
+								<font fontName="SansSerif" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 							</labelFont>
 							<tickLabelFont>
 								<font fontName="맑은 고딕" size="10" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 							</tickLabelFont>
 						</axisFormat>
 					</categoryAxisFormat>
+					<valueAxisLabelExpression><![CDATA["건"]]></valueAxisLabelExpression>
 					<valueAxisFormat>
 						<axisFormat tickLabelMask="#,##0" verticalTickLabels="false">
+							<labelFont>
+								<font pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+							</labelFont>
 							<tickLabelFont>
 								<font fontName="맑은 고딕" size="10" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 							</tickLabelFont>
@@ -1587,7 +1664,7 @@
 				</linePlot>
 			</lineChart>
 		</band>
-		<band height="90">
+		<band height="135">
 			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "opt09" )]]></printWhenExpression>
 			<textField>
 				<reportElement x="0" y="0" width="539" height="20" uuid="e7d1cb78-497b-4771-b6da-36b19a6341f3"/>
@@ -1597,7 +1674,7 @@
 				<textFieldExpression><![CDATA[$P{reportInfo}.get( "opt09" )]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement key="table" style="table" x="0" y="20" width="539" height="50" uuid="8a8d39e3-1310-4cc5-a829-192de7c57bad"/>
+				<reportElement key="table" style="table" x="0" y="60" width="539" height="50" uuid="8a8d39e3-1310-4cc5-a829-192de7c57bad"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<datasetRun subDataset="DS5" uuid="ae62cdb6-dc83-4619-83b3-5678fabacce8">
 						<dataSourceExpression><![CDATA[$P{reportInfo}.get("OPT9_1")]]></dataSourceExpression>
@@ -1622,12 +1699,12 @@
 								<text><![CDATA[순번]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<box>
 								<leftPen lineWidth="0.5"/>
 							</box>
 							<textField>
-								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="30" height="19" isRemoveLineWhenBlank="true" uuid="f8a56296-5fc2-4b7f-898c-8293ae023f1b"/>
+								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="30" height="20" isRemoveLineWhenBlank="true" uuid="f8a56296-5fc2-4b7f-898c-8293ae023f1b"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -1655,9 +1732,9 @@
 								<text><![CDATA[목적지]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField>
-								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="80" height="19" isRemoveLineWhenBlank="true" uuid="38e4cc41-290c-47c8-97fd-aaf4203ac099"/>
+								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="80" height="20" isRemoveLineWhenBlank="true" uuid="38e4cc41-290c-47c8-97fd-aaf4203ac099"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -1685,16 +1762,17 @@
 								<text><![CDATA[탐지건수]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField pattern="#,##0">
-								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="40" height="19" isRemoveLineWhenBlank="true" uuid="b1449e02-5046-41f3-ad9c-043f19d9cde1">
+								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="40" height="20" isRemoveLineWhenBlank="true" uuid="b1449e02-5046-41f3-ad9c-043f19d9cde1">
 									<printWhenExpression><![CDATA[$V{destIpGroup_COUNT} == 1]]></printWhenExpression>
 								</reportElement>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+									<paragraph rightIndent="5"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{count}]]></textFieldExpression>
 							</textField>
@@ -1717,16 +1795,17 @@
 								<text><![CDATA[증감현황]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField pattern="#,##0">
-								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="40" height="19" isRemoveLineWhenBlank="true" uuid="9a0c2dc7-93a3-4b79-ac30-a12c85e1aec6">
+								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="40" height="20" isRemoveLineWhenBlank="true" uuid="9a0c2dc7-93a3-4b79-ac30-a12c85e1aec6">
 									<printWhenExpression><![CDATA[$V{destIpGroup_COUNT} == 1]]></printWhenExpression>
 								</reportElement>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+									<paragraph rightIndent="5"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{countVariation}]]></textFieldExpression>
 							</textField>
@@ -1749,9 +1828,11 @@
 								<text><![CDATA[위협카테고리]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="">
-								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="140" height="19" isPrintWhenDetailOverflows="true" uuid="ffb919bd-473e-4abf-aea9-49ecb6970228"/>
+								<reportElement positionType="Float" stretchType="RelativeToTallestObject" isPrintRepeatedValues="false" x="0" y="0" width="140" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="ffb919bd-473e-4abf-aea9-49ecb6970228">
+									<printWhenExpression><![CDATA[$V{2stGroup_COUNT} == 1]]></printWhenExpression>
+								</reportElement>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -1782,17 +1863,20 @@
 								<text><![CDATA[비율(%)]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<box>
 								<rightPen lineWidth="0.0"/>
 							</box>
 							<textField isStretchWithOverflow="true" pattern="#,##0">
-								<reportElement x="0" y="0" width="39" height="19" uuid="bc3a6c2d-3dd8-4871-9d80-f684d8422f53"/>
+								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="39" height="20" isRemoveLineWhenBlank="true" uuid="bc3a6c2d-3dd8-4871-9d80-f684d8422f53">
+									<printWhenExpression><![CDATA[$V{2stGroup_COUNT} == 1]]></printWhenExpression>
+								</reportElement>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+									<paragraph rightIndent="5"/>
 								</textElement>
 								<textFieldExpression><![CDATA[String.format("%.1f", $F{ratio}) +"%"]]></textFieldExpression>
 							</textField>
@@ -1815,9 +1899,9 @@
 								<text><![CDATA[출발지]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="80" height="19" uuid="094706e5-ac17-45c6-aae9-9690dd89a731"/>
+								<reportElement x="0" y="0" width="80" height="20" uuid="094706e5-ac17-45c6-aae9-9690dd89a731"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -1845,9 +1929,9 @@
 								<text><![CDATA[서비스]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="">
-								<reportElement x="0" y="0" width="50" height="19" uuid="0b769540-1600-41ce-8a2f-a5ce3c9dd72a"/>
+								<reportElement x="0" y="0" width="50" height="20" uuid="0b769540-1600-41ce-8a2f-a5ce3c9dd72a"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -1875,14 +1959,15 @@
 								<text><![CDATA[건수]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField pattern="#,##0">
-								<reportElement x="0" y="0" width="40" height="19" uuid="ce2aa589-cb96-4b1a-949b-010259184d96"/>
+								<reportElement x="0" y="0" width="40" height="20" uuid="ce2aa589-cb96-4b1a-949b-010259184d96"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+									<paragraph rightIndent="5"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{value}]]></textFieldExpression>
 							</textField>
@@ -1890,21 +1975,19 @@
 					</jr:column>
 				</jr:table>
 			</componentElement>
-		</band>
-		<band height="20">
-			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "C6" )]]></printWhenExpression>
-			<textField>
-				<reportElement x="0" y="0" width="539" height="20" uuid="95de8229-6f2c-47ca-9c4f-f2bbb0aa76de"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="0" y="20" width="539" height="35" uuid="04e33fbd-c93d-425b-80d8-2f1cc89000c7"/>
 				<textElement>
-					<font pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<font pdfFontName="malgun.ttf" pdfEncoding="Identity-H"/>
+					<paragraph leftIndent="5"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{reportInfo}.get("C6")]]></textFieldExpression>
+				<textFieldExpression><![CDATA["보고 기간 내 탐지된 전체 침해위협의 타깃 현황을 제공합니다. 공격IP가 노린 주요 타깃 정보와 해당 타깃을 침해하기 위해 시도한 공격행위 및 침해유형을 파악할 수 있습니다."]]></textFieldExpression>
 			</textField>
 		</band>
-		<band height="70">
-			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "OPT10_1" )]]></printWhenExpression>
+		<band height="120">
+			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "C3" )]]></printWhenExpression>
 			<componentElement>
-				<reportElement key="table" style="table" x="0" y="0" width="539" height="50" uuid="44d8d583-208f-403c-9956-0b3bcdaf86dd"/>
+				<reportElement key="table" style="table" x="0" y="45" width="539" height="50" uuid="44d8d583-208f-403c-9956-0b3bcdaf86dd"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<datasetRun subDataset="DS6" uuid="1886b5de-7a49-40c1-9d5e-a88da5b28699">
 						<dataSourceExpression><![CDATA[$P{reportInfo}.get("OPT10_1")]]></dataSourceExpression>
@@ -1929,12 +2012,12 @@
 								<text><![CDATA[순번]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<box>
 								<leftPen lineWidth="0.5"/>
 							</box>
 							<textField>
-								<reportElement x="0" y="0" width="30" height="19" uuid="53ccb9de-52cc-4c1b-bf3d-67ab23330205"/>
+								<reportElement x="0" y="0" width="30" height="20" uuid="53ccb9de-52cc-4c1b-bf3d-67ab23330205"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -1963,9 +2046,9 @@
 								<text><![CDATA[체크 URL]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="440" height="19" uuid="f670ac09-70de-4a5f-ba82-8c8d85ba7c15"/>
+								<reportElement x="0" y="0" width="440" height="20" uuid="f670ac09-70de-4a5f-ba82-8c8d85ba7c15"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -1994,14 +2077,15 @@
 								<text><![CDATA[건수]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0">
-								<reportElement x="0" y="0" width="69" height="19" uuid="11ba6956-f8e3-41cc-8ad8-c731c5f616cd"/>
+								<reportElement x="0" y="0" width="69" height="20" uuid="11ba6956-f8e3-41cc-8ad8-c731c5f616cd"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+									<paragraph rightIndent="5"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{count}]]></textFieldExpression>
 							</textField>
@@ -2009,21 +2093,26 @@
 					</jr:column>
 				</jr:table>
 			</componentElement>
-		</band>
-		<band height="20">
-			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "C7" )]]></printWhenExpression>
 			<textField>
-				<reportElement x="0" y="0" width="539" height="20" uuid="f75ba83f-96f8-485f-83f7-ff06d26dcc3f"/>
+				<reportElement x="0" y="0" width="539" height="20" uuid="95de8229-6f2c-47ca-9c4f-f2bbb0aa76de"/>
+				<textElement>
+					<font isBold="true" pdfFontName="malgunbd.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{reportInfo}.get("C3")]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="0" y="20" width="539" height="20" uuid="96edeaaf-f854-4715-9825-aa5182a0357f"/>
 				<textElement>
 					<font pdfFontName="malgun.ttf" pdfEncoding="Identity-H"/>
+					<paragraph leftIndent="5"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{reportInfo}.get( "C7" )]]></textFieldExpression>
+				<textFieldExpression><![CDATA["CodePro 서비스를 통해 보고 기간 내 귀사의 주요 홈페이지에서 탐지한 악성코드 유포의심 현황입니다."]]></textFieldExpression>
 			</textField>
 		</band>
-		<band height="70">
-			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "OPT11_1" )]]></printWhenExpression>
+		<band height="120">
+			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "C4" )]]></printWhenExpression>
 			<componentElement>
-				<reportElement key="table" style="table" x="0" y="0" width="539" height="50" uuid="4ba559ab-79ee-4e0f-960d-21794b67a5bb"/>
+				<reportElement key="table" style="table" x="0" y="45" width="539" height="50" uuid="4ba559ab-79ee-4e0f-960d-21794b67a5bb"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<datasetRun subDataset="DS6" uuid="d2c4c69e-cff6-4211-a3a6-6451fb874c01">
 						<dataSourceExpression><![CDATA[$P{reportInfo}.get("OPT11_1")]]></dataSourceExpression>
@@ -2048,12 +2137,12 @@
 								<text><![CDATA[순번]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<box>
 								<leftPen lineWidth="0.5"/>
 							</box>
 							<textField>
-								<reportElement x="0" y="0" width="30" height="19" uuid="8c7d5601-5516-402c-b637-c1e739f978c7"/>
+								<reportElement x="0" y="0" width="30" height="20" uuid="8c7d5601-5516-402c-b637-c1e739f978c7"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -2082,9 +2171,9 @@
 								<text><![CDATA[탐지장비]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="440" height="19" uuid="3cfc529f-d59d-42de-9ea5-0a65f2524340"/>
+								<reportElement x="0" y="0" width="440" height="20" uuid="3cfc529f-d59d-42de-9ea5-0a65f2524340"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -2113,14 +2202,15 @@
 								<text><![CDATA[탐지건수]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0">
-								<reportElement x="0" y="0" width="69" height="19" uuid="a2736de2-535a-41d9-bc3a-9ba707e07d4c"/>
+								<reportElement x="0" y="0" width="69" height="20" uuid="a2736de2-535a-41d9-bc3a-9ba707e07d4c"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+									<paragraph rightIndent="5"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{count}]]></textFieldExpression>
 							</textField>
@@ -2128,21 +2218,26 @@
 					</jr:column>
 				</jr:table>
 			</componentElement>
-		</band>
-		<band height="20">
-			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "C8" )]]></printWhenExpression>
 			<textField>
-				<reportElement x="0" y="0" width="539" height="20" uuid="38a26a62-93f1-4d21-8c9f-6cd5e830ae20"/>
+				<reportElement x="0" y="0" width="539" height="20" uuid="f75ba83f-96f8-485f-83f7-ff06d26dcc3f"/>
+				<textElement>
+					<font isBold="true" pdfFontName="malgunbd.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{reportInfo}.get( "C4" )]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="0" y="20" width="539" height="20" uuid="b463ee6b-a6c5-4597-8790-3e0f45ade7e9"/>
 				<textElement>
 					<font pdfFontName="malgun.ttf" pdfEncoding="Identity-H"/>
+					<paragraph leftIndent="5"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{reportInfo}.get( "C8" )]]></textFieldExpression>
+				<textFieldExpression><![CDATA["웹쉘탐지 서비스를 통해 보고 기간 내 귀사의 웹서버에서 탐지한 웹쉘 현황입니다."]]></textFieldExpression>
 			</textField>
 		</band>
-		<band height="70">
-			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "OPT12_1" )]]></printWhenExpression>
+		<band height="120">
+			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "C5" )]]></printWhenExpression>
 			<componentElement>
-				<reportElement key="table" style="table" x="0" y="0" width="539" height="50" uuid="fdb72f39-cda5-49d1-bef4-506f45e81d2c"/>
+				<reportElement key="table" style="table" x="0" y="45" width="539" height="50" uuid="fdb72f39-cda5-49d1-bef4-506f45e81d2c"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<datasetRun subDataset="DS6" uuid="609b5d55-9e41-4bcd-ac8c-2c2cfeb69563">
 						<dataSourceExpression><![CDATA[$P{reportInfo}.get("OPT12_1")]]></dataSourceExpression>
@@ -2167,12 +2262,12 @@
 								<text><![CDATA[순번]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<box>
 								<leftPen lineWidth="0.5"/>
 							</box>
 							<textField>
-								<reportElement x="0" y="0" width="30" height="19" uuid="ca47edbd-fe25-401f-86ba-4121f7ea2a71"/>
+								<reportElement x="0" y="0" width="30" height="20" uuid="ca47edbd-fe25-401f-86ba-4121f7ea2a71"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -2201,9 +2296,9 @@
 								<text><![CDATA[탐지장비]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="440" height="19" uuid="37cdf92a-c56c-4fba-b0d3-4c8ab8dfb576"/>
+								<reportElement x="0" y="0" width="440" height="20" uuid="37cdf92a-c56c-4fba-b0d3-4c8ab8dfb576"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -2232,14 +2327,15 @@
 								<text><![CDATA[탐지건수]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="#,##0">
-								<reportElement x="0" y="0" width="69" height="19" uuid="cecd2922-0e6b-45de-b3f8-3721b94d7aff"/>
+								<reportElement x="0" y="0" width="69" height="20" uuid="cecd2922-0e6b-45de-b3f8-3721b94d7aff"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+									<paragraph rightIndent="5"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{count}]]></textFieldExpression>
 							</textField>
@@ -2247,18 +2343,50 @@
 					</jr:column>
 				</jr:table>
 			</componentElement>
+			<textField>
+				<reportElement x="0" y="0" width="539" height="20" uuid="38a26a62-93f1-4d21-8c9f-6cd5e830ae20"/>
+				<textElement>
+					<font isBold="true" pdfFontName="malgunbd.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{reportInfo}.get( "C5" )]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="0" y="20" width="539" height="20" uuid="4efb06ca-993b-4361-bbae-8f834a613957"/>
+				<textElement>
+					<font pdfFontName="malgun.ttf" pdfEncoding="Identity-H"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["보고 기간 내 RAT 탐지센서에서 탐지한 RAT 감염의심 현황입니다."]]></textFieldExpression>
+			</textField>
 		</band>
-		<band height="80">
+		<band height="20">
+			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "OPT1_2" ) ||
+$P{reportInfo}.containsKey( "OPT2_2" ) ||
+$P{reportInfo}.containsKey( "OPT2_3" ) ||
+$P{reportInfo}.containsKey( "OPT3_2" ) ||
+$P{reportInfo}.containsKey( "OPT6_3" ) ||
+$P{reportInfo}.containsKey( "OPT10_2" ) ||
+$P{reportInfo}.containsKey( "OPT11_2" ) ||
+$P{reportInfo}.containsKey( "OPT12_2" )]]></printWhenExpression>
+			<textField>
+				<reportElement x="0" y="0" width="539" height="20" uuid="db21c696-6af5-46be-a0be-4ea24b5c80cd"/>
+				<textElement>
+					<font isBold="true" pdfFontName="malgunbd.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["별첨"]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="100">
 			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "OPT1_2" ) && !((com.cyberone.report.core.datasource.SynthesisDataSource)$P{reportInfo}.get("OPT1_2")).isEmpty()]]></printWhenExpression>
 			<textField>
 				<reportElement x="0" y="0" width="539" height="20" uuid="8ef8957f-abb0-4329-9341-ada9a2766a6c"/>
 				<textElement>
 					<font pdfFontName="malgun.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
-				<textFieldExpression><![CDATA["비정기 보고현황(상세) : 상황/ 장애/ 작업 현황정보"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{reportInfo}.get("opt01_ad")]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement key="table" style="table" x="0" y="20" width="539" height="50" uuid="c13337a2-8f3a-489c-8057-0813e38a951f"/>
+				<reportElement key="table" style="table" x="0" y="25" width="539" height="50" uuid="c13337a2-8f3a-489c-8057-0813e38a951f"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<datasetRun subDataset="DS7" uuid="ca2cd145-f09a-4342-8675-12091f17ca8f">
 						<dataSourceExpression><![CDATA[$P{reportInfo}.get("OPT1_2")]]></dataSourceExpression>
@@ -2283,12 +2411,12 @@
 								<text><![CDATA[순번]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<box>
 								<leftPen lineWidth="0.5"/>
 							</box>
 							<textField>
-								<reportElement x="0" y="0" width="30" height="19" uuid="ae23bc69-8d77-4d67-8cbf-3abca6f872cb"/>
+								<reportElement x="0" y="0" width="30" height="20" uuid="ae23bc69-8d77-4d67-8cbf-3abca6f872cb"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -2316,9 +2444,9 @@
 								<text><![CDATA[구분]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="70" height="19" uuid="9f34da8e-0730-469a-97a6-e7983abc72e7"/>
+								<reportElement x="0" y="0" width="70" height="20" uuid="9f34da8e-0730-469a-97a6-e7983abc72e7"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -2329,10 +2457,10 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="70" uuid="0ec84bb7-58cb-4e60-9e50-5dd86fe6cd67">
+					<jr:column width="50" uuid="0ec84bb7-58cb-4e60-9e50-5dd86fe6cd67">
 						<jr:columnHeader style="table_TH" height="20" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="70" height="20" uuid="948140e5-96f5-4e8b-ade0-309a7e8664c6"/>
+								<reportElement x="0" y="0" width="50" height="20" uuid="948140e5-96f5-4e8b-ade0-309a7e8664c6"/>
 								<box>
 									<pen lineWidth="0.0"/>
 									<topPen lineWidth="0.0"/>
@@ -2346,9 +2474,9 @@
 								<text><![CDATA[일자]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="">
-								<reportElement x="0" y="0" width="70" height="19" uuid="31f5cb04-4f59-4146-b2ab-0db651831feb"/>
+								<reportElement x="0" y="0" width="50" height="20" uuid="31f5cb04-4f59-4146-b2ab-0db651831feb"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -2359,10 +2487,10 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="369" uuid="a649e781-b9be-4207-a243-e86f53c03c9c">
+					<jr:column width="389" uuid="a649e781-b9be-4207-a243-e86f53c03c9c">
 						<jr:columnHeader style="table_TH" height="20" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="369" height="20" uuid="12079dd6-774e-4d41-ac27-289cdafdf1b2"/>
+								<reportElement x="0" y="0" width="389" height="20" uuid="12079dd6-774e-4d41-ac27-289cdafdf1b2"/>
 								<box>
 									<pen lineWidth="0.0"/>
 									<topPen lineWidth="0.0"/>
@@ -2376,9 +2504,9 @@
 								<text><![CDATA[내용]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="">
-								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="369" height="19" isPrintWhenDetailOverflows="true" uuid="84e55885-2fd1-45f1-b537-2b31a2e08c6f"/>
+								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="389" height="20" isPrintWhenDetailOverflows="true" uuid="84e55885-2fd1-45f1-b537-2b31a2e08c6f"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -2393,17 +2521,17 @@
 				</jr:table>
 			</componentElement>
 		</band>
-		<band height="80">
+		<band height="120">
 			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "OPT2_2" ) && !((com.cyberone.report.core.datasource.SynthesisDataSource)$P{reportInfo}.get("OPT2_2")).isEmpty()]]></printWhenExpression>
 			<textField>
 				<reportElement x="0" y="0" width="539" height="20" uuid="584202bb-9f3a-45f5-92ce-14a2e6928fea"/>
 				<textElement>
 					<font pdfFontName="malgun.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
-				<textFieldExpression><![CDATA["설정변경/운영 현황"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{reportInfo}.get("opt02_ad")]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement key="table" style="table" x="0" y="20" width="539" height="50" uuid="93ac2fa8-6ff5-4d0b-baf0-0a54eaa545d8"/>
+				<reportElement key="table" style="table" x="0" y="45" width="539" height="50" uuid="93ac2fa8-6ff5-4d0b-baf0-0a54eaa545d8"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<datasetRun subDataset="DS7" uuid="f8f2832a-b0f8-4a2f-93bf-6b00feaec39e">
 						<dataSourceExpression><![CDATA[$P{reportInfo}.get("OPT2_2")]]></dataSourceExpression>
@@ -2428,7 +2556,7 @@
 								<text><![CDATA[순번]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="29" rowSpan="1">
+						<jr:detailCell style="table_TD" height="30" rowSpan="1">
 							<box>
 								<leftPen lineWidth="0.5"/>
 							</box>
@@ -2444,10 +2572,10 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="70" uuid="daead666-47ca-4761-b15b-21e352d5b86e">
+					<jr:column width="50" uuid="daead666-47ca-4761-b15b-21e352d5b86e">
 						<jr:columnHeader style="table_TH" height="20" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="70" height="20" uuid="1c4b2895-0c21-4897-8bf7-da3871da680e"/>
+								<reportElement x="0" y="0" width="50" height="20" uuid="1c4b2895-0c21-4897-8bf7-da3871da680e"/>
 								<box>
 									<pen lineWidth="0.0"/>
 									<topPen lineWidth="0.0"/>
@@ -2461,9 +2589,9 @@
 								<text><![CDATA[일자]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="29" rowSpan="1">
+						<jr:detailCell style="table_TD" height="30" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="70" height="28" uuid="0266c8b7-5b0c-471f-a66e-df680d4b5421"/>
+								<reportElement x="0" y="0" width="50" height="28" uuid="0266c8b7-5b0c-471f-a66e-df680d4b5421"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -2474,10 +2602,10 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="160" uuid="d54d1b75-16bc-4313-bbcd-52051d5f90e4">
+					<jr:column width="180" uuid="d54d1b75-16bc-4313-bbcd-52051d5f90e4">
 						<jr:columnHeader style="table_TH" height="20" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="160" height="20" uuid="46259506-b058-4cdf-8471-7313a5fa1900"/>
+								<reportElement x="0" y="0" width="180" height="20" uuid="46259506-b058-4cdf-8471-7313a5fa1900"/>
 								<box>
 									<pen lineWidth="0.0"/>
 									<topPen lineWidth="0.0"/>
@@ -2491,9 +2619,9 @@
 								<text><![CDATA[대상장비]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="29" rowSpan="1">
+						<jr:detailCell style="table_TD" height="30" rowSpan="1">
 							<textField isStretchWithOverflow="true">
-								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="160" height="28" isPrintWhenDetailOverflows="true" uuid="cbbcbb6c-be7b-460f-916a-3bdb7f4dd433"/>
+								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="180" height="28" isPrintWhenDetailOverflows="true" uuid="cbbcbb6c-be7b-460f-916a-3bdb7f4dd433"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -2521,7 +2649,7 @@
 								<text><![CDATA[출발지]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="29" rowSpan="1">
+						<jr:detailCell style="table_TD" height="30" rowSpan="1">
 							<textField isStretchWithOverflow="true">
 								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="70" height="28" isPrintWhenDetailOverflows="true" uuid="868dbfc3-a67c-44f2-9499-1fc587248043"/>
 								<box>
@@ -2551,7 +2679,7 @@
 								<text><![CDATA[목적지]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="29" rowSpan="1">
+						<jr:detailCell style="table_TD" height="30" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="">
 								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="70" height="28" isPrintWhenDetailOverflows="true" uuid="c9e2cd8a-0a96-4ca7-be83-ba7a06af2a88"/>
 								<box>
@@ -2564,13 +2692,13 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="49" uuid="448da501-612e-4b1e-acd3-7ed2cd8e17ec">
+					<jr:column width="39" uuid="448da501-612e-4b1e-acd3-7ed2cd8e17ec">
 						<jr:columnHeader style="table_TH" height="20" rowSpan="1">
 							<box>
 								<rightPen lineWidth="0.0"/>
 							</box>
 							<staticText>
-								<reportElement x="0" y="0" width="49" height="20" uuid="6e81dc92-92f4-41c5-88aa-617771fc1fc3"/>
+								<reportElement x="0" y="0" width="39" height="20" uuid="6e81dc92-92f4-41c5-88aa-617771fc1fc3"/>
 								<box>
 									<pen lineWidth="0.0"/>
 									<topPen lineWidth="0.0"/>
@@ -2584,12 +2712,12 @@
 								<text><![CDATA[프로토콜]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="29" rowSpan="1">
+						<jr:detailCell style="table_TD" height="30" rowSpan="1">
 							<box>
 								<rightPen lineWidth="0.0"/>
 							</box>
 							<textField isStretchWithOverflow="true">
-								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="49" height="28" isPrintWhenDetailOverflows="true" uuid="94008412-95b8-4722-86e1-371b535073bf"/>
+								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="39" height="28" isPrintWhenDetailOverflows="true" uuid="94008412-95b8-4722-86e1-371b535073bf"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -2600,10 +2728,10 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="50" uuid="bc4a0578-cfde-4d33-8a52-90038deb0a8b">
+					<jr:column width="55" uuid="2195cf54-d924-4672-b63b-ab9a500a4c9e">
 						<jr:columnHeader style="table_TH" height="20" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="50" height="20" uuid="cfda05d2-4d43-47e6-8235-5f624de44746"/>
+								<reportElement x="0" y="0" width="55" height="20" uuid="880cb6e0-a542-4aab-a150-881a982cb549"/>
 								<box>
 									<pen lineWidth="0.0"/>
 									<topPen lineWidth="0.0"/>
@@ -2617,9 +2745,9 @@
 								<text><![CDATA[포트]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="29" rowSpan="1">
+						<jr:detailCell style="table_TD" height="30" rowSpan="1">
 							<textField isStretchWithOverflow="true">
-								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="50" height="28" isPrintWhenDetailOverflows="true" uuid="c64c92fe-3f66-4cf4-b49c-601775ac0fad"/>
+								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="55" height="28" isPrintWhenDetailOverflows="true" uuid="9a4559d8-ac39-4274-b453-cc4e08dca21e"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -2630,10 +2758,10 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="40" uuid="7d1f6c96-6d38-488f-ac35-6b6d476cbb28">
+					<jr:column width="45" uuid="7d1f6c96-6d38-488f-ac35-6b6d476cbb28">
 						<jr:columnHeader style="table_TH" height="20" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="40" height="20" uuid="b96d0ccd-4a1d-4f9e-acc2-1275d9187e3e"/>
+								<reportElement x="0" y="0" width="45" height="20" uuid="b96d0ccd-4a1d-4f9e-acc2-1275d9187e3e"/>
 								<box>
 									<pen lineWidth="0.0"/>
 									<topPen lineWidth="0.0"/>
@@ -2647,9 +2775,9 @@
 								<text><![CDATA[실행여부]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="29" rowSpan="1">
+						<jr:detailCell style="table_TD" height="30" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="40" height="28" uuid="3026428d-af02-4c65-873d-2a81b1a9fc51"/>
+								<reportElement x="0" y="0" width="45" height="28" uuid="3026428d-af02-4c65-873d-2a81b1a9fc51"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -2662,11 +2790,18 @@
 					</jr:column>
 				</jr:table>
 			</componentElement>
+			<textField>
+				<reportElement x="0" y="20" width="539" height="20" uuid="c5bd3aa5-5d6c-4aa7-9e3e-ff8bec563d94"/>
+				<textElement>
+					<font pdfFontName="malgun.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA["  ■ 방화벽 정책변경"]]></textFieldExpression>
+			</textField>
 		</band>
-		<band height="60">
+		<band height="100">
 			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "OPT2_3" ) && !((com.cyberone.report.core.datasource.SynthesisDataSource)$P{reportInfo}.get("OPT2_3")).isEmpty()]]></printWhenExpression>
 			<componentElement>
-				<reportElement key="table" style="table" positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="539" height="50" isPrintWhenDetailOverflows="true" uuid="9153f1cc-6992-4b38-8fc4-7d9fc8cddcba"/>
+				<reportElement key="table" style="table" positionType="Float" stretchType="RelativeToTallestObject" x="0" y="25" width="539" height="50" isPrintWhenDetailOverflows="true" uuid="9153f1cc-6992-4b38-8fc4-7d9fc8cddcba"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<datasetRun subDataset="DS7" uuid="d93c91c2-1a05-41bd-b3ef-3f54557b9f3f">
 						<dataSourceExpression><![CDATA[$P{reportInfo}.get("OPT2_3")]]></dataSourceExpression>
@@ -2707,10 +2842,10 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="60" uuid="1170d1bf-8fdb-4ad0-bc18-1596ed3784fe">
+					<jr:column width="70" uuid="1170d1bf-8fdb-4ad0-bc18-1596ed3784fe">
 						<jr:columnHeader style="table_TH" height="20" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="60" height="20" uuid="adec22b5-f819-4284-ae14-399d6bb77abb"/>
+								<reportElement x="0" y="0" width="70" height="20" uuid="adec22b5-f819-4284-ae14-399d6bb77abb"/>
 								<box>
 									<pen lineWidth="0.0"/>
 									<topPen lineWidth="0.0"/>
@@ -2726,7 +2861,7 @@
 						</jr:columnHeader>
 						<jr:detailCell style="table_TD" height="29" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="60" height="28" uuid="072e60ea-2ec6-40aa-b877-c566920a31a0"/>
+								<reportElement x="0" y="0" width="70" height="28" uuid="072e60ea-2ec6-40aa-b877-c566920a31a0"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -2737,10 +2872,10 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="70" uuid="ac2fa165-1c12-4963-b9b6-523a292cdecd">
+					<jr:column width="50" uuid="ac2fa165-1c12-4963-b9b6-523a292cdecd">
 						<jr:columnHeader style="table_TH" height="20" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="70" height="20" uuid="1e108baf-45f1-4bf8-88dc-8af43bd362c4"/>
+								<reportElement x="0" y="0" width="50" height="20" uuid="1e108baf-45f1-4bf8-88dc-8af43bd362c4"/>
 								<box>
 									<pen lineWidth="0.0"/>
 									<topPen lineWidth="0.0"/>
@@ -2756,7 +2891,7 @@
 						</jr:columnHeader>
 						<jr:detailCell style="table_TD" height="29" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="70" height="28" uuid="a10426ba-9a44-4190-8bfb-f865083d4059"/>
+								<reportElement x="0" y="0" width="50" height="28" uuid="a10426ba-9a44-4190-8bfb-f865083d4059"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -2767,10 +2902,10 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="130" uuid="194124f9-33b9-4504-8c48-bc34aee26a7c">
+					<jr:column width="140" uuid="194124f9-33b9-4504-8c48-bc34aee26a7c">
 						<jr:columnHeader style="table_TH" height="20" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="130" height="20" uuid="e2089c99-baf6-4507-ab9f-e27e971bcb8f"/>
+								<reportElement x="0" y="0" width="140" height="20" uuid="e2089c99-baf6-4507-ab9f-e27e971bcb8f"/>
 								<box>
 									<pen lineWidth="0.0"/>
 									<topPen lineWidth="0.0"/>
@@ -2786,7 +2921,7 @@
 						</jr:columnHeader>
 						<jr:detailCell style="table_TD" height="29" rowSpan="1">
 							<textField isStretchWithOverflow="true">
-								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="130" height="28" isPrintWhenDetailOverflows="true" uuid="c85ad170-c13e-4c1f-8d10-ba7df93f13f8"/>
+								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="140" height="28" isPrintWhenDetailOverflows="true" uuid="c85ad170-c13e-4c1f-8d10-ba7df93f13f8"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -2830,18 +2965,25 @@
 					</jr:column>
 				</jr:table>
 			</componentElement>
+			<textField>
+				<reportElement x="0" y="0" width="539" height="20" uuid="2a76e63c-621e-485d-8c08-78f6dd152478"/>
+				<textElement>
+					<font pdfFontName="malgun.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA["  ■ 탐지룰 설정변경/ 패치/ 패턴 업데이트"]]></textFieldExpression>
+			</textField>
 		</band>
-		<band height="80">
+		<band height="100">
 			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "OPT3_2" ) && !((com.cyberone.report.core.datasource.SynthesisDataSource)$P{reportInfo}.get("OPT3_2")).isEmpty()]]></printWhenExpression>
 			<textField>
 				<reportElement x="0" y="0" width="539" height="20" uuid="8bd0cef3-0f35-4e27-88b6-38bc795365da"/>
 				<textElement>
 					<font pdfFontName="malgun.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
-				<textFieldExpression><![CDATA["요청처리 현황"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{reportInfo}.get("opt03_ad")]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement key="table" style="table" x="0" y="20" width="539" height="50" uuid="275ec149-4371-492b-8f36-22dd5777c4d0"/>
+				<reportElement key="table" style="table" x="0" y="25" width="539" height="50" uuid="275ec149-4371-492b-8f36-22dd5777c4d0"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<datasetRun subDataset="DS7" uuid="81d07858-f775-4654-ab83-0067b6012efa">
 						<dataSourceExpression><![CDATA[$P{reportInfo}.get("OPT3_2")]]></dataSourceExpression>
@@ -2866,12 +3008,12 @@
 								<text><![CDATA[순번]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<box>
 								<leftPen lineWidth="0.5"/>
 							</box>
 							<textField>
-								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="30" height="19" isRemoveLineWhenBlank="true" uuid="bf0f62aa-d23e-4c0a-8ca4-d53c336ccdf0"/>
+								<reportElement isPrintRepeatedValues="false" x="0" y="0" width="30" height="20" isRemoveLineWhenBlank="true" uuid="bf0f62aa-d23e-4c0a-8ca4-d53c336ccdf0"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -2899,9 +3041,9 @@
 								<text><![CDATA[구분]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="90" height="19" uuid="997e0567-d537-4c7f-a6fd-8de151988dca"/>
+								<reportElement x="0" y="0" width="90" height="20" uuid="997e0567-d537-4c7f-a6fd-8de151988dca"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -2912,10 +3054,10 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="70" uuid="eb34b1fd-9caf-4bf6-b92e-e78d0cf8fe65">
+					<jr:column width="50" uuid="eb34b1fd-9caf-4bf6-b92e-e78d0cf8fe65">
 						<jr:columnHeader style="table_TH" height="20" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="70" height="20" uuid="988eb6d9-4a0d-4cea-ab3d-3e6d8b2f0e7c"/>
+								<reportElement x="0" y="0" width="50" height="20" uuid="988eb6d9-4a0d-4cea-ab3d-3e6d8b2f0e7c"/>
 								<box>
 									<pen lineWidth="0.0"/>
 									<topPen lineWidth="0.0"/>
@@ -2929,9 +3071,9 @@
 								<text><![CDATA[일자]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="">
-								<reportElement x="0" y="0" width="70" height="19" uuid="b94dc213-3ffc-4c69-8158-642b6998bb8e"/>
+								<reportElement x="0" y="0" width="50" height="20" uuid="b94dc213-3ffc-4c69-8158-642b6998bb8e"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -2942,10 +3084,10 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="349" uuid="1c27f961-006c-4973-bcc8-e1b5210350a6">
+					<jr:column width="369" uuid="1c27f961-006c-4973-bcc8-e1b5210350a6">
 						<jr:columnHeader style="table_TH" height="20" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="349" height="20" uuid="5792206c-fc1b-4cf0-af71-a6716b625131"/>
+								<reportElement x="0" y="0" width="369" height="20" uuid="5792206c-fc1b-4cf0-af71-a6716b625131"/>
 								<box>
 									<pen lineWidth="0.0"/>
 									<topPen lineWidth="0.0"/>
@@ -2959,9 +3101,9 @@
 								<text><![CDATA[내용]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="">
-								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="349" height="19" isPrintWhenDetailOverflows="true" uuid="78c35424-947a-43ea-a585-71ec4c4824f6"/>
+								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="369" height="20" isPrintWhenDetailOverflows="true" uuid="78c35424-947a-43ea-a585-71ec4c4824f6"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -2976,17 +3118,17 @@
 				</jr:table>
 			</componentElement>
 		</band>
-		<band height="80">
+		<band height="100">
 			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "OPT6_3" ) && !((com.cyberone.report.core.datasource.SynthesisDataSource)$P{reportInfo}.get("OPT6_3")).isEmpty()]]></printWhenExpression>
 			<textField>
 				<reportElement x="0" y="0" width="539" height="20" uuid="de122a57-9618-4c29-ac09-06a58b0908b6"/>
 				<textElement>
 					<font pdfFontName="malgun.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
-				<textFieldExpression><![CDATA["침해탐지현황"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{reportInfo}.get("opt06_ad")]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement key="table" style="table" x="0" y="20" width="539" height="50" uuid="40bdef22-c2e7-4fd0-9324-349d7f9995e1"/>
+				<reportElement key="table" style="table" x="0" y="25" width="539" height="50" uuid="40bdef22-c2e7-4fd0-9324-349d7f9995e1"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<datasetRun subDataset="DS7" uuid="385709ee-3d0d-47c2-86c4-897d9f0746d6">
 						<dataSourceExpression><![CDATA[$P{reportInfo}.get("OPT6_3")]]></dataSourceExpression>
@@ -3266,8 +3408,9 @@
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
+								<textElement textAlignment="Right" verticalAlignment="Middle">
 									<font fontName="SansSerif" size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+									<paragraph rightIndent="2"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{count}+"건"]]></textFieldExpression>
 							</textField>
@@ -3276,17 +3419,17 @@
 				</jr:table>
 			</componentElement>
 		</band>
-		<band height="80">
+		<band height="100">
 			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "OPT10_2" ) && !((com.cyberone.report.core.datasource.SynthesisDataSource)$P{reportInfo}.get("OPT10_2")).isEmpty()]]></printWhenExpression>
 			<textField>
 				<reportElement x="0" y="0" width="539" height="20" uuid="52cb632f-6b75-4582-9d3a-c7662ef01abc"/>
 				<textElement>
 					<font pdfFontName="malgun.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
-				<textFieldExpression><![CDATA["홈페이지 악성코드 유포 탐지현황"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{reportInfo}.get("opt10_ad")]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement key="table" style="table" x="0" y="20" width="539" height="50" uuid="3100381d-4dc2-4ea0-ba19-423c462c218d"/>
+				<reportElement key="table" style="table" x="0" y="25" width="539" height="50" uuid="3100381d-4dc2-4ea0-ba19-423c462c218d"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<datasetRun subDataset="DS7" uuid="d026d026-b6c0-4b01-b3c4-19a7d1e13566">
 						<dataSourceExpression><![CDATA[$P{reportInfo}.get("OPT10_2")]]></dataSourceExpression>
@@ -3311,12 +3454,12 @@
 								<text><![CDATA[순번]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<box>
 								<leftPen lineWidth="0.5"/>
 							</box>
 							<textField>
-								<reportElement x="0" y="0" width="30" height="19" uuid="62a4b3be-1bc1-4745-9ce8-4f708fe87eca"/>
+								<reportElement x="0" y="0" width="30" height="20" uuid="62a4b3be-1bc1-4745-9ce8-4f708fe87eca"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -3327,10 +3470,10 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="70" uuid="168f42ea-35b8-4b6c-b802-abefa6345d28">
+					<jr:column width="50" uuid="168f42ea-35b8-4b6c-b802-abefa6345d28">
 						<jr:columnHeader style="table_TH" height="20" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="70" height="20" uuid="190d5f24-00ed-4f6c-8d6b-6d72a4f1c104"/>
+								<reportElement x="0" y="0" width="50" height="20" uuid="190d5f24-00ed-4f6c-8d6b-6d72a4f1c104"/>
 								<box>
 									<pen lineWidth="0.0"/>
 									<topPen lineWidth="0.0"/>
@@ -3344,9 +3487,9 @@
 								<text><![CDATA[탐지시간]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="70" height="19" uuid="0b7690c0-7850-4a51-8db4-3960aae4147b"/>
+								<reportElement x="0" y="0" width="50" height="20" uuid="0b7690c0-7850-4a51-8db4-3960aae4147b"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -3357,10 +3500,10 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="350" uuid="399d3168-7cf2-484e-8a84-53d68593ae34">
+					<jr:column width="370" uuid="399d3168-7cf2-484e-8a84-53d68593ae34">
 						<jr:columnHeader style="table_TH" height="20" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="350" height="20" uuid="a66af40f-c15c-441f-87bf-a3f14d1df687"/>
+								<reportElement x="0" y="0" width="370" height="20" uuid="a66af40f-c15c-441f-87bf-a3f14d1df687"/>
 								<box>
 									<pen lineWidth="0.0"/>
 									<topPen lineWidth="0.0"/>
@@ -3374,9 +3517,9 @@
 								<text><![CDATA[체크 URL]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="">
-								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="350" height="19" isPrintWhenDetailOverflows="true" uuid="8a949891-1f70-47f8-bd1d-4018de2b4d7a"/>
+								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="370" height="20" isPrintWhenDetailOverflows="true" uuid="8a949891-1f70-47f8-bd1d-4018de2b4d7a"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -3405,9 +3548,9 @@
 								<text><![CDATA[비고]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="">
-								<reportElement x="0" y="0" width="89" height="19" uuid="e4978d97-07fc-40c3-be73-cdc6812acab8"/>
+								<reportElement x="0" y="0" width="89" height="20" uuid="e4978d97-07fc-40c3-be73-cdc6812acab8"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -3422,17 +3565,17 @@
 				</jr:table>
 			</componentElement>
 		</band>
-		<band height="80">
+		<band height="100">
 			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "OPT11_2" ) && !((com.cyberone.report.core.datasource.SynthesisDataSource)$P{reportInfo}.get("OPT11_2")).isEmpty()]]></printWhenExpression>
 			<textField>
 				<reportElement x="0" y="0" width="539" height="20" uuid="edb75f3b-6f55-4b1e-bf5b-794b62dbdd06"/>
 				<textElement>
 					<font pdfFontName="malgun.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
-				<textFieldExpression><![CDATA["웹쉘 탐지현황"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{reportInfo}.get("opt11_ad")]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement key="table" style="table" x="0" y="20" width="539" height="50" uuid="0756453d-e492-42e6-ab15-896498611183"/>
+				<reportElement key="table" style="table" x="0" y="25" width="539" height="50" uuid="0756453d-e492-42e6-ab15-896498611183"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<datasetRun subDataset="DS7" uuid="054fd832-e283-49c6-8d3d-5f96c83a2e56">
 						<dataSourceExpression><![CDATA[$P{reportInfo}.get("OPT11_2")]]></dataSourceExpression>
@@ -3457,12 +3600,12 @@
 								<text><![CDATA[순번]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<box>
 								<leftPen lineWidth="0.5"/>
 							</box>
 							<textField>
-								<reportElement x="0" y="0" width="30" height="19" uuid="f252ee20-c3b5-4365-950b-59273b338a93"/>
+								<reportElement x="0" y="0" width="30" height="20" uuid="f252ee20-c3b5-4365-950b-59273b338a93"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -3473,10 +3616,10 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="70" uuid="1ca59aca-2c10-4aa6-b7d2-3841f1eda855">
+					<jr:column width="50" uuid="1ca59aca-2c10-4aa6-b7d2-3841f1eda855">
 						<jr:columnHeader style="table_TH" height="20" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="70" height="20" uuid="3cbdece7-4c06-4c9f-9d8d-3db7a7575e8d"/>
+								<reportElement x="0" y="0" width="50" height="20" uuid="3cbdece7-4c06-4c9f-9d8d-3db7a7575e8d"/>
 								<box>
 									<pen lineWidth="0.0"/>
 									<topPen lineWidth="0.0"/>
@@ -3490,9 +3633,9 @@
 								<text><![CDATA[탐지시간]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="70" height="19" uuid="f3b87f59-f746-4a2a-9c23-80b826a87126"/>
+								<reportElement x="0" y="0" width="50" height="20" uuid="f3b87f59-f746-4a2a-9c23-80b826a87126"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -3503,10 +3646,10 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="130" uuid="d8490e0b-e7d0-43d0-8a9e-a6966dbe9a44">
+					<jr:column width="140" uuid="d8490e0b-e7d0-43d0-8a9e-a6966dbe9a44">
 						<jr:columnHeader style="table_TH" height="20" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="130" height="20" uuid="e3384c04-bc31-4c1e-8467-7882e9b318b3"/>
+								<reportElement x="0" y="0" width="140" height="20" uuid="e3384c04-bc31-4c1e-8467-7882e9b318b3"/>
 								<box>
 									<pen lineWidth="0.0"/>
 									<topPen lineWidth="0.0"/>
@@ -3520,9 +3663,9 @@
 								<text><![CDATA[탐지서버]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField isStretchWithOverflow="true">
-								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="130" height="20" isPrintWhenDetailOverflows="true" uuid="bb8173b3-f2b6-4bd6-8a28-32bca360c432"/>
+								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="140" height="20" isPrintWhenDetailOverflows="true" uuid="bb8173b3-f2b6-4bd6-8a28-32bca360c432"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -3533,10 +3676,10 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="220" uuid="9377bc2c-1bb1-41da-a2e4-f12ce230ac93">
+					<jr:column width="230" uuid="9377bc2c-1bb1-41da-a2e4-f12ce230ac93">
 						<jr:columnHeader style="table_TH" height="20" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="220" height="20" uuid="bcdbd402-062d-4cc1-be4b-4ce755f42330"/>
+								<reportElement x="0" y="0" width="230" height="20" uuid="bcdbd402-062d-4cc1-be4b-4ce755f42330"/>
 								<box>
 									<pen lineWidth="0.0"/>
 									<topPen lineWidth="0.0"/>
@@ -3550,9 +3693,9 @@
 								<text><![CDATA[탐지파일명]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField isStretchWithOverflow="true">
-								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="220" height="20" isPrintWhenDetailOverflows="true" uuid="b5d841ee-2261-42b1-8c8f-d10221a00725"/>
+								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="230" height="20" isPrintWhenDetailOverflows="true" uuid="b5d841ee-2261-42b1-8c8f-d10221a00725"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -3581,9 +3724,9 @@
 								<text><![CDATA[비고]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField isStretchWithOverflow="true" pattern="">
-								<reportElement x="0" y="0" width="89" height="19" uuid="f453a918-afac-4ee2-b8aa-b6b1974766a2"/>
+								<reportElement x="0" y="0" width="89" height="20" uuid="f453a918-afac-4ee2-b8aa-b6b1974766a2"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -3598,18 +3741,17 @@
 				</jr:table>
 			</componentElement>
 		</band>
-		<band height="80">
-			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "OPT12_2" ) && !((com.cyberone.report.core.datasource.SynthesisDataSource)$P{reportInfo}.get("OPT12_2")).isEmpty()
-]]></printWhenExpression>
+		<band height="100">
+			<printWhenExpression><![CDATA[$P{reportInfo}.containsKey( "OPT12_2" ) && !((com.cyberone.report.core.datasource.SynthesisDataSource)$P{reportInfo}.get("OPT12_2")).isEmpty()]]></printWhenExpression>
 			<textField>
 				<reportElement x="0" y="0" width="539" height="20" uuid="02fa9f9e-cd9d-428b-979b-50893a3dce69"/>
 				<textElement>
 					<font pdfFontName="malgun.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
-				<textFieldExpression><![CDATA["RAT 의심 탐지현황"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{reportInfo}.get("opt12_ad")]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement key="table" style="table" x="0" y="20" width="539" height="50" uuid="99bd220d-691d-42b2-9a6e-55bdf6dafdc2"/>
+				<reportElement key="table" style="table" x="0" y="25" width="539" height="50" uuid="99bd220d-691d-42b2-9a6e-55bdf6dafdc2"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<datasetRun subDataset="DS7" uuid="3040408b-2fa9-48ec-9cc1-e4a9e46816a1">
 						<dataSourceExpression><![CDATA[$P{reportInfo}.get("OPT12_2")]]></dataSourceExpression>
@@ -3634,12 +3776,12 @@
 								<text><![CDATA[순번]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<box>
 								<leftPen lineWidth="0.5"/>
 							</box>
 							<textField>
-								<reportElement x="0" y="0" width="30" height="19" uuid="cb80c77b-72f9-4fbb-89e5-46712f439095"/>
+								<reportElement x="0" y="0" width="30" height="20" uuid="cb80c77b-72f9-4fbb-89e5-46712f439095"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -3650,10 +3792,10 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="100" uuid="95ede5e5-e411-43dd-968d-a27d23e1343f">
+					<jr:column width="110" uuid="95ede5e5-e411-43dd-968d-a27d23e1343f">
 						<jr:columnHeader style="table_TH" height="20" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="100" height="20" uuid="b3d17a81-e8b5-4354-b6de-33fc1f407ecf"/>
+								<reportElement x="0" y="0" width="110" height="20" uuid="b3d17a81-e8b5-4354-b6de-33fc1f407ecf"/>
 								<box>
 									<pen lineWidth="0.0"/>
 									<topPen lineWidth="0.0"/>
@@ -3667,9 +3809,9 @@
 								<text><![CDATA[탐지장비]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField isStretchWithOverflow="true">
-								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="100" height="19" isPrintWhenDetailOverflows="true" uuid="70de739a-fdb7-423c-bbf6-eeb4d725c41f"/>
+								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="110" height="20" isPrintWhenDetailOverflows="true" uuid="70de739a-fdb7-423c-bbf6-eeb4d725c41f"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -3680,10 +3822,10 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="70" uuid="dcb3398c-4f7d-4e5a-861d-614eee1b92a2">
+					<jr:column width="50" uuid="dcb3398c-4f7d-4e5a-861d-614eee1b92a2">
 						<jr:columnHeader style="table_TH" height="20" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="70" height="20" uuid="d63d9931-bbb8-4ac1-aed1-cfedd4cc19bf"/>
+								<reportElement x="0" y="0" width="50" height="20" uuid="d63d9931-bbb8-4ac1-aed1-cfedd4cc19bf"/>
 								<box>
 									<pen lineWidth="0.0"/>
 									<topPen lineWidth="0.0"/>
@@ -3697,9 +3839,9 @@
 								<text><![CDATA[탐지시간]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="70" height="19" uuid="ee127a74-3210-49ba-9b31-50744d9da624"/>
+								<reportElement x="0" y="0" width="50" height="20" uuid="ee127a74-3210-49ba-9b31-50744d9da624"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -3710,10 +3852,10 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="130" uuid="b1af0cf3-d04a-49b5-b74a-ef7657eef6f0">
+					<jr:column width="140" uuid="b1af0cf3-d04a-49b5-b74a-ef7657eef6f0">
 						<jr:columnHeader style="table_TH" height="20" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="130" height="20" uuid="fcb224af-6b27-4704-b70a-2ba99278dc76"/>
+								<reportElement x="0" y="0" width="140" height="20" uuid="fcb224af-6b27-4704-b70a-2ba99278dc76"/>
 								<box>
 									<pen lineWidth="0.0"/>
 									<topPen lineWidth="0.0"/>
@@ -3727,9 +3869,9 @@
 								<text><![CDATA[메세지]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField isStretchWithOverflow="true">
-								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="130" height="19" isPrintWhenDetailOverflows="true" uuid="33472270-186b-4a87-8c0c-e8a1ceb43ec2"/>
+								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="140" height="20" isPrintWhenDetailOverflows="true" uuid="33472270-186b-4a87-8c0c-e8a1ceb43ec2"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -3757,9 +3899,9 @@
 								<text><![CDATA[출발지]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="70" height="19" uuid="1da63406-25af-4e85-b800-d6d776f5b8b6"/>
+								<reportElement x="0" y="0" width="70" height="20" uuid="1da63406-25af-4e85-b800-d6d776f5b8b6"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -3790,12 +3932,12 @@
 								<text><![CDATA[목적지]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<box>
 								<rightPen lineWidth="0.0"/>
 							</box>
 							<textField isStretchWithOverflow="true" pattern="">
-								<reportElement x="0" y="0" width="70" height="19" uuid="247e9f30-5d8d-49b5-be2f-38bc77bf9d81"/>
+								<reportElement x="0" y="0" width="70" height="20" uuid="247e9f30-5d8d-49b5-be2f-38bc77bf9d81"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>
@@ -3823,9 +3965,9 @@
 								<text><![CDATA[비고]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="table_TD" height="19" rowSpan="1">
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="69" height="19" uuid="77985783-46f0-4a88-8788-e902e5053962"/>
+								<reportElement x="0" y="0" width="69" height="20" uuid="77985783-46f0-4a88-8788-e902e5053962"/>
 								<box>
 									<topPen lineWidth="0.5" lineStyle="Dotted"/>
 								</box>

@@ -40,7 +40,7 @@ public class BaseReport {
 
 	protected Logger logger = LoggerFactory.getLogger(getClass());
 	
-	protected void PerformanceInfo(BaseDao baseDao, HashMap<String, Object> reportData, int ItemNo, int nC, int assetCode, String sStartDay, String sEndDay) throws Exception {
+	protected void PerformanceInfo(BaseDao baseDao, HashMap<String, Object> reportData, List<String> contentsList, int ItemNo, int nC, int assetCode, String sStartDay, String sEndDay) throws Exception {
 		
 		List<HashMap<String, Object>> dataSource1 = null;
 		List<HashMap<String, Object>> dataSource2 = null;
@@ -52,12 +52,21 @@ public class BaseReport {
 			dbResult = baseDao.getPerformanceInfo("DY", assetCode, sStartDay, sEndDay);
 		}
 		
+		reportData.put("OPT99_CTG_UNIT", "일");
+		
 		if (StringUtil.convertString(reportData.get("reportType")).equals(Constants.REPORT_DAILY)) {
 			int nS = 0;
 			for (DBObject mVal : dbResult) {
 				dataSource1 = new ArrayList<HashMap<String, Object>>();
 				String sName = (String)mVal.get("name");
-				reportData.put(sName, "    " + ItemNo + "." + nC + "." + ++nS + " " + sName + " 추이");
+				
+				if (((Number)mVal.get("max")).longValue() == 0 && ((Number)mVal.get("min")).longValue() == 0 && ((Number)mVal.get("avg")).longValue() == 0) {
+					continue;
+				}
+				
+				String sTitle = "    " + ItemNo + "." + nC + "." + ++nS + " " + sName + " 추이";
+				reportData.put(sName, sTitle);
+				contentsList.add(sTitle);
 				logger.debug(sName + " 추이");
 				
 	    		HashMap<String, Object> map = new HashMap<String, Object>();
@@ -113,6 +122,7 @@ public class BaseReport {
     	        		logger.debug(tmpMap.toString());
         			}
             	}
+        		reportData.put("OPT99_CTG_UNIT", "시간");
         		reportData.put("OPT99_T_" + sName, new SynthesisDataSource(dataSource1));
         		reportData.put("OPT99_C_" + sName, new SynthesisDataSource(dataSource2));
 			}
@@ -121,7 +131,14 @@ public class BaseReport {
 			for (DBObject mVal : dbResult) {
 				dataSource1 = new ArrayList<HashMap<String, Object>>();
 				String sName = (String)mVal.get("name");
-				reportData.put(sName, "    " + ItemNo + "." + nC + "." + ++nS + " " + sName + " 추이");
+				
+				if (((Number)mVal.get("max")).longValue() == 0 && ((Number)mVal.get("min")).longValue() == 0 && ((Number)mVal.get("avg")).longValue() == 0) {
+					continue;
+				}
+				
+				String sTitle = "    " + ItemNo + "." + nC + "." + ++nS + " " + sName + " 추이";
+				reportData.put(sName, sTitle);
+				contentsList.add(sTitle);
 				logger.debug(sName + " 추이");
 				
 	    		HashMap<String, Object> map = new HashMap<String, Object>();
@@ -148,25 +165,29 @@ public class BaseReport {
             	List<String> dayPeriod = baseDao.getPeriodDay(baseDao.addDate(sStartDay,-7), sEndDay, 1);
             	
             	dataSource2 = new ArrayList<HashMap<String, Object>>();
+            	
+            	String[] saCtg = {"D-6", "D-5", "D-4", "D-3", "D-2", "D-1", "D"};
+            	int nCtg = 0;
     			int nDayCount = 0;
         		for (String tDay : dayPeriod) {
         			nDayCount++;
 		    		DBObject val = mapResult.get(tDay);
 	        		HashMap<String, Object> tmpMap = new HashMap<String, Object>();
 	        		tmpMap.put("series", (nDayCount <= 7) ? "전주 평균" : "금주 평균");
-	        		tmpMap.put("category", tDay);
+	        		tmpMap.put("category", saCtg[nCtg++%7]);
 	        		tmpMap.put("value", val != null ? ((Number)val.get("avg")).longValue() : 0);
 	        		dataSource2.add(tmpMap);
 	        		logger.debug(tmpMap.toString());
     	    	}
     			
+        		nCtg = 0;
         		nDayCount = 0;
         		for (String tDay : dayPeriod) {
         			nDayCount++;
     				DBObject val = mapResult.get(tDay);
 	        		HashMap<String, Object> tmpMap = new HashMap<String, Object>();
 	        		tmpMap.put("series", (nDayCount <= 7) ? "전주 최고" : "금주 최고");
-	        		tmpMap.put("category", tDay);
+	        		tmpMap.put("category", saCtg[nCtg++%7]);
 	        		tmpMap.put("value", val != null ? ((Number)val.get("max")).longValue() : 0);
 	        		dataSource2.add(tmpMap);
 	        		logger.debug(tmpMap.toString());
@@ -179,7 +200,14 @@ public class BaseReport {
 			for (DBObject mVal : dbResult) {
 				dataSource1 = new ArrayList<HashMap<String, Object>>();
 				String sName = (String)mVal.get("name");
-				reportData.put(sName, "    " + ItemNo + "." + nC + "." + ++nS + " " + sName + " 추이");
+				
+				if (((Number)mVal.get("max")).longValue() == 0 && ((Number)mVal.get("min")).longValue() == 0 && ((Number)mVal.get("avg")).longValue() == 0) {
+					continue;
+				}
+				
+				String sTitle = "    " + ItemNo + "." + nC + "." + ++nS + " " + sName + " 추이";
+				reportData.put(sName, sTitle);
+				contentsList.add(sTitle);
 				logger.debug(sName + " 추이");
 				
 	    		HashMap<String, Object> map = new HashMap<String, Object>();
@@ -218,7 +246,7 @@ public class BaseReport {
 		    		DBObject val = mapResult.get(tDay);
 	        		HashMap<String, Object> tmpMap = new HashMap<String, Object>();
 	        		tmpMap.put("series", (endCal.get(Calendar.MONTH)+1) + "월 평균");
-	        		tmpMap.put("category", tDay);
+	        		tmpMap.put("category", tDay.substring(6, 8));
 	        		tmpMap.put("value", val != null ? ((Number)val.get("avg")).longValue() : 0);
 	        		dataSource2.add(tmpMap);
 	        		logger.debug(tmpMap.toString());
@@ -235,7 +263,7 @@ public class BaseReport {
     				DBObject val = mapResult.get(tDay);
 	        		HashMap<String, Object> tmpMap = new HashMap<String, Object>();
 	        		tmpMap.put("series", (endCal.get(Calendar.MONTH)+1) + "월 최고");
-	        		tmpMap.put("category", tDay);
+	        		tmpMap.put("category", tDay.substring(6, 8));
 	        		tmpMap.put("value", val != null ? ((Number)val.get("max")).longValue() : 0);
 	        		dataSource2.add(tmpMap);
 	        		logger.debug(tmpMap.toString());
@@ -247,7 +275,14 @@ public class BaseReport {
 			int nS = 0;
 			for (DBObject mVal : dbResult) {
 				String sName = (String)mVal.get("name");
-				reportData.put(sName, "    " + ItemNo + "." + nC + "." + ++nS + " " + sName + " 추이");
+				
+				if (((Number)mVal.get("max")).longValue() == 0 && ((Number)mVal.get("min")).longValue() == 0 && ((Number)mVal.get("avg")).longValue() == 0) {
+					continue;
+				}
+				
+				String sTitle = "    " + ItemNo + "." + nC + "." + ++nS + " " + sName + " 추이";
+				reportData.put(sName, sTitle);
+				contentsList.add(sTitle);
 				logger.debug(sName + " 추이");
 				
 	    		Iterable<DBObject> dbTrend = baseDao.getPerformanceTrend("DY", assetCode, sStartDay, sEndDay, sName);
@@ -269,7 +304,7 @@ public class BaseReport {
 		    		DBObject val = mapResult.get(tDay);
 	        		HashMap<String, Object> tmpMap = new HashMap<String, Object>();
 	        		tmpMap.put("series", "평균");
-	        		tmpMap.put("category", tDay);
+	        		tmpMap.put("category", tDay.substring(6, 8));
 	        		tmpMap.put("value", val != null ? ((Number)val.get("avg")).longValue() : 0);
 	        		dataSource2.add(tmpMap);
 	        		logger.debug(tmpMap.toString());
@@ -279,7 +314,7 @@ public class BaseReport {
     				DBObject val = mapResult.get(tDay);
 	        		HashMap<String, Object> tmpMap = new HashMap<String, Object>();
 	        		tmpMap.put("series", "최고");
-	        		tmpMap.put("category", tDay);
+	        		tmpMap.put("category", tDay.substring(6, 8));
 	        		tmpMap.put("value", val != null ? ((Number)val.get("max")).longValue() : 0);
 	        		dataSource2.add(tmpMap);
 	        		logger.debug(tmpMap.toString());
@@ -299,5 +334,56 @@ public class BaseReport {
 			return removeLastCrLf(str.substring(0, str.length()-1));
 		}
 		return str;
-	}	
+	}
+	
+	public String getRptTypeName(String rpt) {
+		if (rpt.equals("5")) {
+			return "상황보고서";
+		} else if (rpt.equals("6")) {
+			return "장애보고서";
+		} else if (rpt.equals("7")) {
+			return "작업수행계획서";
+		} else if (rpt.equals("8")) {
+			return "작업완료보고서";
+		}
+		return "-";
+	}
+
+	public String getDryTypeName(String sct) {
+		if (sct.equals("1")) {
+			return "방화벽 정책변경";
+		} else if (sct.equals("6")) {
+			return "탐지룰 설정변경";
+		} else if (sct.equals("7")) {
+			return "패턴 업데이트";
+		} else if (sct.equals("8")) {
+			return "패치";
+		}
+		return "-";
+	}
+
+	public String getReqTypeName(String rpt) {
+		if (rpt.equals("2")) {
+			return "일반요청";
+		} else if (rpt.equals("3")) {
+			return "침해사고 분석 요청";
+		} else if (rpt.equals("4")) {
+			return "기술지원 요청";
+		}
+		return "-";
+	}
+
+	public String getNewsTypeName(String sct) {
+		if (sct.equals("R")) {
+			return "일일뉴스클리핑";
+		} else if (sct.equals("T")) {
+			return "주간보안동향";
+		} else if (sct.equals("P")) {
+			return "상황전파문";
+		} else if (sct.equals("B")) {
+			return "악성코드 유포&경유지";
+		}
+		return "-";
+	}
+	
 }

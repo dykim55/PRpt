@@ -35,11 +35,22 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.cyberone.report.Constants;
 import com.cyberone.report.core.datasource.SynthesisDataSource;
+import com.cyberone.report.core.report.DdosDailyReport;
+import com.cyberone.report.core.report.DdosMonthlyReport;
+import com.cyberone.report.core.report.DdosPeriodReport;
+import com.cyberone.report.core.report.DdosWeeklyReport;
 import com.cyberone.report.core.report.DpDdosDailyReport;
+import com.cyberone.report.core.report.DpDdosMonthlyReport;
+import com.cyberone.report.core.report.DpDdosPeriodReport;
+import com.cyberone.report.core.report.DpDdosWeeklyReport;
 import com.cyberone.report.core.report.FwDailyReport;
 import com.cyberone.report.core.report.FwMonthlyReport;
 import com.cyberone.report.core.report.FwPeriodReport;
 import com.cyberone.report.core.report.FwWeeklyReport;
+import com.cyberone.report.core.report.IdsDailyReport;
+import com.cyberone.report.core.report.IdsMonthlyReport;
+import com.cyberone.report.core.report.IdsPeriodReport;
+import com.cyberone.report.core.report.IdsWeeklyReport;
 import com.cyberone.report.core.report.IpsDailyReport;
 import com.cyberone.report.core.report.IpsMonthlyReport;
 import com.cyberone.report.core.report.IpsPeriodReport;
@@ -58,6 +69,7 @@ import com.cyberone.report.product.service.ProductService;
 import com.cyberone.report.report.service.ReportService;
 import com.cyberone.report.utils.StringUtil;
 import com.mongodb.BasicDBList;
+import com.mongodb.DB;
 import com.mongodb.DBObject;
 
 @Controller
@@ -100,6 +112,10 @@ public class ReportController {
     			TypeFactory.defaultInstance().constructCollectionType(List.class,  
     			   HashMap.class));        	
         
+    	if (!Constants.isUseServiceDesk() &&  slctAssetList.size() == 0) {
+    		throw new BizException("선택된 자산이 없습니다.");
+    	}
+    	
     	StringBuffer sBuf = null;
     	for (HashMap<String,Object> hMap : slctAssetList) {
     		String sAssetCode = StringUtil.convertString(hMap.get("id"));
@@ -371,6 +387,87 @@ public class ReportController {
         return modelAndView.addObject("status", "success");
     }
 
+    public List<HashMap<String, Object>> getCscoEqpmList(DB db, int domainCode, int groupCode) throws Exception {
+    	
+    	List<HashMap<String, Object>> cscoEqpmList = new ArrayList<HashMap<String, Object>>();
+    	HashMap<String, DBObject> productGroupMap = new HashMap<String, DBObject>();
+    	HashMap<String, DBObject> assetGroupMap = new HashMap<String, DBObject>();
+    	
+		List<DBObject> productGroups = reportService.selectProductGroups(db, false);
+		for (DBObject group : productGroups) {
+			productGroupMap.put(StringUtil.convertString(group.get("productGroupCode")), group);
+		}
+    	
+		List<DBObject> assetGroups = reportService.selectAssetGroups(db, domainCode, -1, false);
+		for (DBObject group : assetGroups) {
+			assetGroupMap.put(StringUtil.convertString(group.get("groupCode")), group);
+		}
+		
+    	List<DBObject> assets = reportService.selectAssetsProduct(db, groupCode, 0);
+    	
+    	for (DBObject asset : assets) {
+    		HashMap<String, Object> map = new HashMap<String, Object>();
+    		
+    		
+			HashMap<String, Integer> parserMap = new HashMap<String, Integer>();
+			
+			if (StringUtil.convertString(asset.get("productCode")).substring(0, 3).equals("504")) { //UTM
+				
+				DBObject assetPolicy = reportService.selectAssetPolicy(db, (Integer)asset.get("assetCode"));
+				DBObject logPolicy = (DBObject)assetPolicy.get("logPolicy");
+				DBObject pdLog = (DBObject)logPolicy.get("pdLog");
+			
+				List<DBObject> parsers = reportService.selectProductParsers(db, (Integer)asset.get("productCode"), false);
+				for (DBObject parser : parsers) {
+					
+					if ((Integer)parser.get("logCode") == 2) {
+						continue;
+					}
+
+					BasicDBList ps = (BasicDBList)pdLog.get("parserCodes");
+					
+					for(int i = 0; i < ps.size(); i++) {
+						int parserCode = (Integer)ps.get(i);
+						if (parserCode == (Integer)parser.get("parserCode")) {
+							if ((Integer)parser.get("posStat") == 0) {
+								logger.info("@" + asset.get("productCode"));
+								continue;
+							}
+							DBObject productGroup = productGroupMap.get(String.valueOf(parser.get("posStat")));
+							map.put("solution", productGroup.get("prefix"));
+							
+							if (parserMap.get(productGroup.get("prefix")) != null) {
+								continue;
+							}
+							parserMap.put(StringUtil.convertString(productGroup.get("prefix")), (Integer)parser.get("parserCode"));
+						}
+					}
+				}
+			} else {
+				DBObject productGroup = productGroupMap.get(StringUtil.convertString(asset.get("productCode")).substring(0, 3));
+				String sPrefix = StringUtil.convertString(productGroup.get("prefix")).toUpperCase();
+				map.put("solution", sPrefix);
+			}    		
+			
+			DBObject dbResult = productService.selectProduct(db, (Integer)asset.get("productCode"));
+			
+			
+			DBObject assetGroup = assetGroupMap.get(StringUtil.convertString(asset.get("groupCode")));
+			
+			
+    		map.put("eqpmNm", StringUtil.convertString(dbResult.get("productName")));
+    		map.put("rqrNm", StringUtil.convertString(asset.get("assetName")));
+    		map.put("eqpmIp", StringUtil.convertString(asset.get("assetIp")));
+    		map.put("instPos", "");
+    		map.put("cscoNm", StringUtil.convertString(assetGroup.get("groupName")));
+    		
+    		cscoEqpmList.add(map);
+    	}
+    	
+    	return cscoEqpmList;
+    }
+    
+    
     @SuppressWarnings("unchecked")
 	@RequestMapping("/assetApplyList")
     public ModelAndView assetApplyList(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
@@ -898,21 +995,26 @@ public class ReportController {
 		contentsList.add(++ItemNo + ". 관제대상 장비현황");
 		basicMap.put("B2", ItemNo + ". 관제대상 장비현황");
 		
-		//서비스데스크 고객사 검색
-		List<String> saAssetCodes = new ArrayList<String>();
-		dbResult = reportService.selectAssetsProduct(userInfo.getPromDb(), Integer.valueOf(sCiGroup), 0);
-		for (DBObject asset : dbResult) {
-			saAssetCodes.add(StringUtil.convertString(asset.get("assetCode")));
-		}
-		List<HashMap<String,Object>> cscoEqpmList = reportService.getCscoCd(saAssetCodes);
-		if (cscoEqpmList.size() == 0) {
-			throw new BizException("서비스데스크의 고객사를 찾을 수 없습니다.");
-		}
-
-		basicMap.put("cscoEqpms", new SynthesisDataSource(cscoEqpmList));
-		basicMap.put("searchPeriod", sSearchDate);
+		basicMap.put("reportSct", sReportSct);
 		
-		coverMap.put("searchPeriod", sSearchDate);
+		List<HashMap<String,Object>> cscoEqpmList = null;
+		if (Constants.isUseServiceDesk()) {
+			//서비스데스크 고객사 검색
+			List<String> saAssetCodes = new ArrayList<String>();
+			dbResult = reportService.selectAssetsProduct(userInfo.getPromDb(), Integer.valueOf(sCiGroup), 0);
+			for (DBObject asset : dbResult) {
+				saAssetCodes.add(StringUtil.convertString(asset.get("assetCode")));
+			}
+			cscoEqpmList = reportService.getCscoCd(saAssetCodes);
+			if (cscoEqpmList.size() == 0) {
+				throw new BizException("서비스데스크의 고객사를 찾을 수 없습니다.");
+			}
+		} else {
+			cscoEqpmList = getCscoEqpmList(userInfo.getPromDb(), userInfo.getDomainCode(), Integer.valueOf(sCiGroup));
+		}
+		basicMap.put("cscoEqpms", new SynthesisDataSource(cscoEqpmList));
+		
+		coverMap.put("searchPeriod", getReportSearchDate(sReportType, sSearchDate));
 		coverMap.put("ciType", sCiType);
 		coverMap.put("ciText", sCiText);
 		coverMap.put("ciGroup", sCiGroup);
@@ -925,30 +1027,32 @@ public class ReportController {
 		if (sReportSct.equals("1") || sReportSct.equals("3")) {
 			for (HashMap<String,Object> hMap : formDataList) {
 				hMap.put("cscoCd", (Integer)cscoEqpmList.get(0).get("cscoCd"));	//서비스데스크 고객사코드
+				hMap.put("cscoNm", StringUtil.convertString(cscoEqpmList.get(0).get("cscoNm")));	//서비스데스크 고객사
+				hMap.put("statMonthBaseDay", (Integer)cscoEqpmList.get(0).get("statMonthBaseDay"));
+				
 				String sPrefix = StringUtil.convertString(hMap.get("prefix"));
 				if (sPrefix.equals("servicedesk")) {
+					
+					HashMap<String, Integer> mapItemNo = new HashMap<String, Integer>();
+					mapItemNo.put("itemNo", ItemNo);
+					
 					if (sReportType.equals(Constants.REPORT_DAILY)) {
-						
 						SvcDailyReport svcReport = new SvcDailyReport(userInfo);
-						reportInfo = svcReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
-						
+						reportInfo = svcReport.getDataSource(sReportType, sSearchDate, hMap, mapItemNo, contentsList);
 					} else if (sReportType.equals(Constants.REPORT_WEEKLY)) {
-
 						SvcWeeklyReport svcReport = new SvcWeeklyReport(userInfo);
-						reportInfo = svcReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
-						
+						reportInfo = svcReport.getDataSource(sReportType, sSearchDate, hMap, mapItemNo, contentsList);
 					} else if (sReportType.equals(Constants.REPORT_MONTHLY)) {
 						SvcMonthlyReport svcReport = new SvcMonthlyReport(userInfo);
-						reportInfo = svcReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
+						reportInfo = svcReport.getDataSource(sReportType, sSearchDate, hMap, mapItemNo, contentsList);
 					} else if (sReportType.equals(Constants.REPORT_PERIOD)) {
 						SvcPeriodReport svcReport = new SvcPeriodReport(userInfo);
-						reportInfo = svcReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
+						reportInfo = svcReport.getDataSource(sReportType, sSearchDate, hMap, mapItemNo, contentsList);
 					}
 					reportMap.put("servicedesk", reportInfo);
+					ItemNo = mapItemNo.get("itemNo");
 					break;
 				}
-				
-				
 			}
 		}
 		
@@ -982,109 +1086,106 @@ public class ReportController {
 				map.put("productType", sPrefix);
 				
 				assetList.add(map);
+				hMap.put("statMonthBaseDay", statMonthBaseDay);
 				
 				if (sPrefix.equals("fw")) {
 					
 					if (sReportType.equals(Constants.REPORT_DAILY)) {
-						
 						FwDailyReport fwReport = new FwDailyReport(userInfo);
 						reportInfo = fwReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
-						
 					} else if (sReportType.equals(Constants.REPORT_WEEKLY)) {
-
 						FwWeeklyReport fwReport = new FwWeeklyReport(userInfo);
-						reportInfo = fwReport.getDataSource(sReportType, sSearchDate, hMap);
-						
+						reportInfo = fwReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
 					} else if (sReportType.equals(Constants.REPORT_MONTHLY)) {
-
 						FwMonthlyReport fwReport = new FwMonthlyReport(userInfo);
-						reportInfo = fwReport.getDataSource(sReportType, sSearchDate, hMap);
-						
+						reportInfo = fwReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
 					} else if (sReportType.equals(Constants.REPORT_PERIOD)) {
-
 						FwPeriodReport fwReport = new FwPeriodReport(userInfo);
-						reportInfo = fwReport.getDataSource(sReportType, sSearchDate, hMap);
-						
+						reportInfo = fwReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
 					}
 					
 				} else if (sPrefix.equals("waf")) {
 
 					if (sReportType.equals(Constants.REPORT_DAILY)) {
-						
 						WafDailyReport wafReport = new WafDailyReport(userInfo);
 						reportInfo = wafReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
-						
 					} else if (sReportType.equals(Constants.REPORT_WEEKLY)) {
-
 						WafWeeklyReport wafReport = new WafWeeklyReport(userInfo);
-						reportInfo = wafReport.getDataSource(sReportType, sSearchDate, hMap);
-						
+						reportInfo = wafReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
 					} else if (sReportType.equals(Constants.REPORT_MONTHLY)) {
-
 						WafMonthlyReport wafReport = new WafMonthlyReport(userInfo);
-						reportInfo = wafReport.getDataSource(sReportType, sSearchDate, hMap);
-						
+						reportInfo = wafReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
 					} else if (sReportType.equals(Constants.REPORT_PERIOD)) {
-
 						WafPeriodReport wafReport = new WafPeriodReport(userInfo);
-						reportInfo = wafReport.getDataSource(sReportType, sSearchDate, hMap);
-						
+						reportInfo = wafReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
 					}
 					
 				} else if (sPrefix.equals("ips")) {
 					
 					if (sReportType.equals(Constants.REPORT_DAILY)) {
-						
 						IpsDailyReport ipsReport = new IpsDailyReport(userInfo);
-						reportInfo = ipsReport.getDataSource(sReportType, sSearchDate, hMap);
-						
+						reportInfo = ipsReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
 					} else if (sReportType.equals(Constants.REPORT_WEEKLY)) {
-
 						IpsWeeklyReport ipsReport = new IpsWeeklyReport(userInfo);
-						reportInfo = ipsReport.getDataSource(sReportType, sSearchDate, hMap);
-						
+						reportInfo = ipsReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
 					} else if (sReportType.equals(Constants.REPORT_MONTHLY)) {
-
 						IpsMonthlyReport ipsReport = new IpsMonthlyReport(userInfo);
-						reportInfo = ipsReport.getDataSource(sReportType, sSearchDate, hMap);
-						
+						reportInfo = ipsReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
 					} else if (sReportType.equals(Constants.REPORT_PERIOD)) {
-
 						IpsPeriodReport ipsReport = new IpsPeriodReport(userInfo);
-						reportInfo = ipsReport.getDataSource(sReportType, sSearchDate, hMap);
-						
+						reportInfo = ipsReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
 					}
 					
 				} else if (sPrefix.equals("ids")) {
 					
+					if (sReportType.equals(Constants.REPORT_DAILY)) {
+						IdsDailyReport idsReport = new IdsDailyReport(userInfo);
+						reportInfo = idsReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
+					} else if (sReportType.equals(Constants.REPORT_WEEKLY)) {
+						IdsWeeklyReport idsReport = new IdsWeeklyReport(userInfo);
+						reportInfo = idsReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
+					} else if (sReportType.equals(Constants.REPORT_MONTHLY)) {
+						IdsMonthlyReport idsReport = new IdsMonthlyReport(userInfo);
+						reportInfo = idsReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
+					} else if (sReportType.equals(Constants.REPORT_PERIOD)) {
+						IdsPeriodReport idsReport = new IdsPeriodReport(userInfo);
+						reportInfo = idsReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
+					}
+					
 				} else if (sPrefix.equals("ddos")) {
+					
+					if (sReportType.equals(Constants.REPORT_DAILY)) {
+						DdosDailyReport ddosReport = new DdosDailyReport(userInfo);
+						reportInfo = ddosReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
+					} else if (sReportType.equals(Constants.REPORT_WEEKLY)) {
+						DdosWeeklyReport ddosReport = new DdosWeeklyReport(userInfo);
+						reportInfo = ddosReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
+					} else if (sReportType.equals(Constants.REPORT_MONTHLY)) {
+						DdosMonthlyReport ddosReport = new DdosMonthlyReport(userInfo);
+						reportInfo = ddosReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
+					} else if (sReportType.equals(Constants.REPORT_PERIOD)) {
+						DdosPeriodReport ddosReport = new DdosPeriodReport(userInfo);
+						reportInfo = ddosReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
+					}
 					
 				} else if (sPrefix.equals("ddos_dp")) {
 				
 					if (sReportType.equals(Constants.REPORT_DAILY)) {
-						
 						DpDdosDailyReport ddosReport = new DpDdosDailyReport(userInfo);
-						reportInfo = ddosReport.getDataSource(sReportType, sSearchDate, hMap);
-						
+						reportInfo = ddosReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
 					} else if (sReportType.equals(Constants.REPORT_WEEKLY)) {
-
-						IpsWeeklyReport ipsReport = new IpsWeeklyReport(userInfo);
-						reportInfo = ipsReport.getDataSource(sReportType, sSearchDate, hMap);
-						
+						DpDdosWeeklyReport ddosReport = new DpDdosWeeklyReport(userInfo);
+						reportInfo = ddosReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
 					} else if (sReportType.equals(Constants.REPORT_MONTHLY)) {
-
-						IpsMonthlyReport ipsReport = new IpsMonthlyReport(userInfo);
-						reportInfo = ipsReport.getDataSource(sReportType, sSearchDate, hMap);
-						
+						DpDdosMonthlyReport ddosReport = new DpDdosMonthlyReport(userInfo);
+						reportInfo = ddosReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
 					} else if (sReportType.equals(Constants.REPORT_PERIOD)) {
-
-						IpsPeriodReport ipsReport = new IpsPeriodReport(userInfo);
-						reportInfo = ipsReport.getDataSource(sReportType, sSearchDate, hMap);
-						
+						DpDdosPeriodReport ddosReport = new DpDdosPeriodReport(userInfo);
+						reportInfo = ddosReport.getDataSource(sReportType, sSearchDate, hMap, ++ItemNo, contentsList);
 					}
 					
 				}
-				
+				reportInfo.put("fileFormat", sFileFormat); 
 				reportMap.put(String.valueOf(assetCode), reportInfo);
 			}
 		}
@@ -1158,5 +1259,23 @@ public class ReportController {
 		}
 		return contents;
 	}
-    
+
+	public String getReportSearchDate(String sReportType, String sSearchDate) throws Exception {
+		SimpleDateFormat sdf0 = new SimpleDateFormat("yyyy-MM");
+		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy.MM.dd");
+		SimpleDateFormat sdf4 = new SimpleDateFormat("yyyy.MM");
+		if (sReportType.equals(Constants.REPORT_DAILY)) {
+			return sdf2.format(sdf1.parse(sSearchDate));
+		} else if (sReportType.equals(Constants.REPORT_WEEKLY)) {
+			String[] saPeriod = sSearchDate.split("\\|");
+			return sdf2.format(sdf1.parse(saPeriod[0])) + " ~ " + sdf2.format(sdf1.parse(saPeriod[1]));
+		} else if (sReportType.equals(Constants.REPORT_MONTHLY)) {
+			return sdf4.format(sdf0.parse(sSearchDate));
+		} else if (sReportType.equals(Constants.REPORT_PERIOD)) {
+			String[] saPeriod = sSearchDate.split("\\|");
+			return sdf2.format(sdf1.parse(saPeriod[0])) + " ~ " + sdf2.format(sdf1.parse(saPeriod[1]));
+		}
+		return "YYYY.MM.DD";
+	}
 }

@@ -560,10 +560,14 @@ public class BaseDao {
 			fields.put("min", 1);
 			fields.put("max", 1);
 
+			DBObject sortFields = new BasicDBObject();
+			sortFields.put("name", 1);
+			
 			List<DBObject> pipeline = new ArrayList<DBObject>();
 			pipeline.add(new BasicDBObject("$match", condition));
 			pipeline.add(new BasicDBObject("$group", groupFields));
 			pipeline.add(new BasicDBObject("$project", fields));
+			pipeline.add(new BasicDBObject("$sort", sortFields ));
 			
 			AggregationOutput output = dbCollection.aggregate(pipeline);
 

@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Cover" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="b6cfd3e5-a4f2-4369-8a40-0826d90f7c18">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="83"/>
+	<property name="ireport.y" value="91"/>
 	<parameter name="JASPER_DIR" class="java.lang.String" isForPrompting="false">
 		<parameterDescription><![CDATA[]]></parameterDescription>
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
@@ -36,40 +36,84 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{coverMap}.get( "ciText" )]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="0" y="304" width="595" height="26" uuid="d66c88d7-e956-4415-835d-0cae0516edc5"/>
+			<textField isBlankWhenNull="false">
+				<reportElement x="0" y="304" width="595" height="36" forecolor="#666666" uuid="d66c88d7-e956-4415-835d-0cae0516edc5"/>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
-					<font fontName="SansSerif" size="18" isBold="true" isItalic="false" isStrikeThrough="false" pdfFontName="malgunbd.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<font fontName="Arial Black" size="22" isBold="true" isItalic="false" isStrikeThrough="false" pdfFontName="malgunbd.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{coverMap}.get( "searchPeriod" )]]></textFieldExpression>
 			</textField>
-			<line>
-				<reportElement x="142" y="235" width="300" height="1" uuid="a91d6723-5a15-45b9-bfa8-dd1205183227"/>
-				<graphicElement>
-					<pen lineWidth="1.5"/>
-				</graphicElement>
-			</line>
-			<line>
-				<reportElement x="142" y="239" width="300" height="1" uuid="abb505b1-667b-44cb-a63b-412b0d9d8c86"/>
-				<graphicElement>
-					<pen lineWidth="3.0"/>
-				</graphicElement>
-			</line>
 			<textField>
-				<reportElement x="0" y="159" width="595" height="74" uuid="33498d56-f924-406e-8e93-8eb49f7bb677"/>
+				<reportElement x="87" y="185" width="211" height="75" forecolor="#0066CC" uuid="33498d56-f924-406e-8e93-8eb49f7bb677">
+					<printWhenExpression><![CDATA[((String)$P{coverMap}.get("reportType")).equals("2")]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
-					<font fontName="맑은 고딕" size="54" isBold="true" isItalic="false" isStrikeThrough="false" pdfFontName="malgunbd.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<font fontName="Impact" size="54" isBold="false" isItalic="false" isStrikeThrough="false" pdfFontName="malgunbd.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[((String)$P{coverMap}.get("reportType")).equals("1") ? "Daily Report" : ((String)$P{coverMap}.get("reportType")).equals("2") ? "Weekly Report" : ((String)$P{coverMap}.get("reportType")).equals("3") ? "Monthly Report" : ((String)$P{coverMap}.get("reportType")).equals("4") ? "Report" : ""]]></textFieldExpression>
+				<textFieldExpression><![CDATA["WEEKLY"]]></textFieldExpression>
 			</textField>
 			<image hAlign="Left">
 				<reportElement x="0" y="0" width="595" height="157" uuid="4cfaff53-65cf-4fbf-8386-18b5cbcdfe46"/>
 				<imageExpression><![CDATA[$P{IMAGES_DIR} + "cv_top.png"]]></imageExpression>
 			</image>
 			<image>
-				<reportElement x="56" y="705" width="475" height="45" uuid="396ffcf1-f60c-410c-8f65-5cc3652d2bc6"/>
-				<imageExpression><![CDATA[$P{IMAGES_DIR} +  "cv_bottom.png"]]></imageExpression>
+				<reportElement x="115" y="683" width="356" height="45" uuid="396ffcf1-f60c-410c-8f65-5cc3652d2bc6"/>
+				<imageExpression><![CDATA[$P{IMAGES_DIR} + "cv_bottom.png"]]></imageExpression>
 			</image>
+			<textField>
+				<reportElement x="298" y="185" width="206" height="75" forecolor="#666666" uuid="0686d8bb-a555-4949-8c96-988607f559db">
+					<printWhenExpression><![CDATA[((String)$P{coverMap}.get("reportType")).equals("2")]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="Impact" size="54" isBold="false" isItalic="false" isStrikeThrough="false" pdfFontName="malgunbd.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["REPORT"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="185" width="595" height="75" forecolor="#666666" uuid="6e80a9d5-0a34-4597-9176-e002fe82d328">
+					<printWhenExpression><![CDATA[((String)$P{coverMap}.get("reportType")).equals("4")]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="Impact" size="54" isBold="false" isItalic="false" isStrikeThrough="false" pdfFontName="malgunbd.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["REPORT"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="315" y="185" width="206" height="75" forecolor="#666666" uuid="0da78ff2-bd8c-4b57-91b5-869fc92a5f7a">
+					<printWhenExpression><![CDATA[((String)$P{coverMap}.get("reportType")).equals("3")]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="Impact" size="54" isBold="false" isItalic="false" isStrikeThrough="false" pdfFontName="malgunbd.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["REPORT"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="73" y="185" width="242" height="75" forecolor="#0066CC" uuid="ba6cb844-db77-4191-a2bc-09599967a887">
+					<printWhenExpression><![CDATA[((String)$P{coverMap}.get("reportType")).equals("3")]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="Impact" size="54" isBold="false" isItalic="false" isStrikeThrough="false" pdfFontName="malgunbd.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["MONTHLY"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="115" y="185" width="163" height="75" forecolor="#0066CC" uuid="404156c2-c7a8-402e-9c87-68a278361a7c">
+					<printWhenExpression><![CDATA[((String)$P{coverMap}.get("reportType")).equals("1")]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="Impact" size="54" isBold="false" isItalic="false" isStrikeThrough="false" pdfFontName="malgunbd.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["DAILY"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="278" y="185" width="206" height="75" forecolor="#666666" uuid="4239b1c9-53e6-4de5-9b31-dd2adbdbb470">
+					<printWhenExpression><![CDATA[((String)$P{coverMap}.get("reportType")).equals("1")]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Bottom">
+					<font fontName="Impact" size="54" isBold="false" isItalic="false" isStrikeThrough="false" pdfFontName="malgunbd.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["REPORT"]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>

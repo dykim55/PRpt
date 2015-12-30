@@ -43,8 +43,8 @@ public class FwDailyReport extends BaseReport {
 		
 		reportData.put("reportType", sReportType);
 		
-		contentsList.add(ItemNo + ". " + (String)hMap.get("assetName") + " 장비의 일간 방화벽 세션로그 분석");
-		reportData.put("RT", ItemNo + ". " + (String)hMap.get("assetName") + " 장비의 일간 방화벽 세션로그 분석"); //Report Title
+		contentsList.add(ItemNo + ". " + (String)hMap.get("assetName") + " 장비의 일일 세션로그 분석");
+		reportData.put("RT", ItemNo + ". " + (String)hMap.get("assetName") + " 장비의 일일 세션로그 분석"); //Report Title
 		
 		String sStartDay = "";
 		String sEndDay = "";
@@ -130,127 +130,127 @@ public class FwDailyReport extends BaseReport {
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd1")));
 					All_SessionLog_Trend(reportData, -1, assetCode, sStartDay, sEndDay, sEtc, nChoice);
 					break;
-				case "opt02" :	//전체 허용로그 발생추이 (차트) 
-					reportData.put("opt02", push(contentsList, "    ", ItemNo, nC1, nS1++, " 전체 허용로그 발생추이 (차트)"));
+				case "opt02" :	//전체 허용로그 발생추이 
+					reportData.put("opt02", push(contentsList, "    ", ItemNo, nC1, nS1++, " 전체 허용로그 발생추이"));
 					Action_SessionLog_Trend(reportData, -1, ALLOW, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt03" : 	//전체 차단로그 발생추이 (차트)
-					reportData.put("opt03", push(contentsList, "    ", ItemNo, nC1, nS1++, " 전체 차단로그 발생추이 (차트)"));
+				case "opt03" : 	//전체 차단로그 발생추이
+					reportData.put("opt03", push(contentsList, "    ", ItemNo, nC1, nS1++, " 전체 차단로그 발생추이"));
 					Action_SessionLog_Trend(reportData, -1, CUTOFF, assetCode, sStartDay, sEndDay);
 					break;
 				case "opt04" :	//외부에서 내부로의 전체 세션 로그 발생추이
-					reportData.put("opt04", push(contentsList, "    ", ItemNo, nC1, nS1++, " 외부에서 내부로의 전체 세션 로그 발생추이"));
+					reportData.put("opt04", push(contentsList, "    ", ItemNo, nC1, nS1++, " 외부에서 내부로의 전체 세션로그 발생추이"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd4")));
 					All_SessionLog_Trend(reportData, INBOUND, assetCode, sStartDay, sEndDay, sEtc, nChoice);
 					break;
-				case "opt05" : 	//외부에서 내부로의 허용 세션 로그 발생추이 (차트)
-					reportData.put("opt05", push(contentsList, "    ", ItemNo, nC1, nS1++, " 외부에서 내부로의 허용 세션 로그 발생추이 (차트)"));
+				case "opt05" : 	//외부에서 내부로의 허용 세션 로그 발생추이
+					reportData.put("opt05", push(contentsList, "    ", ItemNo, nC1, nS1++, " 외부에서 내부로의 허용 세션로그 발생추이"));
 					Action_SessionLog_Trend(reportData, INBOUND, ALLOW, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt06" : 	//외부에서 내부로의 차단 세션 로그 발생추이 (차트)
-					reportData.put("opt06", push(contentsList, "    ", ItemNo, nC1, nS1++, " 외부에서 내부로의 차단 세션 로그 발생추이 (차트)"));
+				case "opt06" : 	//외부에서 내부로의 차단 세션 로그 발생추이
+					reportData.put("opt06", push(contentsList, "    ", ItemNo, nC1, nS1++, " 외부에서 내부로의 차단 세션로그 발생추이"));
 					Action_SessionLog_Trend(reportData, INBOUND, CUTOFF, assetCode, sStartDay, sEndDay);
 					break;
 				case "opt07" : 	//내부에서 외부로의 전체 세션 로그 발생추이
-					reportData.put("opt07", push(contentsList, "    ", ItemNo, nC1, nS1++, " 내부에서 외부로의 전체 세션 로그 발생추이"));
+					reportData.put("opt07", push(contentsList, "    ", ItemNo, nC1, nS1++, " 내부에서 외부로의 전체 세션로그 발생추이"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd7")));
 					All_SessionLog_Trend(reportData, OUTBOUND, assetCode, sStartDay, sEndDay, sEtc, nChoice);
 					break;
-				case "opt08" : 	//내부에서 외부로의 허용 세션 로그 발생추이 (차트)
-					reportData.put("opt08", push(contentsList, "    ", ItemNo, nC1, nS1++, " 내부에서 외부로의 허용 세션 로그 발생추이 (차트)"));
+				case "opt08" : 	//내부에서 외부로의 허용 세션 로그 발생추이
+					reportData.put("opt08", push(contentsList, "    ", ItemNo, nC1, nS1++, " 내부에서 외부로의 허용 세션로그 발생추이"));
 					Action_SessionLog_Trend(reportData, OUTBOUND, ALLOW, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt09" : 	//내부에서 외부로의 차단 세션 로그 발생추이 (차트)
-					reportData.put("opt09", push(contentsList, "    ", ItemNo, nC1, nS1++, " 내부에서 외부로의 차단 세션 로그 발생추이 (차트)"));
+				case "opt09" : 	//내부에서 외부로의 차단 세션 로그 발생추이
+					reportData.put("opt09", push(contentsList, "    ", ItemNo, nC1, nS1++, " 내부에서 외부로의 차단 세션로그 발생추이"));
 					Action_SessionLog_Trend(reportData, OUTBOUND, CUTOFF, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt10" : 	//외부에서 내부로의 전체 세션로그 & SIP TOP (표)
-					reportData.put("opt10", push(contentsList, "    ", ItemNo, nC2 + nC1, nS2++, " 외부에서 내부로의 전체 세션로그 & SIP TOP (표)"));
+				case "opt10" : 	//외부에서 내부로의 전체 세션로그 & 출발지IP TOP
+					reportData.put("opt10", push(contentsList, "    ", ItemNo, nC2 + nC1, nS2++, " 외부에서 내부로의 전체 세션로그에 대한 출발지IP TOP 현황"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd10")));
 					Action_SessionLog_TopN(reportData, INBOUND, "", assetCode, sStartDay, sEndDay, true, nChoice, false);
 					break;
-				case "opt11" : 	//외부에서 내부로의 허용 세션로그 & SIP TOP (표)
-					reportData.put("opt11", push(contentsList, "    ", ItemNo, nC2 + nC1, nS2++, " 외부에서 내부로의 허용 세션로그 & SIP TOP (표)"));
+				case "opt11" : 	//외부에서 내부로의 허용 세션로그 & 출발지IP TOP
+					reportData.put("opt11", push(contentsList, "    ", ItemNo, nC2 + nC1, nS2++, " 외부에서 내부로의 허용 세션로그에 대한 출발지IP TOP 현황"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd11")));
 					Action_SessionLog_TopN(reportData, INBOUND, ALLOW, assetCode, sStartDay, sEndDay, true, nChoice, false);
 					break;
-				case "opt12" : 	//외부에서 내부로의 차단 세션로그 & SIP TOP (표)
-					reportData.put("opt12", push(contentsList, "    ", ItemNo, nC2 + nC1, nS2++, " 외부에서 내부로의 차단 세션로그 & SIP TOP (표)"));
+				case "opt12" : 	//외부에서 내부로의 차단 세션로그 & 출발지IP TOP
+					reportData.put("opt12", push(contentsList, "    ", ItemNo, nC2 + nC1, nS2++, " 외부에서 내부로의 차단 세션로그에 대한 출발지IP TOP 현황"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd12")));
 					Action_SessionLog_TopN(reportData, INBOUND, CUTOFF, assetCode, sStartDay, sEndDay, true, nChoice, !StringUtil.isEmpty(hData.get("ck12")));
 					break;
-				case "opt13" : 	//내부에서 외부로의 전체 세션로그 & SIP TOP (표)
-					reportData.put("opt13", push(contentsList, "    ", ItemNo, nC2 + nC1, nS2++, " 내부에서 외부로의 전체 세션로그 & SIP TOP (표)"));
+				case "opt13" : 	//내부에서 외부로의 전체 세션로그 & 출발지IP TOP
+					reportData.put("opt13", push(contentsList, "    ", ItemNo, nC2 + nC1, nS2++, " 내부에서 외부로의 전체 세션로그에 대한 출발지IP TOP 현황"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd13")));
 					Action_SessionLog_TopN(reportData, OUTBOUND, "", assetCode, sStartDay, sEndDay, true, nChoice, false);
 					break;
-				case "opt14" : 	//내부에서 외부로의 허용 세션로그 & SIP TOP (표)
-					reportData.put("opt14", push(contentsList, "    ", ItemNo, nC2 + nC1, nS2++, " 내부에서 외부로의 허용 세션로그 & SIP TOP (표)"));
+				case "opt14" : 	//내부에서 외부로의 허용 세션로그 & 출발지IP TOP
+					reportData.put("opt14", push(contentsList, "    ", ItemNo, nC2 + nC1, nS2++, " 내부에서 외부로의 허용 세션로그에 대한 출발지IP TOP 현황"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd14")));
 					Action_SessionLog_TopN(reportData, OUTBOUND, ALLOW, assetCode, sStartDay, sEndDay, true, nChoice, false);
 					break;
-				case "opt15" : 	//내부에서 외부로의 차단 세션로그 & SIP TOP (표)
-					reportData.put("opt15", push(contentsList, "    ", ItemNo, nC2 + nC1, nS2++, " 내부에서 외부로의 차단 세션로그 & SIP TOP (표)"));
+				case "opt15" : 	//내부에서 외부로의 차단 세션로그 & 출발지IP TOP
+					reportData.put("opt15", push(contentsList, "    ", ItemNo, nC2 + nC1, nS2++, " 내부에서 외부로의 차단 세션로그에 대한 출발지IP TOP 현황"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd15")));
 					Action_SessionLog_TopN(reportData, OUTBOUND, CUTOFF, assetCode, sStartDay, sEndDay, true, nChoice, !StringUtil.isEmpty(hData.get("ck15")));
 					break;
-				case "opt16" : 	//외부에서 내부로의 전체 세션로그 & DIP TOP (표)
-					reportData.put("opt16", push(contentsList, "    ", ItemNo, nC3 + nC2 + nC1, nS3++, " 외부에서 내부로의 전체 세션로그 & DIP TOP (표)"));
+				case "opt16" : 	//외부에서 내부로의 전체 세션로그 & 목적지IP TOP
+					reportData.put("opt16", push(contentsList, "    ", ItemNo, nC3 + nC2 + nC1, nS3++, " 외부에서 내부로의 전체 세션로그에 대한 목적지IP TOP 현황"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd16")));
 					Action_SessionLog_TopN(reportData, INBOUND, "", assetCode, sStartDay, sEndDay, false, nChoice, false);
 					break;
-				case "opt17" : 	//외부에서 내부로의 허용 세션로그 & DIP TOP (표)
-					reportData.put("opt17", push(contentsList, "    ", ItemNo, nC3 + nC2 + nC1, nS3++, " 외부에서 내부로의 허용 세션로그 & DIP TOP (표)"));
+				case "opt17" : 	//외부에서 내부로의 허용 세션로그 & 목적지IP TOP
+					reportData.put("opt17", push(contentsList, "    ", ItemNo, nC3 + nC2 + nC1, nS3++, " 외부에서 내부로의 허용 세션로그에 대한 목적지IP TOP 현황"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd17")));
 					Action_SessionLog_TopN(reportData, INBOUND, ALLOW, assetCode, sStartDay, sEndDay, false, nChoice, false);
 					break;
-				case "opt18" : 	//외부에서 내부로의 차단 세션로그 & DIP TOP (표)
-					reportData.put("opt18", push(contentsList, "    ", ItemNo, nC3 + nC2 + nC1, nS3++, " 외부에서 내부로의 차단 세션로그 & DIP TOP (표)"));
+				case "opt18" : 	//외부에서 내부로의 차단 세션로그 & 목적지IP TOP
+					reportData.put("opt18", push(contentsList, "    ", ItemNo, nC3 + nC2 + nC1, nS3++, " 외부에서 내부로의 차단 세션로그에 대한 목적지IP TOP 현황"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd18")));
 					Action_SessionLog_TopN(reportData, INBOUND, CUTOFF, assetCode, sStartDay, sEndDay, false, nChoice, false);
 					break;
-				case "opt19" : 	//내부에서 외부로의 전체 세션로그 & DIP TOP (표)
-					reportData.put("opt19", push(contentsList, "    ", ItemNo, nC3 + nC2 + nC1, nS3++, " 내부에서 외부로의 전체 세션로그 & DIP TOP (표)"));
+				case "opt19" : 	//내부에서 외부로의 전체 세션로그 & 목적지IP TOP
+					reportData.put("opt19", push(contentsList, "    ", ItemNo, nC3 + nC2 + nC1, nS3++, " 내부에서 외부로의 전체 세션로그에 대한 목적지IP TOP 현황"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd19")));
 					Action_SessionLog_TopN(reportData, OUTBOUND, "", assetCode, sStartDay, sEndDay, false, nChoice, false);
 					break;
-				case "opt20" : 	//내부에서 외부로의 허용 세션로그 & DIP TOP (표)
-					reportData.put("opt20", push(contentsList, "    ", ItemNo, nC3 + nC2 + nC1, nS3++, " 내부에서 외부로의 허용 세션로그 & DIP TOP (표)"));
+				case "opt20" : 	//내부에서 외부로의 허용 세션로그 & 목적지IP TOP
+					reportData.put("opt20", push(contentsList, "    ", ItemNo, nC3 + nC2 + nC1, nS3++, " 내부에서 외부로의 허용 세션로그에 대한 목적지IP TOP 현황"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd20")));
 					Action_SessionLog_TopN(reportData, OUTBOUND, ALLOW, assetCode, sStartDay, sEndDay, false, nChoice, false);
 					break;
-				case "opt21" : 	//내부에서 외부로의 차단 세션로그 & DIP TOP (표)
-					reportData.put("opt21", push(contentsList, "    ", ItemNo, nC3 + nC2 + nC1, nS3++, " 내부에서 외부로의 차단 세션로그 & DIP TOP (표)"));
+				case "opt21" : 	//내부에서 외부로의 차단 세션로그 & 목적지IP TOP
+					reportData.put("opt21", push(contentsList, "    ", ItemNo, nC3 + nC2 + nC1, nS3++, " 내부에서 외부로의 차단 세션로그에 대한 목적지IP TOP 현황"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd21")));
 					Action_SessionLog_TopN(reportData, OUTBOUND, CUTOFF, assetCode, sStartDay, sEndDay, false, nChoice, false);
 					break;
-				case "opt22" : 	//외부에서 내부로의 허용 세션로그 & 서비스 TOP10 (차트, 표)
-					reportData.put("opt22", push(contentsList, "    ", ItemNo, nC4 + nC3 + nC2 + nC1, nS4++, " 외부에서 내부로의 허용 세션로그 & 서비스 TOP10 (차트, 표)"));
+				case "opt22" : 	//외부에서 내부로의 허용 세션로그 & 서비스 TOP10
+					reportData.put("opt22", push(contentsList, "    ", ItemNo, nC4 + nC3 + nC2 + nC1, nS4++, " 외부에서 내부로의 허용 세션로그에 대한 서비스 TOP 현황"));
 					Action_ServiceTop10(reportData, INBOUND, ALLOW, assetCode, sStartDay, sEndDay, false);
 					break;
-				case "opt23" : 	//외부에서 내부로의 차단 세션로그 & 서비스 TOP10 (차트, 표)
-					reportData.put("opt23", push(contentsList, "    ", ItemNo, nC4 + nC3 + nC2 + nC1, nS4++, " 외부에서 내부로의 차단 세션로그 & 서비스 TOP10 (차트, 표)"));
+				case "opt23" : 	//외부에서 내부로의 차단 세션로그 & 서비스 TOP10
+					reportData.put("opt23", push(contentsList, "    ", ItemNo, nC4 + nC3 + nC2 + nC1, nS4++, " 외부에서 내부로의 차단 세션로그에 대한 서비스 TOP 현황"));
 					Action_ServiceTop10(reportData, INBOUND, CUTOFF, assetCode, sStartDay, sEndDay, !StringUtil.isEmpty(hData.get("ck23")));
 					break;
-				case "opt24" : 	//외부에서 내부로의 차단 세션로그 & 서비스 TOP10 상세 (차트)
-					reportData.put("opt24", push(contentsList, "    ", ItemNo, nC4 + nC3 + nC2 + nC1, nS4++, " 외부에서 내부로의 차단 세션로그 & 서비스 TOP10 상세 (차트)"));
+				case "opt24" : 	//외부에서 내부로의 차단 세션로그 & 서비스 TOP10 상세
+					reportData.put("opt24", push(contentsList, "    ", ItemNo, nC4 + nC3 + nC2 + nC1, nS4++, " 외부에서 내부로의 차단 세션로그에 대한 서비스 상세현황"));
 					Action_ServiceTop10_Detail(reportData, INBOUND, CUTOFF, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt25" : 	//내부에서 외부로의 허용 세션로그 & 서비스 TOP10 (차트, 표)
-					reportData.put("opt25", push(contentsList, "    ", ItemNo, nC4 + nC3 + nC2 + nC1, nS4++, " 내부에서 외부로의 허용 세션로그 & 서비스 TOP10 (차트, 표)"));
+				case "opt25" : 	//내부에서 외부로의 허용 세션로그 & 서비스 TOP10
+					reportData.put("opt25", push(contentsList, "    ", ItemNo, nC4 + nC3 + nC2 + nC1, nS4++, " 내부에서 외부로의 허용 세션로그에 대한 서비스 TOP 현황"));
 					Action_ServiceTop10(reportData, OUTBOUND, ALLOW, assetCode, sStartDay, sEndDay, false);
 					break;
-				case "opt26" : 	//내부에서 외부로의 차단 세션로그 & 서비스 TOP10 (차트, 표)
-					reportData.put("opt26", push(contentsList, "    ", ItemNo, nC4 + nC3 + nC2 + nC1, nS4++, " 내부에서 외부로의 차단 세션로그 & 서비스 TOP10 (차트, 표)"));
+				case "opt26" : 	//내부에서 외부로의 차단 세션로그 & 서비스 TOP10
+					reportData.put("opt26", push(contentsList, "    ", ItemNo, nC4 + nC3 + nC2 + nC1, nS4++, " 내부에서 외부로의 차단 세션로그에 대한 서비스 TOP 현황"));
 					Action_ServiceTop10(reportData, OUTBOUND, CUTOFF, assetCode, sStartDay, sEndDay, !StringUtil.isEmpty(hData.get("ck26")));
 					break;
-				case "opt27" : 	//내부에서 외부로의 차단 세션로그 & 서비스 TOP10 상세 (차트)
-					reportData.put("opt27", push(contentsList, "    ", ItemNo, nC4 + nC3 + nC2 + nC1, nS4++, " 내부에서 외부로의 차단 세션로그 & 서비스 TOP10 상세 (차트)"));
+				case "opt27" : 	//내부에서 외부로의 차단 세션로그 & 서비스 TOP10 상세
+					reportData.put("opt27", push(contentsList, "    ", ItemNo, nC4 + nC3 + nC2 + nC1, nS4++, " 내부에서 외부로의 차단 세션로그에 대한 서비스 상세현황"));
 					Action_ServiceTop10_Detail(reportData, OUTBOUND, CUTOFF, assetCode, sStartDay, sEndDay);
 					break;
 				case "opt99" :	//성능정보
 					//reportData.put("opt99", push(contentsList, "    ", ItemNo, nC5 + nC4 + nC3 + nC2 + nC1, nS5++, " 성능 정보"));
-					PerformanceInfo(fwDao, reportData, ItemNo, nC5 + nC4 + nC3 + nC2 + nC1, assetCode, sStartDay, sEndDay);
+					PerformanceInfo(fwDao, reportData, contentsList, ItemNo, nC5 + nC4 + nC3 + nC2 + nC1, assetCode, sStartDay, sEndDay);
 					break;
 			}
 		}
@@ -318,7 +318,7 @@ public class FwDailyReport extends BaseReport {
 	    	}
 	    	
 	    	String[] saGubun = {"차단", "허용"};
-    		for (int action = 0; action < 2; action++) { //허용/차단
+    		for (int action = 1; action >= 0; action--) { //허용/차단
     			for (String tDay : hourDay) {
 	    			for (int h = 0; h < 24; h++) { //시간
 	    	    		HashMap<String, Object> map = new HashMap<String, Object>();
@@ -333,7 +333,7 @@ public class FwDailyReport extends BaseReport {
     			}
     		}
 	    	
-	    	if (searchPort != null) {
+	    	if (nDirection != OUTBOUND && searchPort != null) {
 	    		for (int i = 0; i < searchPort.length; i++) {
 		    		String strServiceName = fwDao.getPortServiceName(searchPort[i]);
 		    		dbResult = fwDao.SessionLogTrend("HR", nDirection, ALLOW, assetCode, sStartDay, sEndDay, searchPort[i]);
@@ -381,11 +381,13 @@ public class FwDailyReport extends BaseReport {
 	    		mapResult.put(sYear + sMonth + sDay, val);
 	    	}
 	    	
+	    	String[] saCtg = {"D-2", "D-1", "D"};
+	    	int nCtg = 0;
     		for (String tDay : dayPeriod) {
 	    		HashMap<String, Object> map = new HashMap<String, Object>();
 	    		DBObject val = mapResult.get(tDay);
 	    		map.put("series", "전체");
-	    		map.put("category", tDay);
+	    		map.put("category", saCtg[nCtg++]);
 	    		map.put("value", val != null ? ((Number)val.get("count")).longValue() : 0);
 	    		
 	    		dataSource1.add(map);
@@ -407,11 +409,12 @@ public class FwDailyReport extends BaseReport {
 	    	
 	    	String[] saGubun = {"차단", "허용"};
 	    	for (int action = 1; action >= 0; action--) {
+	    		nCtg = 0;
 	    		for (String tDay : dayPeriod) {
 		    		HashMap<String, Object> map = new HashMap<String, Object>();
 		    		DBObject val = mapResult.get(String.valueOf(action) + tDay);
 		    		map.put("series", saGubun[action]);
-		    		map.put("category", tDay);
+		    		map.put("category", saCtg[nCtg++]);
 		    		map.put("value", val != null ? ((Number)val.get("count")).longValue() : 0);
 
 		    		dataSource1.add(map);
@@ -419,7 +422,7 @@ public class FwDailyReport extends BaseReport {
 	    		}	    		
 	    	}
 	    	
-	    	if (searchPort != null) {
+	    	if (nDirection != OUTBOUND && searchPort != null) {
 	    		for (int i = 0; i < searchPort.length; i++) {
 		    		String strServiceName = fwDao.getPortServiceName(searchPort[i]);
 		    		dbResult = fwDao.SessionLogTrend("DY", nDirection, ALLOW, assetCode, fwDao.addDate(sStartDay,-2), sEndDay, searchPort[i]);
@@ -434,11 +437,12 @@ public class FwDailyReport extends BaseReport {
 			    		mapResult.put(sYear + sMonth + sDay, val);
 			    	}
 		    	
+			    	nCtg = 0;
 			    	for (String tDay : dayPeriod) {
 	    	    		HashMap<String, Object> map = new HashMap<String, Object>();
 	    	    		DBObject val = mapResult.get(tDay);
 			    		map.put("series", strServiceName);
-			    		map.put("category", tDay);
+			    		map.put("category", saCtg[nCtg++]);
 	    	    		map.put("value", val != null ? ((Number)val.get("count")).longValue() : 0);
 	    	    		
 	    	    		dataSource1.add(map);
@@ -450,22 +454,28 @@ public class FwDailyReport extends BaseReport {
 		
 		if (nDirection == -1) {
 			if (nChoice == 1) {			//해당일
+				reportData.put("OPT1_0", "시간");
 				reportData.put("OPT1_1", new SynthesisDataSource(dataSource1));
 			} else if (nChoice == 2) {	//최근3일
+				reportData.put("OPT1_0", "일");
 				reportData.put("OPT1_1", new SynthesisDataSource(dataSource1));
 				reportData.put("OPT1_2", new SynthesisDataSource(dataSource1));
 			}
 		} else if (nDirection == INBOUND) {
 			if (nChoice == 1) {			//해당일
+				reportData.put("OPT4_0", "시간");
 				reportData.put("OPT4_1", new SynthesisDataSource(dataSource1));
 			} else if (nChoice == 2) {	//최근3일
+				reportData.put("OPT4_0", "일");
 				reportData.put("OPT4_1", new SynthesisDataSource(dataSource1));
 				reportData.put("OPT4_2", new SynthesisDataSource(dataSource1));
 			}
 		} else if (nDirection == OUTBOUND) {
 			if (nChoice == 1) {			//해당일
+				reportData.put("OPT7_0", "시간");
 				reportData.put("OPT7_1", new SynthesisDataSource(dataSource1));
 			} else if (nChoice == 2) {	//최근3일
+				reportData.put("OPT7_0", "일");
 				reportData.put("OPT7_1", new SynthesisDataSource(dataSource1));
 				reportData.put("OPT7_2", new SynthesisDataSource(dataSource1));
 			}
@@ -509,22 +519,22 @@ public class FwDailyReport extends BaseReport {
 			}
 		}
     	
-		if (nDirection == -1 && sAction.equals(ALLOW)) { //전체 허용로그 발생추이 (차트)
+		if (nDirection == -1 && sAction.equals(ALLOW)) { //전체 허용로그 발생추이
 			reportData.put("OPT2_1", new SynthesisDataSource(dataSource));
-		} else if (nDirection == -1 && sAction.equals(CUTOFF)) { //전체 차단로그 발생추이 (차트)
+		} else if (nDirection == -1 && sAction.equals(CUTOFF)) { //전체 차단로그 발생추이
 			reportData.put("OPT3_1", new SynthesisDataSource(dataSource));
-		} else if (nDirection == INBOUND && sAction.equals(ALLOW)) { //외부에서 내부로의 허용 세션 로그 발생추이 (차트)
+		} else if (nDirection == INBOUND && sAction.equals(ALLOW)) { //외부에서 내부로의 허용 세션 로그 발생추이
 			reportData.put("OPT5_1", new SynthesisDataSource(dataSource));
-		} else if (nDirection == INBOUND && sAction.equals(CUTOFF)) { //외부에서 내부로의 차단 세션 로그 발생추이 (차트)
+		} else if (nDirection == INBOUND && sAction.equals(CUTOFF)) { //외부에서 내부로의 차단 세션 로그 발생추이
 			reportData.put("OPT6_1", new SynthesisDataSource(dataSource));
-		} else if (nDirection == OUTBOUND && sAction.equals(ALLOW)) { //내부에서 외부로의 허용 세션 로그 발생추이 (차트)
+		} else if (nDirection == OUTBOUND && sAction.equals(ALLOW)) { //내부에서 외부로의 허용 세션 로그 발생추이
 			reportData.put("OPT8_1", new SynthesisDataSource(dataSource));
-		} else if (nDirection == OUTBOUND && sAction.equals(CUTOFF)) { //내부에서 외부로의 차단 세션 로그 발생추이 (차트)
+		} else if (nDirection == OUTBOUND && sAction.equals(CUTOFF)) { //내부에서 외부로의 차단 세션 로그 발생추이
 			reportData.put("OPT9_1", new SynthesisDataSource(dataSource));
 		}
 	}
 	
-	//외부에서 내부로의 전체 세션로그 & SIP TOP (표)
+	//외부에서 내부로의 전체 세션로그 & 출발지IP TOP
 	private void Action_SessionLog_TopN(
 			HashMap<String, Object> reportData, 
 			int nDirection, 
@@ -542,28 +552,29 @@ public class FwDailyReport extends BaseReport {
 		Iterable<DBObject> ipTopNResult = fwDao.IpTopN("DY", nDirection, sAction, assetCode, sStartDay, sEndDay, bSrcIp, nLimit);
     	List<String> topNIps = new ArrayList<String>();
     	for (DBObject val : ipTopNResult) {
-    		Iterable<DBObject> prevObj = null;
     		if (bSrcIp) {    		
     			topNIps.add((String)val.get("srcIp"));
-        		prevObj = fwDao.BeforeIpCondition("DY", nDirection, sAction, assetCode, fwDao.addDate(sStartDay,-1), fwDao.addDate(sEndDay,-1), bSrcIp, (String)val.get("srcIp"));
     		} else {
     			topNIps.add((String)val.get("destIp"));
-    			prevObj = fwDao.BeforeIpCondition("DY", nDirection, sAction, assetCode, fwDao.addDate(sStartDay,-1), fwDao.addDate(sEndDay,-1), bSrcIp, (String)val.get("destIp"));
-    		}
-    		val.put("prevCount", 0);
-    		for (DBObject dbObj : prevObj) {//한번 쿼리로 개선 필요
-    			val.put("prevCount", ((Number)dbObj.get("count")).longValue());
     		}
     	}
 		
+    	Iterable<DBObject> prevObj = fwDao.BeforeIpCondition("DY", nDirection, sAction, assetCode, fwDao.addDate(sStartDay,-1), fwDao.addDate(sEndDay,-1), bSrcIp, topNIps);
+    	
+    	HashMap<String, DBObject> mapBefore = new HashMap<String, DBObject>();
+    	for (DBObject val : prevObj) {
+    		String sIp = bSrcIp ? StringUtil.convertString(val.get("srcIp")) : StringUtil.convertString(val.get("destIp")); 
+    		mapBefore.put(sIp, val);
+    	}
+    	
     	int nNo = 1;
     	for (DBObject val : ipTopNResult) {
-    		Iterable<DBObject> ipTopNCondition = null;
-    		if (bSrcIp) {
-    			ipTopNCondition = fwDao.IpTopNCondition("DY", nDirection, sAction, assetCode, sStartDay, sEndDay, (String)val.get("srcIp"), bSrcIp);
-    		} else {
-    			ipTopNCondition = fwDao.IpTopNCondition("DY", nDirection, sAction, assetCode, sStartDay, sEndDay, (String)val.get("destIp"), bSrcIp);
-    		}
+    		String sIp = bSrcIp ? StringUtil.convertString(val.get("srcIp")) : StringUtil.convertString(val.get("destIp"));
+    		
+    		Iterable<DBObject> ipTopNCondition = fwDao.IpTopNCondition("DY", nDirection, sAction, assetCode, sStartDay, sEndDay, sIp, bSrcIp);
+    		
+    		HashMap<String, DBObject> prevMap = (HashMap<String, DBObject>)mapBefore.get(sIp); 
+    		
 			for (DBObject dbObj : ipTopNCondition) {
 				HashMap<String, Object> map = new HashMap<String, Object>();
 				map.put("no", nNo);
@@ -582,11 +593,10 @@ public class FwDailyReport extends BaseReport {
 				}
 				
 				map.put("port", (Integer)dbObj.get("destPort"));
-				map.put("total", ((Number)val.get("count")).longValue());
+				map.put("count", ((Number)val.get("count")).longValue());
 				map.put("action", StringUtil.convertString(dbObj.get("action")).equals("1") ? "허용" : "차단");
-				map.put("count", ((Number)dbObj.get("count")).longValue());
 				map.put("ratio", (((Number)dbObj.get("count")).longValue()*100f)/((Number)val.get("count")).longValue());
-				map.put("inc", ((Number)val.get("count")).longValue() - ((Number)val.get("prevCount")).longValue());
+				map.put("countVariation", ((Number)val.get("count")).longValue() - (prevMap != null ? ((Number)prevMap.get("count")).longValue() : 0));
 				dataSource.add(map);
 				logger.debug(map.toString());
 			}
@@ -594,17 +604,17 @@ public class FwDailyReport extends BaseReport {
     	}
     	
     	if (bSrcIp) {
-	    	if (nDirection == INBOUND && StringUtil.isEmpty(sAction)) { //외부에서 내부로의 전체 세션로그 & SIP TOP (표)
+	    	if (nDirection == INBOUND && StringUtil.isEmpty(sAction)) { //외부에서 내부로의 전체 세션로그 & 출발지IP TOP
 	    		reportData.put("OPT10_1", new SynthesisDataSource(dataSource));
-	    	} else if (nDirection == INBOUND && sAction.equals(ALLOW)) { //외부에서 내부로의 허용 세션로그 & SIP TOP (표)
+	    	} else if (nDirection == INBOUND && sAction.equals(ALLOW)) { //외부에서 내부로의 허용 세션로그 & 출발지IP TOP
 	    		reportData.put("OPT11_1", new SynthesisDataSource(dataSource));
-	    	} else if (nDirection == INBOUND && sAction.equals(CUTOFF)) { //외부에서 내부로의 차단 세션로그 & SIP TOP (표)
+	    	} else if (nDirection == INBOUND && sAction.equals(CUTOFF)) { //외부에서 내부로의 차단 세션로그 & 출발지IP TOP
 	    		reportData.put("OPT12_1", new SynthesisDataSource(dataSource));
-	    	} else if (nDirection == OUTBOUND && StringUtil.isEmpty(sAction)) { //내부에서 외부로의 전체 세션로그 & SIP TOP (표)
+	    	} else if (nDirection == OUTBOUND && StringUtil.isEmpty(sAction)) { //내부에서 외부로의 전체 세션로그 & 출발지IP TOP
 	    		reportData.put("OPT13_1", new SynthesisDataSource(dataSource));
-	    	} else if (nDirection == OUTBOUND && sAction.equals(ALLOW)) { //내부에서 외부로의 허용 세션로그 & SIP TOP (표)
+	    	} else if (nDirection == OUTBOUND && sAction.equals(ALLOW)) { //내부에서 외부로의 허용 세션로그 & 출발지IP TOP
 	    		reportData.put("OPT14_1", new SynthesisDataSource(dataSource));
-	    	} else if (nDirection == OUTBOUND && sAction.equals(CUTOFF)) { //내부에서 외부로의 차단 세션로그 & SIP TOP (표)
+	    	} else if (nDirection == OUTBOUND && sAction.equals(CUTOFF)) { //내부에서 외부로의 차단 세션로그 & 출발지IP TOP
 	    		reportData.put("OPT15_1", new SynthesisDataSource(dataSource));
 	    	}
 	    	
@@ -648,17 +658,17 @@ public class FwDailyReport extends BaseReport {
 		    	}
 	    	}
     	} else {
-	    	if (nDirection == INBOUND && StringUtil.isEmpty(sAction)) { //외부에서 내부로의 전체 세션로그 & DIP TOP (표)
+	    	if (nDirection == INBOUND && StringUtil.isEmpty(sAction)) { //외부에서 내부로의 전체 세션로그 & 목적지IP TOP
 	    		reportData.put("OPT16_1", new SynthesisDataSource(dataSource));
-	    	} else if (nDirection == INBOUND && sAction.equals(ALLOW)) { //외부에서 내부로의 허용 세션로그 & DIP TOP (표)
+	    	} else if (nDirection == INBOUND && sAction.equals(ALLOW)) { //외부에서 내부로의 허용 세션로그 & 목적지IP TOP
 	    		reportData.put("OPT17_1", new SynthesisDataSource(dataSource));
-	    	} else if (nDirection == INBOUND && sAction.equals(CUTOFF)) { //외부에서 내부로의 차단 세션로그 & DIP TOP (표)
+	    	} else if (nDirection == INBOUND && sAction.equals(CUTOFF)) { //외부에서 내부로의 차단 세션로그 & 목적지IP TOP
 	    		reportData.put("OPT18_1", new SynthesisDataSource(dataSource));
-	    	} else if (nDirection == OUTBOUND && StringUtil.isEmpty(sAction)) { //내부에서 외부로의 전체 세션로그 & DIP TOP (표)
+	    	} else if (nDirection == OUTBOUND && StringUtil.isEmpty(sAction)) { //내부에서 외부로의 전체 세션로그 & 목적지IP TOP
 	    		reportData.put("OPT19_1", new SynthesisDataSource(dataSource));
-	    	} else if (nDirection == OUTBOUND && sAction.equals(ALLOW)) { //내부에서 외부로의 허용 세션로그 & DIP TOP (표)
+	    	} else if (nDirection == OUTBOUND && sAction.equals(ALLOW)) { //내부에서 외부로의 허용 세션로그 & 목적지IP TOP
 	    		reportData.put("OPT20_1", new SynthesisDataSource(dataSource));
-	    	} else if (nDirection == OUTBOUND && sAction.equals(CUTOFF)) { //내부에서 외부로의 차단 세션로그 & DIP TOP (표)
+	    	} else if (nDirection == OUTBOUND && sAction.equals(CUTOFF)) { //내부에서 외부로의 차단 세션로그 & 목적지IP TOP
 	    		reportData.put("OPT21_1", new SynthesisDataSource(dataSource));
 	    	}
     	}
@@ -674,7 +684,7 @@ public class FwDailyReport extends BaseReport {
 			String sEndDay,
 			boolean bChk) throws Exception {
 		
-		List<HashMap<String, Object>> dataSource = new ArrayList<HashMap<String, Object>>();
+		List<HashMap<String, Object>> dataSource1 = new ArrayList<HashMap<String, Object>>();
 
     	//이전데이타 조회
     	HashMap<String, Object> prevMap = new HashMap<String, Object>();
@@ -710,7 +720,7 @@ public class FwDailyReport extends BaseReport {
 				
 				nTop++;
 				
-				dataSource.add(map);
+				dataSource1.add(map);
 				logger.debug(map.toString());
 			} else {
 				lTotalCount += ((Number)val.get("count")).longValue();
@@ -732,37 +742,44 @@ public class FwDailyReport extends BaseReport {
     		lCurrEtcCount += ((Number)map.get("count")).longValue();
     	}
 
-    	if (dataSource.size() > 0 && lCurrEtcCount > 0) {
+    	if (dataSource1.size() > 0 && lCurrEtcCount > 0) {
 	    	HashMap<String, Object> map1 = new HashMap<String, Object>();
 			map1.put("no", nTop);		
 			map1.put("port", -1);
 			map1.put("svcName", "기타");
 			map1.put("count", lCurrEtcCount);
 			map1.put("countVariation", lCurrEtcCount - lPrevEtcCount);
-			dataSource.add(map1);
+			dataSource1.add(map1);
     	}
     	
-		for (HashMap<String, Object> map : dataSource) {
+		for (HashMap<String, Object> map : dataSource1) {
 			long count = ((Number)map.get("count")).longValue();
 			map.put("ratio", (count * 100f) / lTotalCount);
 		}
 	
+		List<HashMap<String, Object>> dataSource2 = new ArrayList<HashMap<String, Object>>();
+		for (HashMap<String, Object> pMap : dataSource1) {
+			if ((Integer)pMap.get("no") < 11) {
+				dataSource2.add((HashMap<String, Object>)pMap.clone());
+			}
+		}
+		
 		if (nDirection == INBOUND && sAction.equals(ALLOW)) {
-			reportData.put("OPT22_1", new SynthesisDataSource(dataSource));
-			reportData.put("OPT22_2", new SynthesisDataSource(dataSource));
+			reportData.put("OPT22_1", new SynthesisDataSource(dataSource1));
+			reportData.put("OPT22_2", new SynthesisDataSource(dataSource2));
 		} else if (nDirection == INBOUND && sAction.equals(CUTOFF)) {
-			reportData.put("OPT23_1", new SynthesisDataSource(dataSource));
-			reportData.put("OPT23_2", new SynthesisDataSource(dataSource));
+			reportData.put("OPT23_1", new SynthesisDataSource(dataSource1));
+			reportData.put("OPT23_2", new SynthesisDataSource(dataSource2));
 		} else if (nDirection == OUTBOUND && sAction.equals(ALLOW)) {
-			reportData.put("OPT25_1", new SynthesisDataSource(dataSource));
-			reportData.put("OPT25_2", new SynthesisDataSource(dataSource));
+			reportData.put("OPT25_1", new SynthesisDataSource(dataSource1));
+			reportData.put("OPT25_2", new SynthesisDataSource(dataSource2));
 		} else if (nDirection == OUTBOUND && sAction.equals(CUTOFF)) {
-			reportData.put("OPT26_1", new SynthesisDataSource(dataSource));
-			reportData.put("OPT26_2", new SynthesisDataSource(dataSource));
+			reportData.put("OPT26_1", new SynthesisDataSource(dataSource1));
+			reportData.put("OPT26_2", new SynthesisDataSource(dataSource2));
 		}
 		
 		if (bChk) {
-			dataSource = new ArrayList<HashMap<String, Object>>();
+			List<HashMap<String, Object>> dataSource3 = new ArrayList<HashMap<String, Object>>();
 			Iterable<DBObject> portTrend = fwDao.ServiceTopNTrend("HR", nDirection, sAction, assetCode, sStartDay, sEndDay, topNPort);
         	HashMap<String, DBObject> mapResult = new HashMap<String, DBObject>(); 
         	for (DBObject val : portTrend) {
@@ -787,16 +804,16 @@ public class FwDailyReport extends BaseReport {
     					map.put("series", fwDao.getPortServiceName(nPort));
     		    		map.put("category", String.valueOf(h));
     		    		map.put("value", val != null ? ((Number)val.get("count")).longValue() : 0);
-    		    		dataSource.add(map);
+    		    		dataSource3.add(map);
     					logger.debug(map.toString());
     		    	}
         		}
         	}
     		
 	    	if (nDirection == INBOUND) {
-	    		reportData.put("OPT23_3", new SynthesisDataSource(dataSource));
+	    		reportData.put("OPT23_3", new SynthesisDataSource(dataSource3));
 	    	} else if (nDirection == OUTBOUND) {
-	    		reportData.put("OPT26_3", new SynthesisDataSource(dataSource));
+	    		reportData.put("OPT26_3", new SynthesisDataSource(dataSource3));
 	    	}
 		}
 	}
@@ -843,10 +860,9 @@ public class FwDailyReport extends BaseReport {
     			map.put("no", nNo);
     			map.put("port", nPort);
     			map.put("svcName", fwDao.getPortServiceName(nPort));
-    			map.put("total", totalCount);
+    			map.put("count", totalCount);
     			map.put("srcIp", (String)dbObj.get("srcIp"));
     			map.put("destIp", (String)dbObj.get("destIp"));
-    			map.put("count", ((Number)dbObj.get("count")).longValue());
     			map.put("ratio", (((Number)dbObj.get("count")).longValue() * 100f) / totalCount);
     			
 				if (nDirection == INBOUND) {
@@ -863,10 +879,9 @@ public class FwDailyReport extends BaseReport {
     			map.put("no", nNo);
     			map.put("port", nPort);
     			map.put("svcName", fwDao.getPortServiceName(nPort));
-    			map.put("total", totalCount);
+    			map.put("count", totalCount);
     			map.put("srcIp", "-");
     			map.put("destIp", "-");
-    			map.put("count", 0l);
     			map.put("ratio", 0l);
     			map.put("geoCode", "-");
     			

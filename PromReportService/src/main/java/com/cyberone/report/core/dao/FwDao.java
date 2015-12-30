@@ -374,6 +374,12 @@ public class FwDao extends BaseDao {
 	}
 	
 	public Iterable<DBObject> BeforeIpCondition(String sCol, int nDirection, String sAction, int assetCode, String sStartDay, String sEndDay, boolean bSrcIp, String sIp) throws Exception {
+		List<String> ips = new ArrayList<String>();
+		ips.add(sIp);
+		return BeforeIpCondition(sCol, nDirection, sAction, assetCode, sStartDay, sEndDay, bSrcIp, ips);
+	}
+	
+	public Iterable<DBObject> BeforeIpCondition(String sCol, int nDirection, String sAction, int assetCode, String sStartDay, String sEndDay, boolean bSrcIp, List<String> ips) throws Exception {
 		
 		StartTimeCheck("BeforeIpCondition");
 		
@@ -398,11 +404,11 @@ public class FwDao extends BaseDao {
 				condition.put("action", sAction);
 			}
 			if (bSrcIp) { 
-				condition.put("srcIp", sIp);
+				condition.put("srcIp", new BasicDBObject("$in", ips));
 			} else {
-				condition.put("destIp", sIp);
+				condition.put("destIp", new BasicDBObject("$in", ips));
 			}
-
+			
 			DBObject fields = new BasicDBObject();
 			fields.put("_id", 0);
 			if (bSrcIp) {

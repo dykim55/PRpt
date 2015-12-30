@@ -1,8 +1,13 @@
 package com.cyberone.report.core.report;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -34,8 +39,15 @@ public class DdosPeriodReport extends BaseReport {
 	 * DDoS 임의기간보고서 통계데이타 생성
 	 */
 	@SuppressWarnings("unchecked")
-	public HashMap<String, Object> getDataSource(String sReportType, String sSearchDate, HashMap<String, Object> hMap) throws Exception {
+	public HashMap<String, Object> getDataSource(String sReportType, String sSearchDate, HashMap<String, Object> hMap, int ItemNo, List<String> contentsList) throws Exception {
 		logger.debug("DDoS 임의기간보고서 통계데이타 생성");
+		
+		HashMap<String, Object> reportData = new HashMap<String, Object>();
+		
+		reportData.put("reportType", sReportType);
+		
+		contentsList.add(ItemNo + ". " + (String)hMap.get("assetName") + " 장비의 탐지로그 분석");
+		reportData.put("RT", ItemNo + ". " + (String)hMap.get("assetName") + " 장비의 탐지로그 분석");
 		
 		String sStartDay = "";
 		String sEndDay = "";
@@ -55,146 +67,207 @@ public class DdosPeriodReport extends BaseReport {
 		if (hFormMap == null) {
 			DBObject dbObj = ddosDao.selectAutoReportForm(Integer.parseInt(sReportType), assetCode);
 			hData = (new ObjectMapper()).readValue(StringUtil.convertString(dbObj.get("formData")), HashMap.class);
+			
+			List<Map.Entry<String,Object>> list = new LinkedList<>(hData.entrySet());
+			Collections.sort(list, new Comparator<Map.Entry<String, Object>>() {
+		        @Override
+		        public int compare(Map.Entry<String, Object> o1, Map.Entry<String, Object> o2) {
+		            return (o1.getKey()).compareTo(o2.getKey());
+		        }
+		    });
+			hData = new LinkedHashMap<>();
+		    for (Map.Entry<String, Object> entry : list) {
+		    	hData.put(entry.getKey(), entry.getValue());
+		    }			
 		} else {
 			hData = (HashMap<String,Object>)hFormMap.get("data");
 			sEtc = StringUtil.convertString(hFormMap.get("etc"));
 		}
 
-		HashMap<String, Object> reportData = new HashMap<String, Object>();
+		int nC1 = 0, nC2 = 0, nC3 = 0, nC4 = 0, nC5 = 0, nC6 = 0;
+		int nS1 = 1, nS2 = 1, nS3 = 1, nS4 = 1, nS5 = 1, nS6 = 1;
 		
 		int nChoice = 0;
 		for (Entry<String, Object> e : hData.entrySet()) {
 			
 			switch (e.getKey()) {
+				//탐지로그 발생 추이
+				case "opt01" : case "opt02" : case "opt03" : case "opt04" : case "opt05" : case "opt06" : case "opt07" : 
+					if (nC1 == 0) { 
+						contentsList.add("  " + ItemNo + "." + ++nC1 + " 탐지로그 발생추이");
+						reportData.put("C1", "  " + ItemNo + "." + nC1 + " 탐지로그 발생추이");
+					}
+					break;
+				//이벤트 현황
+				case "opt08" : case "opt09" : case "opt10" : case "opt11" : case "opt12" : case "opt13" :  
+					if (nC2 == 0) { 
+						contentsList.add("  " + ItemNo + "." + (++nC2 + nC1) + " 이벤트 현황");
+						reportData.put("C2", "  " + ItemNo + "." + (nC2 + nC1) + " 이벤트 현황");
+					}
+					break;
+				//출발지IP 현황
+				case "opt14" : case "opt15" : case "opt16" : case "opt17" : case "opt18" : case "opt19" :  
+					if (nC3 == 0) { 
+						contentsList.add("  " + ItemNo + "." + (++nC3 + nC2 + nC1) + " 출발지IP 현황");
+						reportData.put("C3", "  " + ItemNo + "." + (nC3 + nC2 + nC1) + " 출발지IP 현황");
+					}
+					break;
+				//목적지IP 현황
+				case "opt20" : case "opt21" : case "opt22" : case "opt23" : case "opt24" : case "opt25" :  
+					if (nC4 == 0) { 
+						contentsList.add("  " + ItemNo + "." + (++nC4 + nC3 + nC2 + nC1) + " 목적지IP 현황");
+						reportData.put("C4", "  " + ItemNo + "." + (nC4 + nC3 + nC2 + nC1) + " 목적지IP 현황");
+					}
+					break;
+				//서비스 현황
+				case "opt26" : case "opt27" :  
+					if (nC5 == 0) { 
+						contentsList.add("  " + ItemNo + "." + (++nC5 + nC4 + nC3 + nC2 + nC1) + " 서비스 현황");
+						reportData.put("C5", "  " + ItemNo + "." + (nC5 + nC4 + nC3 + nC2 + nC1) + " 서비스 현황");
+					}
+					break;
+				//성능정보
+				case "opt99" :
+					if (nC6 == 0) { 
+						contentsList.add("  " + ItemNo + "." + (++nC6 + nC5 + nC4 + nC3 + nC2 + nC1) + " 성능현황");
+						reportData.put("C6", "  " + ItemNo + "." + (nC6 + nC5 + nC4 + nC3 + nC2 + nC1) + " 성능현황");
+					}
+					break;
+			}
+			
+			switch (e.getKey()) {
 				case "opt01" :	//전체 탐지로그 발생추이
-					push("항목: 전체 탐지로그 발생추이");
+					reportData.put("opt01", push(contentsList, "    ", ItemNo, nC1, nS1++, " 전체 탐지로그 발생추이"));
 					All_DetectLog_Trend(reportData, -1, assetCode, sStartDay, sEndDay);
 					break;
 				case "opt02" :	//외부에서 내부로의 전체 탐지로그 발생추이 
-					push("항목: 외부에서 내부로의 전체 탐지로그 발생추이");
+					reportData.put("opt02", push(contentsList, "    ", ItemNo, nC1, nS1++, " 외부에서 내부로의 전체 탐지로그 발생추이"));
 					Direction_DetectLog_Trend(reportData, INBOUND, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt03" : 	//외부에서 내부로의 허용 탐지로그 발생추이 (차트)
-					push("항목: 외부에서 내부로의 허용 탐지로그 발생추이 (차트)");
+				case "opt03" : 	//외부에서 내부로의 허용 탐지로그 발생추이
+					reportData.put("opt03", push(contentsList, "    ", ItemNo, nC1, nS1++, " 외부에서 내부로의 허용 탐지로그 발생추이"));
 					Action_DetectLog_Trend(reportData, INBOUND, ALLOW, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt04" :	//외부에서 내부로의 차단 탐지로그 발생추이 (차트)
-					push("항목: 외부에서 내부로의 차단 탐지로그 발생추이 (차트)");
+				case "opt04" :	//외부에서 내부로의 차단 탐지로그 발생추이
+					reportData.put("opt04", push(contentsList, "    ", ItemNo, nC1, nS1++, " 외부에서 내부로의 차단 탐지로그 발생추이"));
 					Action_DetectLog_Trend(reportData, INBOUND, CUTOFF, assetCode, sStartDay, sEndDay);
 					break;
 				case "opt05" : 	//내부에서 외부로의 전체 탐지로그 발생추이
-					push("항목: 내부에서 외부로의 전체 탐지로그 발생추이");
+					reportData.put("opt05", push(contentsList, "    ", ItemNo, nC1, nS1++, " 내부에서 외부로의 전체 탐지로그 발생추이"));
 					Direction_DetectLog_Trend(reportData, OUTBOUND, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt06" : 	//내부에서 외부로의 허용 탐지로그 발생추이 (차트)
-					push("항목: 내부에서 외부로의 허용 탐지로그 발생추이 (차트)");
+				case "opt06" : 	//내부에서 외부로의 허용 탐지로그 발생추이
+					reportData.put("opt06", push(contentsList, "    ", ItemNo, nC1, nS1++, " 내부에서 외부로의 허용 탐지로그 발생추이"));
 					Action_DetectLog_Trend(reportData, OUTBOUND, ALLOW, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt07" : 	//내부에서 외부로의 차단 탐지로그 발생추이 (차트)
-					push("항목: 내부에서 외부로의 차단 탐지로그 발생추이 (차트)");
+				case "opt07" : 	//내부에서 외부로의 차단 탐지로그 발생추이
+					reportData.put("opt07", push(contentsList, "    ", ItemNo, nC1, nS1++, " 내부에서 외부로의 차단 탐지로그 발생추이"));
 					Action_DetectLog_Trend(reportData, OUTBOUND, CUTOFF, assetCode, sStartDay, sEndDay);
 					break;
-				case "opt08" : 	//외부에서 내부로의 전체 탐지로그 & 이벤트 TOP (차트, 표)
-					push("항목: 외부에서 내부로의 전체 탐지로그 & 이벤트 TOP (차트, 표)");
+				case "opt08" : 	//외부에서 내부로의 전체 탐지로그 & 이벤트 TOP
+					reportData.put("opt08", push(contentsList, "    ", ItemNo, nC2 + nC1, nS2++, " 외부에서 내부로의 전체 탐지로그 & 이벤트 TOP"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd8")));
 					Direction_EventTopN(reportData, INBOUND, assetCode, sStartDay, sEndDay, nChoice);
 					break;
-				case "opt09" : 	//외부에서 내부로의 허용 탐지로그 & 이벤트 TOP (차트, 표)
-					push("항목: 외부에서 내부로의 허용 탐지로그 & 이벤트 TOP (차트, 표)");
+				case "opt09" : 	//외부에서 내부로의 허용 탐지로그 & 이벤트 TOP
+					reportData.put("opt09", push(contentsList, "    ", ItemNo, nC2 + nC1, nS2++, " 외부에서 내부로의 허용 탐지로그 & 이벤트 TOP"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd9")));
 					Direction_Action_EventTopN(reportData, INBOUND, ALLOW, assetCode, sStartDay, sEndDay, nChoice, !StringUtil.isEmpty(hData.get("ck9")));
 					break;
-				case "opt10" : 	//외부에서 내부로의 차단 탐지로그 & 이벤트 TOP (차트, 표)
-					push("항목: 외부에서 내부로의 차단 탐지로그 & 이벤트 TOP (차트, 표)");
+				case "opt10" : 	//외부에서 내부로의 차단 탐지로그 & 이벤트 TOP
+					reportData.put("opt10", push(contentsList, "    ", ItemNo, nC2 + nC1, nS2++, " 외부에서 내부로의 차단 탐지로그 & 이벤트 TOP"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd10")));
 					Direction_Action_EventTopN(reportData, INBOUND, CUTOFF, assetCode, sStartDay, sEndDay, nChoice, !StringUtil.isEmpty(hData.get("ck10")));
 					break;
-				case "opt11" : 	//내부에서 외부로의 전체 탐지로그 & 이벤트 TOP (차트, 표)
-					push("항목: 내부에서 외부로의 전체 탐지로그 & 이벤트 TOP (차트, 표)");
+				case "opt11" : 	//내부에서 외부로의 전체 탐지로그 & 이벤트 TOP
+					reportData.put("opt11", push(contentsList, "    ", ItemNo, nC2 + nC1, nS2++, " 내부에서 외부로의 전체 탐지로그 & 이벤트 TOP"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd11")));
 					Direction_EventTopN(reportData, OUTBOUND, assetCode, sStartDay, sEndDay, nChoice);
 					break;
-				case "opt12" : 	//내부에서 외부로의 허용 탐지로그 & 이벤트 TOP (차트, 표)
-					push("항목: 내부에서 외부로의 허용 탐지로그 & 이벤트 TOP (차트, 표)");
+				case "opt12" : 	//내부에서 외부로의 허용 탐지로그 & 이벤트 TOP
+					reportData.put("opt12", push(contentsList, "    ", ItemNo, nC2 + nC1, nS2++, " 내부에서 외부로의 허용 탐지로그 & 이벤트 TOP"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd12")));
 					Direction_Action_EventTopN(reportData, OUTBOUND, ALLOW, assetCode, sStartDay, sEndDay, nChoice, !StringUtil.isEmpty(hData.get("ck12")));
 					break;
-				case "opt13" : 	//내부에서 외부로의 차단 탐지로그 & 이벤트 TOP (차트, 표)
-					push("항목: 내부에서 외부로의 차단 탐지로그 & 이벤트 TOP (차트, 표)");
+				case "opt13" : 	//내부에서 외부로의 차단 탐지로그 & 이벤트 TOP
+					reportData.put("opt13", push(contentsList, "    ", ItemNo, nC2 + nC1, nS2++, " 내부에서 외부로의 차단 탐지로그 & 이벤트 TOP"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd13")));
 					Direction_Action_EventTopN(reportData, OUTBOUND, CUTOFF, assetCode, sStartDay, sEndDay, nChoice, !StringUtil.isEmpty(hData.get("ck13")));
 					break;
-				case "opt14" : 	//외부에서 내부로의 전체 탐지로그 & SIP TOP (표)
-					push("항목: 외부에서 내부로의 전체 탐지로그 & SIP TOP (표)");
+				case "opt14" : 	//외부에서 내부로의 전체 탐지로그 & SIP TOP
+					reportData.put("opt14", push(contentsList, "    ", ItemNo, nC3 + nC2 + nC1, nS3++, " 외부에서 내부로의 전체 탐지로그 & SIP TOP"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd14")));
 					Action_DetectLog_TopN(reportData, INBOUND, "", assetCode, sStartDay, sEndDay, true, nChoice, !StringUtil.isEmpty(hData.get("ck14")));
 					break;
-				case "opt15" : 	//외부에서 내부로의 허용 탐지로그 & SIP TOP (표)
-					push("항목: 외부에서 내부로의 허용 탐지로그 & SIP TOP (표)");
+				case "opt15" : 	//외부에서 내부로의 허용 탐지로그 & SIP TOP
+					reportData.put("opt15", push(contentsList, "    ", ItemNo, nC3 + nC2 + nC1, nS3++, " 외부에서 내부로의 허용 탐지로그 & SIP TOP"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd15")));
 					Action_DetectLog_TopN(reportData, INBOUND, ALLOW, assetCode, sStartDay, sEndDay, true, nChoice, !StringUtil.isEmpty(hData.get("ck15")));
 					break;
-				case "opt16" : 	//외부에서 내부로의 차단 탐지로그 & SIP TOP (표)
-					push("항목: 외부에서 내부로의 차단 탐지로그 & SIP TOP (표)");
+				case "opt16" : 	//외부에서 내부로의 차단 탐지로그 & SIP TOP
+					reportData.put("opt16", push(contentsList, "    ", ItemNo, nC3 + nC2 + nC1, nS3++, " 외부에서 내부로의 차단 탐지로그 & SIP TOP"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd16")));
 					Action_DetectLog_TopN(reportData, INBOUND, CUTOFF, assetCode, sStartDay, sEndDay, true, nChoice, !StringUtil.isEmpty(hData.get("ck16")));
 					break;
-				case "opt17" : 	//내부에서 외부로의 전체 탐지로그 & SIP TOP (표)
-					push("항목: 내부에서 외부로의 전체 탐지로그 & SIP TOP (표)");
+				case "opt17" : 	//내부에서 외부로의 전체 탐지로그 & SIP TOP
+					reportData.put("opt17", push(contentsList, "    ", ItemNo, nC3 + nC2 + nC1, nS3++, " 내부에서 외부로의 전체 탐지로그 & SIP TOP"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd17")));
 					Action_DetectLog_TopN(reportData, OUTBOUND, "", assetCode, sStartDay, sEndDay, true, nChoice, !StringUtil.isEmpty(hData.get("ck17")));
 					break;
-				case "opt18" : 	//내부에서 외부로의 허용 탐지로그 & SIP TOP (표)
-					push("항목: 내부에서 외부로의 허용 탐지로그 & SIP TOP (표)");
+				case "opt18" : 	//내부에서 외부로의 허용 탐지로그 & SIP TOP
+					reportData.put("opt18", push(contentsList, "    ", ItemNo, nC3 + nC2 + nC1, nS3++, " 내부에서 외부로의 허용 탐지로그 & SIP TOP"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd18")));
 					Action_DetectLog_TopN(reportData, OUTBOUND, ALLOW, assetCode, sStartDay, sEndDay, true, nChoice, !StringUtil.isEmpty(hData.get("ck18")));
 					break;
-				case "opt19" : 	//내부에서 외부로의 차단 탐지로그 & SIP TOP (표)
-					push("항목: 내부에서 외부로의 차단 탐지로그 & SIP TOP (표)");
+				case "opt19" : 	//내부에서 외부로의 차단 탐지로그 & SIP TOP
+					reportData.put("opt19", push(contentsList, "    ", ItemNo, nC3 + nC2 + nC1, nS3++, " 내부에서 외부로의 차단 탐지로그 & SIP TOP"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd19")));
 					Action_DetectLog_TopN(reportData, OUTBOUND, CUTOFF, assetCode, sStartDay, sEndDay, true, nChoice, !StringUtil.isEmpty(hData.get("ck19")));
 					break;
-				case "opt20" : 	//외부에서 내부로의 전체 탐지로그 & DIP TOP (표)
-					push("항목: 외부에서 내부로의 전체 탐지로그 & DIP TOP (표)");
+				case "opt20" : 	//외부에서 내부로의 전체 탐지로그 & DIP TOP
+					reportData.put("opt20", push(contentsList, "    ", ItemNo, nC4 + nC3 + nC2 + nC1, nS4++, " 외부에서 내부로의 전체 탐지로그 & DIP TOP"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd20")));
 					Action_DetectLog_TopN(reportData, INBOUND, "", assetCode, sStartDay, sEndDay, false, nChoice, false);
 					break;
-				case "opt21" : 	//외부에서 내부로의 허용 탐지로그 & DIP TOP (표)
-					push("항목: 외부에서 내부로의 허용 탐지로그 & DIP TOP (표)");
+				case "opt21" : 	//외부에서 내부로의 허용 탐지로그 & DIP TOP
+					reportData.put("opt21", push(contentsList, "    ", ItemNo, nC4 + nC3 + nC2 + nC1, nS4++, " 외부에서 내부로의 허용 탐지로그 & DIP TOP"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd21")));
 					Action_DetectLog_TopN(reportData, INBOUND, ALLOW, assetCode, sStartDay, sEndDay, false, nChoice, false);
 					break;
-				case "opt22" : 	//외부에서 내부로의 차단 탐지로그 & DIP TOP (표)
-					push("항목: 외부에서 내부로의 차단 탐지로그 & DIP TOP (표)");
+				case "opt22" : 	//외부에서 내부로의 차단 탐지로그 & DIP TOP
+					reportData.put("opt22", push(contentsList, "    ", ItemNo, nC4 + nC3 + nC2 + nC1, nS4++, " 외부에서 내부로의 차단 탐지로그 & DIP TOP"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd22")));
 					Action_DetectLog_TopN(reportData, INBOUND, CUTOFF, assetCode, sStartDay, sEndDay, false, nChoice, false);
 					break;
-				case "opt23" : 	//내부에서 외부로의 전체 탐지로그 & DIP TOP (표)
-					push("항목: 내부에서 외부로의 전체 탐지로그 & DIP TOP (표)");
+				case "opt23" : 	//내부에서 외부로의 전체 탐지로그 & DIP TOP
+					reportData.put("opt23", push(contentsList, "    ", ItemNo, nC4 + nC3 + nC2 + nC1, nS4++, " 내부에서 외부로의 전체 탐지로그 & DIP TOP"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd23")));
 					Action_DetectLog_TopN(reportData, OUTBOUND, "", assetCode, sStartDay, sEndDay, false, nChoice, false);
 					break;
-				case "opt24" : 	//내부에서 외부로의 허용 탐지로그 & DIP TOP (표)
-					push("항목: 내부에서 외부로의 허용 탐지로그 & DIP TOP (표))");
+				case "opt24" : 	//내부에서 외부로의 허용 탐지로그 & DIP TOP
+					reportData.put("opt24", push(contentsList, "    ", ItemNo, nC4 + nC3 + nC2 + nC1, nS4++, " 내부에서 외부로의 허용 탐지로그 & DIP TOP)"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd24")));
 					Action_DetectLog_TopN(reportData, OUTBOUND, ALLOW, assetCode, sStartDay, sEndDay, false, nChoice, false);
 					break;
-				case "opt25" : 	//내부에서 외부로의 차단 탐지로그 & DIP TOP (표)
-					push("항목: 내부에서 외부로의 차단 탐지로그 & DIP TOP (표)");
+				case "opt25" : 	//내부에서 외부로의 차단 탐지로그 & DIP TOP
+					reportData.put("opt25", push(contentsList, "    ", ItemNo, nC4 + nC3 + nC2 + nC1, nS4++, " 내부에서 외부로의 차단 탐지로그 & DIP TOP"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd25")));
 					Action_DetectLog_TopN(reportData, OUTBOUND, CUTOFF, assetCode, sStartDay, sEndDay, false, nChoice, false);
 					break;
-				case "opt26" : 	//외부에서 내부로의 전체 탐지로그 & 서비스 TOP10 (차트)
-					push("항목: 외부에서 내부로의 전체 탐지로그 & 서비스 TOP10 (차트)");
+				case "opt26" : 	//외부에서 내부로의 전체 탐지로그 & 서비스 TOP10
+					reportData.put("opt26", push(contentsList, "    ", ItemNo, nC5 + nC4 + nC3 + nC2 + nC1, nS5++, " 외부에서 내부로의 전체 탐지로그 & 서비스 TOP10"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd26")));
 					ALL_ServiceTop10(reportData, INBOUND, assetCode, sStartDay, sEndDay, !StringUtil.isEmpty(hData.get("ck26")));
 					break;
-				case "opt27" : 	//내부에서 외부로의 전체 탐지로그 & 서비스 TOP10 (차트)
-					push("항목: 내부에서 외부로의 전체 탐지로그 & 서비스 TOP10 (차트)");
+				case "opt27" : 	//내부에서 외부로의 전체 탐지로그 & 서비스 TOP10
+					reportData.put("opt27", push(contentsList, "    ", ItemNo, nC5 + nC4 + nC3 + nC2 + nC1, nS5++, " 내부에서 외부로의 전체 탐지로그 & 서비스 TOP10"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd27")));
 					ALL_ServiceTop10(reportData, OUTBOUND, assetCode, sStartDay, sEndDay, !StringUtil.isEmpty(hData.get("ck27")));
 					break;
-					
+				case "opt99" :	//성능정보
+					//reportData.put("opt99", push(contentsList, "    ", ItemNo, nC6 + nC5 + nC4 + nC3 + nC2 + nC1, nS6++, " 성능 정보"));
+					PerformanceInfo(ddosDao, reportData, ItemNo, nC6 + nC5 + nC4 + nC3 + nC2 + nC1, assetCode, sStartDay, sEndDay);
+					break;
 			}
 		}
 		return reportData;
@@ -224,9 +297,9 @@ public class DdosPeriodReport extends BaseReport {
     		for (String tDay : dayPeriod) {
 	    		HashMap<String, Object> map = new HashMap<String, Object>();
 	    		DBObject val = mapResult.get(String.valueOf(direction) + tDay);
-	    		map.put("gubun", saGubun[direction]);
-	    		map.put("day", Integer.valueOf(tDay));
-	    		map.put("count", val != null ? ((Number)val.get("count")).longValue() : 0);
+	    		map.put("series", saGubun[direction]);
+	    		map.put("category", tDay);
+	    		map.put("value", val != null ? ((Number)val.get("count")).longValue() : 0);
 
 	    		dataSource.add(map);
 	    		logger.debug(map.toString());
@@ -248,9 +321,9 @@ public class DdosPeriodReport extends BaseReport {
 		for (String tDay : dayPeriod) {
     		HashMap<String, Object> map = new HashMap<String, Object>();
     		DBObject val = mapResult.get(tDay);
-    		map.put("gubun", "전체");
-    		map.put("day", Integer.valueOf(tDay));
-    		map.put("count", val != null ? ((Number)val.get("count")).longValue() : 0);
+    		map.put("series", "전체");
+    		map.put("category", tDay);
+    		map.put("value", val != null ? ((Number)val.get("count")).longValue() : 0);
     		
     		dataSource.add(map);
     		logger.debug(map.toString());
@@ -283,9 +356,9 @@ public class DdosPeriodReport extends BaseReport {
     		for (String tDay : dayPeriod) {
 	    		HashMap<String, Object> map = new HashMap<String, Object>();
 	    		DBObject val = mapResult.get(String.valueOf(action) + tDay);
-	    		map.put("gubun", saGubun[action]);
-	    		map.put("day", Integer.valueOf(tDay));
-	    		map.put("count", val != null ? ((Number)val.get("count")).longValue() : 0);
+	    		map.put("series", saGubun[action]);
+	    		map.put("category", tDay);
+	    		map.put("value", val != null ? ((Number)val.get("count")).longValue() : 0);
 
 	    		dataSource.add(map);
 	    		logger.debug(map.toString());
@@ -307,9 +380,9 @@ public class DdosPeriodReport extends BaseReport {
 		for (String tDay : dayPeriod) {
     		HashMap<String, Object> map = new HashMap<String, Object>();
     		DBObject val = mapResult.get(tDay);
-    		map.put("gubun", "전체");
-    		map.put("day", Integer.valueOf(tDay));
-    		map.put("count", val != null ? ((Number)val.get("count")).longValue() : 0);
+    		map.put("series", "전체");
+    		map.put("category", tDay);
+    		map.put("value", val != null ? ((Number)val.get("count")).longValue() : 0);
     		
     		dataSource.add(map);
     		logger.debug(map.toString());
@@ -345,10 +418,10 @@ public class DdosPeriodReport extends BaseReport {
     		HashMap<String, Object> map = new HashMap<String, Object>();
     		DBObject val = mapResult.get(sAction + tDay);
 
-			map.put("gubun", saGubun[Integer.valueOf(sAction)]);
+			map.put("series", saGubun[Integer.valueOf(sAction)]);
 			map.put("week", "");
-			map.put("day", Integer.valueOf(tDay.substring(6,8)));
-    		map.put("count", val != null ? ((Number)val.get("count")).longValue() : 0);
+			map.put("category", tDay.substring(6,8));
+    		map.put("value", val != null ? ((Number)val.get("count")).longValue() : 0);
 			
     		dataSource.add(map);
     		logger.debug(map.toString());
@@ -356,21 +429,21 @@ public class DdosPeriodReport extends BaseReport {
     	
 		if (nDirection == INBOUND) {
 			if (sAction.equals(ALLOW)) {
-				reportData.put("OPT3", new SynthesisDataSource(dataSource));
+				reportData.put("OPT3_1", new SynthesisDataSource(dataSource));
 			} else {
-				reportData.put("OPT4", new SynthesisDataSource(dataSource));
+				reportData.put("OPT4_1", new SynthesisDataSource(dataSource));
 			}
 		} else {
 			if (sAction.equals(ALLOW)) {
-				reportData.put("OPT6", new SynthesisDataSource(dataSource));
+				reportData.put("OPT6_1", new SynthesisDataSource(dataSource));
 			} else {
-				reportData.put("OPT7", new SynthesisDataSource(dataSource));
+				reportData.put("OPT7_1", new SynthesisDataSource(dataSource));
 			}
 		}
 		
 	}
 	
-	//외부에서 내부로의 전체 탐지로그 & 이벤트 TOP (차트, 표)
+	//외부에서 내부로의 전체 탐지로그 & 이벤트 TOP
 	private void Direction_EventTopN(HashMap<String, Object> reportData, int nDirection, int assetCode, String sStartDay, String sEndDay, int nLimit) throws Exception {
 		
 		List<HashMap<String, Object>> dataSource = new ArrayList<HashMap<String, Object>>();
@@ -440,7 +513,7 @@ public class DdosPeriodReport extends BaseReport {
 		
 	}		
 	
-	//외부에서 내부로의 허용/차단 탐지로그 & 이벤트 TOP (차트, 표)
+	//외부에서 내부로의 허용/차단 탐지로그 & 이벤트 TOP
 	private void Direction_Action_EventTopN(HashMap<String, Object> reportData, int nDirection, String sAction, int assetCode, String sStartDay, String sEndDay, int nLimit, boolean bChk) throws Exception {
 		
 		List<HashMap<String, Object>> dataSource = new ArrayList<HashMap<String, Object>>();
@@ -540,9 +613,9 @@ public class DdosPeriodReport extends BaseReport {
 	    		for (String tDay : dayPeriod) {
 		    		DBObject val = mapResult.get(sMessage + "-" + tDay);
 		    		HashMap<String, Object> map = new HashMap<String, Object>();
-		    		map.put("gubun", sMessage);
-		    		map.put("day", Integer.valueOf(tDay));
-		    		map.put("count", val != null ? ((Number)val.get("count")).longValue() : 0);
+		    		map.put("series", sMessage);
+		    		map.put("category", tDay);
+		    		map.put("value", val != null ? ((Number)val.get("count")).longValue() : 0);
 		    		
 		    		dataSource3.add(map);
 		    		logger.debug(map.toString());
@@ -619,17 +692,17 @@ public class DdosPeriodReport extends BaseReport {
     	}
     	
     	if (bSrcIp) {
-	    	if (nDirection == INBOUND && StringUtil.isEmpty(sAction)) { //외부에서 내부로의 전체 세션로그 & SIP TOP (표)
+	    	if (nDirection == INBOUND && StringUtil.isEmpty(sAction)) { //외부에서 내부로의 전체 세션로그 & SIP TOP
 	    		reportData.put("OPT14_1", new SynthesisDataSource(dataSource1));
-	    	} else if (nDirection == INBOUND && sAction.equals(ALLOW)) { //외부에서 내부로의 허용 세션로그 & SIP TOP (표)
+	    	} else if (nDirection == INBOUND && sAction.equals(ALLOW)) { //외부에서 내부로의 허용 세션로그 & SIP TOP
 	    		reportData.put("OPT15_1", new SynthesisDataSource(dataSource1));
-	    	} else if (nDirection == INBOUND && sAction.equals(CUTOFF)) { //외부에서 내부로의 차단 세션로그 & SIP TOP (표)
+	    	} else if (nDirection == INBOUND && sAction.equals(CUTOFF)) { //외부에서 내부로의 차단 세션로그 & SIP TOP
 	    		reportData.put("OPT16_1", new SynthesisDataSource(dataSource1));
-	    	} else if (nDirection == OUTBOUND && StringUtil.isEmpty(sAction)) { //내부에서 외부로의 전체 세션로그 & SIP TOP (표)
+	    	} else if (nDirection == OUTBOUND && StringUtil.isEmpty(sAction)) { //내부에서 외부로의 전체 세션로그 & SIP TOP
 	    		reportData.put("OPT17_1", new SynthesisDataSource(dataSource1));
-	    	} else if (nDirection == OUTBOUND && sAction.equals(ALLOW)) { //내부에서 외부로의 허용 세션로그 & SIP TOP (표)
+	    	} else if (nDirection == OUTBOUND && sAction.equals(ALLOW)) { //내부에서 외부로의 허용 세션로그 & SIP TOP
 	    		reportData.put("OPT18_1", new SynthesisDataSource(dataSource1));
-	    	} else if (nDirection == OUTBOUND && sAction.equals(CUTOFF)) { //내부에서 외부로의 차단 세션로그 & SIP TOP (표)
+	    	} else if (nDirection == OUTBOUND && sAction.equals(CUTOFF)) { //내부에서 외부로의 차단 세션로그 & SIP TOP
 	    		reportData.put("OPT19_1", new SynthesisDataSource(dataSource1));
 	    	}
 	    	
@@ -681,18 +754,18 @@ public class DdosPeriodReport extends BaseReport {
 		    	}
 	    	}
     	} else {
-	    	if (nDirection == INBOUND && StringUtil.isEmpty(sAction)) { //외부에서 내부로의 전체 탐지로그 & DIP TOP (표)
-	    		reportData.put("OPT20", new SynthesisDataSource(dataSource1));
-	    	} else if (nDirection == INBOUND && sAction.equals(ALLOW)) { //외부에서 내부로의 허용 탐지로그 & DIP TOP (표)
-	    		reportData.put("OPT21", new SynthesisDataSource(dataSource1));
-	    	} else if (nDirection == INBOUND && sAction.equals(CUTOFF)) { //외부에서 내부로의 차단 탐지로그 & DIP TOP (표)
-	    		reportData.put("OPT22", new SynthesisDataSource(dataSource1));
-	    	} else if (nDirection == OUTBOUND && StringUtil.isEmpty(sAction)) { //내부에서 외부로의 전체 탐지로그 & DIP TOP (표)
-	    		reportData.put("OPT23", new SynthesisDataSource(dataSource1));
-	    	} else if (nDirection == OUTBOUND && sAction.equals(ALLOW)) { //내부에서 외부로의 허용 탐지로그 & DIP TOP (표)
-	    		reportData.put("OPT24", new SynthesisDataSource(dataSource1));
-	    	} else if (nDirection == OUTBOUND && sAction.equals(CUTOFF)) { //내부에서 외부로의 차단 탐지로그 & DIP TOP (표)
-	    		reportData.put("OPT25", new SynthesisDataSource(dataSource1));
+	    	if (nDirection == INBOUND && StringUtil.isEmpty(sAction)) { //외부에서 내부로의 전체 탐지로그 & DIP TOP
+	    		reportData.put("OPT20_1", new SynthesisDataSource(dataSource1));
+	    	} else if (nDirection == INBOUND && sAction.equals(ALLOW)) { //외부에서 내부로의 허용 탐지로그 & DIP TOP
+	    		reportData.put("OPT21_1", new SynthesisDataSource(dataSource1));
+	    	} else if (nDirection == INBOUND && sAction.equals(CUTOFF)) { //외부에서 내부로의 차단 탐지로그 & DIP TOP
+	    		reportData.put("OPT22_1", new SynthesisDataSource(dataSource1));
+	    	} else if (nDirection == OUTBOUND && StringUtil.isEmpty(sAction)) { //내부에서 외부로의 전체 탐지로그 & DIP TOP
+	    		reportData.put("OPT23_1", new SynthesisDataSource(dataSource1));
+	    	} else if (nDirection == OUTBOUND && sAction.equals(ALLOW)) { //내부에서 외부로의 허용 탐지로그 & DIP TOP
+	    		reportData.put("OPT24_1", new SynthesisDataSource(dataSource1));
+	    	} else if (nDirection == OUTBOUND && sAction.equals(CUTOFF)) { //내부에서 외부로의 차단 탐지로그 & DIP TOP
+	    		reportData.put("OPT25_1", new SynthesisDataSource(dataSource1));
 	    	}
     	}
 	}
@@ -796,15 +869,18 @@ public class DdosPeriodReport extends BaseReport {
     	}
 	}
 	
-	public void push(String msg) {
+	public String push(List<String> contentsList, String sIdt, int n1, int n2, int n3, String msg) {
+		String sTitle = sIdt + n1 + "." + n2 + "." + n3 + msg;    
+		contentsList.add(sTitle);
 		HashMap<String, Object> pMap = new HashMap<String, Object>();
-    	pMap.put("message", msg);
+    	pMap.put("message", sTitle);
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			userInfo.getWsSession().sendMessage(new TextMessage(mapper.writeValueAsString(pMap)));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return sTitle;
 	}
 	
 }

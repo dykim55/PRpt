@@ -315,9 +315,13 @@ $(document).ready(function () {
                 <tr>
                     <th>보고유형</th>
                     <td colspan="3">
+                <% if (Constants.isUseServiceDesk()) { %>
                         <input id="rptopt_lb13" name="rptopt_rptSct" type="radio" class="chk_rdo_none" value="3" checked/><label for="rptopt_lb13">관제실적+원시로그통계</label>
                         <input id="rptopt_lb14" name="rptopt_rptSct" type="radio" class="chk_rdo_none" value="1" /><label for="rptopt_lb14">관제실적</label>
                         <input id="rptopt_lb15" name="rptopt_rptSct" type="radio" class="chk_rdo_none" value="2" /><label for="rptopt_lb15">원시로그 통계</label>
+                <% } else { %>
+                        <input id="rptopt_lb15" name="rptopt_rptSct" type="radio" class="chk_rdo_none" value="2" readonly checked/><label for="rptopt_lb15">원시로그 통계</label>
+                <% } %>
                     </td>
                 </tr>
                 <tr>
@@ -403,11 +407,13 @@ $(document).ready(function () {
         <div id="report_forms_div"  class="dialog_Body" style="width: 490px;height: 580px;float: left;overflow-y: scroll;margin-left: 10px;">
         
 			<div id="accordion">
+			<% if (Constants.isUseServiceDesk()) { %>
 	            <div class="DontMove">
 		            <h3 reportType="<%=sReportType %>" prefix="servicedesk" assetCode="<%=sGroupCode%>">서비스데스크</h3>
 		            <div>
 		            </div>
 			    </div>
+			<% } %>
 			<% for (HashMap<String, Object> hMap : slctAssetList) { %>
 			    <div class="Group">
 					<h3 reportType="<%=sReportType %>" prefix="<%=StringUtil.convertString(hMap.get("prefix")).toLowerCase() %>" assetCode="<%=StringUtil.convertString(hMap.get("id"))%>">

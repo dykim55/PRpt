@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Base" pageWidth="595" pageHeight="842" columnWidth="539" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="28" isTitleNewPage="true" uuid="b6cfd3e5-a4f2-4369-8a40-0826d90f7c18">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="2064"/>
+	<property name="ireport.y" value="960"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -74,7 +74,7 @@
 			<textField>
 				<reportElement x="0" y="0" width="269" height="21" uuid="f0aff64e-09d3-4bfa-89ec-9eb23c911a60"/>
 				<textElement verticalAlignment="Middle">
-					<font size="9" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<font size="9" isBold="true" pdfFontName="malgunbd.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{coverMap}.get("csName") + " " +
 (((String)$P{coverMap}.get("reportType")).equals("1") ? "일간보고서" :
@@ -85,7 +85,7 @@
 			<textField>
 				<reportElement x="447" y="1" width="88" height="21" uuid="fa223418-2da6-42bc-b81b-094b2b3db9c0"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="9" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<font size="9" isBold="true" pdfFontName="malgunbd.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["대외비"]]></textFieldExpression>
 			</textField>
@@ -131,7 +131,7 @@
 ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="0" y="0" width="539" height="42" forecolor="#000000" backcolor="#FFFFFF" uuid="ebb4dc2e-abd0-40da-a271-d39e3e205bcc"/>
+				<reportElement mode="Transparent" x="0" y="20" width="539" height="42" forecolor="#000000" backcolor="#FFFFFF" uuid="ebb4dc2e-abd0-40da-a271-d39e3e205bcc"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="24" isBold="true" pdfFontName="malgunbd.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
@@ -140,14 +140,14 @@
 		</band>
 		<band height="726">
 			<staticText>
-				<reportElement mode="Transparent" x="25" y="0" width="491" height="32" backcolor="#FFFFFF" uuid="c7203320-b961-491f-9c6e-c043b19f7484"/>
+				<reportElement mode="Transparent" x="25" y="0" width="491" height="52" backcolor="#FFFFFF" uuid="c7203320-b961-491f-9c6e-c043b19f7484"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="18" isBold="true" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[목차]]></text>
 			</staticText>
 			<componentElement>
-				<reportElement key="table" style="table_1" x="25" y="32" width="491" height="44" uuid="8b4ff4d3-ea3e-472e-aff6-b62ddb559c5a"/>
+				<reportElement key="table" style="table_1" x="25" y="52" width="491" height="44" uuid="8b4ff4d3-ea3e-472e-aff6-b62ddb559c5a"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<datasetRun subDataset="DS1" uuid="2763b46d-2ca8-4c9a-a8c2-1b43394064c6">
 						<dataSourceExpression><![CDATA[$P{basicMap}.get("contents")]]></dataSourceExpression>
@@ -203,7 +203,7 @@
 			<textField>
 				<reportElement x="512" y="10" width="25" height="20" uuid="9c3390ac-87ac-4df8-8df0-ff1d083b527a"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="9" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<font fontName="SansSerif" size="9" isBold="true" pdfFontName="malgunbd.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>

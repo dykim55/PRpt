@@ -570,7 +570,10 @@ public class WafDao extends BaseDao {
 			if (srcIps != null) {
 				condition.put("srcIp", new BasicDBObject("$in", srcIps));	
 			} else {
-				condition.put("srcIp", new BasicDBObject("$ne", null));
+				ArrayList<BasicDBObject> andList = new ArrayList<BasicDBObject>();
+				andList.add(new BasicDBObject("srcIp", new BasicDBObject("$ne", null)));
+				andList.add(new BasicDBObject("srcIp", new BasicDBObject("$ne", "-1")));
+				condition.put("$and", andList);
 			}
 			
 			BasicDBObject keys = new BasicDBObject();

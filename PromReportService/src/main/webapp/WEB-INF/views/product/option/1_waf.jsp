@@ -114,7 +114,7 @@ $(document).ready(function(){
   <input type="checkbox" id="opt02" name="opt02"><label for="opt02"> 전체 탐지로그 & 도메인 TOP10 발생추이</label>
   <div style="margin-left: 20px;" class="subpanel">
     <input type="radio" name="rd2" id="rd2-1" value="1" checked><label for="rd2-1"> 해당일 (차트)</label>&nbsp;&nbsp;&nbsp;&nbsp;
-    <input type="radio" name="rd2" id="rd2-2" value="2"><label for="rd2-2"> 최근 3일 (차트, 표)</label>
+    <input type="radio" name="rd2" id="rd2-2" value="2"><label for="rd2-2"> 최근 3일 (차트)</label>
   </div>
 </div>
 

@@ -39,13 +39,12 @@ public class SvcDailyReport extends BaseReport {
 	 * 서비스데스크 일일보고서 통계데이타 생성
 	 */
 	@SuppressWarnings("unchecked")
-	public HashMap<String, Object> getDataSource(String sReportType, String sSearchDate, HashMap<String, Object> hMap, int ItemNo, List<String> contentsList) throws Exception {
+	public HashMap<String, Object> getDataSource(String sReportType, String sSearchDate, HashMap<String, Object> hMap, HashMap<String, Integer> mapItemNo, List<String> contentsList) throws Exception {
 		logger.debug("서비스데스크 일일보고서 통계데이타 생성");
 
-		HashMap<String, Object> reportData = new HashMap<String, Object>();
+		int ItemNo = mapItemNo.get("itemNo");
 		
-		contentsList.add(ItemNo + ". 관제실적");
-		reportData.put("RT", ItemNo + ". 관제실적"); //Report Title
+		HashMap<String, Object> reportData = new HashMap<String, Object>();
 		
 		String sStartDay = "";
 		String sEndDay = "";
@@ -85,125 +84,136 @@ public class SvcDailyReport extends BaseReport {
 			hData = (HashMap<String,Object>)hFormMap.get("data");
 			sEtc = StringUtil.convertString(hFormMap.get("etc"));
 		}
-		
-		int nC1 = 0, nC2 = 0, nC3 = 0, nC4 = 0, nC5 = 0, nC6 = 0, nC7 = 0, nC8 = 0;
-		int nS1 = 1, nS2 = 1, nS3 = 1, nS4 = 1, nS5 = 1, nS6 = 1, nS7 = 1, nS8 = 1;
+
+		List<String> additionalList = new ArrayList<String>();
+		int nC1 = 0, nC2 = 0, nC3 = 0, nC4 = 0, nC5 = 0;
+		int nS1 = 1, nS2 = 1, nAd = 1;
 		
 		int nChoice = 0;
 		for (Entry<String, Object> e : hData.entrySet()) {
 
 			switch (e.getKey()) {
 				//보안관제 업무현황
-				case "opt01" : 
-					if (nC1 == 0) { 
-						contentsList.add("  " + ItemNo + "." + ++nC1 + " 보안관제 업무현황");
-						reportData.put("C1", "  " + ItemNo + "." + nC1 + " 보안관제 업무현황");
-					}
-					break;
-				//보안장비 운영현황
-				case "opt02" : 
-					if (nC2 == 0) { 
-						contentsList.add("  " + ItemNo + "." + (++nC2 + nC1) + " 보안장비 운영현황");
-						reportData.put("C2", "  " + ItemNo + "." + (nC2 + nC1) + " 보안장비 운영현황");
-					}
-					break;
-				//고객요청 처리현황
-				case "opt03" : 
-					if (nC3 == 0) { 
-						contentsList.add("  " + ItemNo + "." + (++nC3 + nC2 + nC1) + " 고객요청 처리현황");
-						reportData.put("C3", "  " + ItemNo + "." + (nC3 + nC2 + nC1) + " 고객요청 처리현황");
-					}
-					break;
-				//보안정보 제공현황
-				case "opt04" : 
-					if (nC4 == 0) { 
-						contentsList.add("  " + ItemNo + "." + (++nC4 + nC3 + nC2 + nC1) + " 보안정보 제공현황");
-						reportData.put("C4", "  " + ItemNo + "." + (nC4 + nC3 + nC2 + nC1) + " 보안정보 제공현황");
+				case "opt01" : case "opt02" : case "opt03" : case "opt04" : 
+					if (nC1++ == 0) { 
+						contentsList.add(++ItemNo + ". " + StringUtil.convertString(hMap.get("cscoNm")) + " 일간 보안관제 업무현황");
+						reportData.put("C1", ItemNo + ". " + StringUtil.convertString(hMap.get("cscoNm")) + " 일간 보안관제 업무현황");
 					}
 					break;
 				//침해위협 탐지현황
 				case "opt05" : case "opt06" : case "opt07" : case "opt08" : case "opt09" : 
-					if (nC5 == 0) { 
-						contentsList.add("  " + ItemNo + "." + (++nC5 + nC4 + nC3 + nC2 + nC1) + " 침해위협 탐지현황");
-						reportData.put("C5", "  " + ItemNo + "." + (nC5 + nC4 + nC3 + nC2 + nC1) + " 침해위협 탐지현황");
+					if (nC2++ == 0) { 
+						contentsList.add(++ItemNo + ". " + StringUtil.convertString(hMap.get("cscoNm")) + " 침해위협 탐지현황");
+						reportData.put("C2", ItemNo + ". " + StringUtil.convertString(hMap.get("cscoNm")) + " 침해위협 탐지현황");
 					}
 					break;
 				//홈페이지 악성코드 유포탐지 현황
 				case "opt10" :  
-					if (nC6 == 0) { 
-						contentsList.add("  " + ItemNo + "." + (++nC6 + nC5 + nC4 + nC3 + nC2 + nC1) + " 홈페이지 악성코드 유포탐지 현황");
-						reportData.put("C6", "  " + ItemNo + "." + (nC6 + nC5 + nC4 + nC3 + nC2 + nC1) + " 홈페이지 악성코드 유포탐지 현황");
+					if (nC3++ == 0) { 
+						contentsList.add(++ItemNo + ". 홈페이지 악성코드 유포 탐지현황");
+						reportData.put("C3", ItemNo + ". 홈페이지 악성코드 유포 탐지현황");
 					}
 					break;
 				//웹쉘 탐지현황
 				case "opt11" :  
-					if (nC7 == 0) { 
-						contentsList.add("  " + ItemNo + "." + (++nC7 + nC6 + nC5 + nC4 + nC3 + nC2 + nC1) + " 웹쉘 탐지현황");
-						reportData.put("C7", "  " + ItemNo + "." + (nC7 + nC6 + nC5 + nC4 + nC3 + nC2 + nC1) + " 웹쉘 탐지현황");
+					if (nC4++ == 0) { 
+						contentsList.add(++ItemNo + ". 웹쉘 탐지현황");
+						reportData.put("C4", ItemNo + ". 웹쉘 탐지현황");
 					}
 					break;
 				//RAT 의심탐지 현황
 				case "opt12" :  
-					if (nC8 == 0) { 
-						contentsList.add("  " + ItemNo + "." + (++nC8 + nC7 + nC6 + nC5 + nC4 + nC3 + nC2 + nC1) + " RAT 의심탐지 현황");
-						reportData.put("C8", "  " + ItemNo + "." + (nC8 + nC7 + nC6 + nC5 + nC4 + nC3 + nC2 + nC1) + " RAT 의심탐지 현황");
+					if (nC5++ == 0) { 
+						contentsList.add(++ItemNo + ". RAT 의심 탐지현황");
+						reportData.put("C5", ItemNo + ". RAT 의심 탐지현황");
 					}
 					break;
 			}
 			
 			switch (e.getKey()) {
 				case "opt01" : 
-					reportData.put("opt01", push(contentsList, "    ", ItemNo, nC1, nS1++, " 비정기 보고현황 : 상황/ 장애/ 작업 현황정보"));
+					reportData.put("opt01", push(contentsList, "  ", ItemNo, nS1++, " 비정기 보고현황"));
+					if (!StringUtil.isEmpty(hData.get("ck1"))) {
+						reportData.put("opt01_ad", "별첨 " + nAd + ". 비정기 보고현황 상세");
+						additionalList.add("별첨 " + nAd++ + ". 비정기 보고현황 상세");
+					}
 					ServiceDeskStatItem01(reportData, cscoCd, sStartDay, sEndDay, !StringUtil.isEmpty(hData.get("ck1")));
 					break;
 				case "opt02" : 
-					reportData.put("opt02", push(contentsList, "    ", ItemNo, nC2 + nC1, nS2++, " 설정변경/운영 현황 : 방화벽 정책 처리/ 룰 설정변경/ 패턴 업데이트/ 패치 현황"));
+					reportData.put("opt02", push(contentsList, "  ", ItemNo, nS1++, " 보안장비 운영현황"));
+					if (!StringUtil.isEmpty(hData.get("ck2"))) {
+						reportData.put("opt02_ad", "별첨 " + nAd + ". 보안장비 운영현황 상세");
+						additionalList.add("별첨 " + nAd++ + ". 보안장비 운영현황 상세");
+					}
 					ServiceDeskStatItem02(reportData, cscoCd, sStartDay, sEndDay, !StringUtil.isEmpty(hData.get("ck2")));
 					break;
 				case "opt03" : 
-					reportData.put("opt03", push(contentsList, "    ", ItemNo, nC3 + nC2 + nC1, nS3++, " 요청처리 현황 : 일반요청/ 기술지원/ 침해사고 분석"));
+					reportData.put("opt03", push(contentsList, "  ", ItemNo, nS1++, " 고객요청 처리현황"));
+					if (!StringUtil.isEmpty(hData.get("ck3"))) {
+						reportData.put("opt03_ad", "별첨 " + nAd + ". 고객요청 처리현황 상세");
+						additionalList.add("별첨 " + nAd++ + ". 고객요청 처리현황 상세");
+					}
 					ServiceDeskStatItem03(reportData, cscoCd, sStartDay, sEndDay, !StringUtil.isEmpty(hData.get("ck3")));
 					break;
 				case "opt04" : 
-					reportData.put("opt04", push(contentsList, "    ", ItemNo, nC4 + nC3 + nC2 + nC1, nS4++, " 보안정보 제공현황"));
+					reportData.put("opt04", push(contentsList, "  ", ItemNo, nS1++, " 보안정보 제공현황"));
 					ServiceDeskStatItem04(reportData, sStartDay, sEndDay);
 					break;
 				case "opt05" : 
-					reportData.put("opt05", push(contentsList, "    ", ItemNo, nC5 + nC4 + nC3 + nC2 + nC1, nS5++, " 침해위협탐지 추이 : 공격유형별 침해위협통보 추이"));
+					reportData.put("opt05", push(contentsList, "  ", ItemNo, nS2++, " 침해위협 탐지추이"));
 					ServiceDeskStatItem05(reportData, cscoCd, sStartDay, sEndDay);
 					break;
 				case "opt06" : 
-					reportData.put("opt06", push(contentsList, "    ", ItemNo, nC5 + nC4 + nC3 + nC2 + nC1, nS5++, " 침해위협탐지 분석 : 공격유형별 통계"));
+					reportData.put("opt06", push(contentsList, "  ", ItemNo, nS2++, " 침해위협 공격유형"));
+					if (!StringUtil.isEmpty(hData.get("ck6"))) {
+						reportData.put("opt06_ad", "별첨 " + nAd + ". 침해위협 탐지현황 상세");
+						additionalList.add("별첨 " + nAd++ + ". 침해위협 탐지현황 상세");
+					}
 					ServiceDeskStatItem06(reportData, cscoCd, sStartDay, sEndDay, !StringUtil.isEmpty(hData.get("ck6")));
 					break;
 				case "opt07" : 
-					reportData.put("opt07", push(contentsList, "    ", ItemNo, nC5 + nC4 + nC3 + nC2 + nC1, nS5++, " 공격IP 탐지동향 : 침해위협통보건에 대한 출발지 TOP"));
+					reportData.put("opt07", push(contentsList, "  ", ItemNo, nS2++, " 출발지 현황"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd7")));
 					ServiceDeskStatItem07(reportData, cscoCd, sStartDay, sEndDay, nChoice, !StringUtil.isEmpty(hData.get("ck7")));
 					break;
 				case "opt08" : 
-					reportData.put("opt08", push(contentsList, "    ", ItemNo, nC5 + nC4 + nC3 + nC2 + nC1, nS5++, " 공격지 탐지동향 : 침해위협통보건에 대한 국가별 통계"));
+					reportData.put("opt08", push(contentsList, "  ", ItemNo, nS2++, " 출발지 국가별 현황"));
 					ServiceDeskStatItem08(reportData, cscoCd, sStartDay, sEndDay, !StringUtil.isEmpty(hData.get("ck8")));
 					break;
 				case "opt09" : 
-					reportData.put("opt09", push(contentsList, "    ", ItemNo, nC5 + nC4 + nC3 + nC2 + nC1, nS5++, " 목적지 탐지동향 : 침해위협통보건에 대한 목적지 TOP"));
+					reportData.put("opt09", push(contentsList, "  ", ItemNo, nS2++, " 목적지 현황"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd9")));
 					ServiceDeskStatItem09(reportData, cscoCd, sStartDay, sEndDay, nChoice);
 					break;
 				case "opt10" : 
-					//reportData.put("opt10", push(contentsList, "    ", ItemNo, nC6 + nC5 + nC4 + nC3 + nC2 + nC1, nS6++, " 탐지보고 현황"));
+					if (!StringUtil.isEmpty(hData.get("ck10"))) {
+						reportData.put("opt10_ad", "별첨 " + nAd + ". 홈페이지 악성코드 유포 탐지현황 상세");
+						additionalList.add("별첨 " + nAd++ + ". 홈페이지 악성코드 유포 탐지현황 상세");
+					}
 					ServiceDeskStatItem10(reportData, cscoCd, sStartDay, sEndDay, !StringUtil.isEmpty(hData.get("ck10")));
 					break;
 				case "opt11" : 
-					//reportData.put("opt11", push(contentsList, "    ", ItemNo, nC7 + nC6 + nC5 + nC4 + nC3 + nC2 + nC1, nS7++, " 탐지보고 현황"));
+					if (!StringUtil.isEmpty(hData.get("ck11"))) {
+						reportData.put("opt11_ad", "별첨 " + nAd + ". 웹쉘 탐지현황 상세");
+						additionalList.add("별첨 " + nAd++ + ". 웹쉘 탐지현황 상세");
+					}
 					ServiceDeskStatItem11(reportData, cscoCd, sStartDay, sEndDay, !StringUtil.isEmpty(hData.get("ck11")));
 					break;
 				case "opt12" : 
-					//reportData.put("opt12", push(contentsList, "    ", ItemNo, nC8 + nC7 + nC6 + nC5 + nC4 + nC3 + nC2 + nC1, nS8++, " 탐지보고 현황"));
+					if (!StringUtil.isEmpty(hData.get("ck12"))) {
+						reportData.put("opt12_ad", "별첨 " + nAd + ". RAT 의심 탐지현황 상세");
+						additionalList.add("별첨 " + nAd++ + ". RAT 의심 탐지현황 상세");
+					}
 					ServiceDeskStatItem12(reportData, cscoCd, sStartDay, sEndDay, !StringUtil.isEmpty(hData.get("ck12")));
 					break;
 			}
 		}
+		
+		for (String strAdditional : additionalList) {
+			contentsList.add(strAdditional);
+		}
+		
+		mapItemNo.put("itemNo", ItemNo);
 		
 		return reportData;
 	}
@@ -225,6 +235,7 @@ public class SvcDailyReport extends BaseReport {
 			
 			HashMap<String, Object> map = new HashMap<String, Object>();
 			map.put("series", "보고건수");
+			map.put("gubun", String.valueOf(rptTp));
 			map.put("category", getRptTypeName(String.valueOf(rptTp)));
 			map.put("value", hMap != null ? ((Long)hMap.get("CNT")).longValue() : 0);
 			dataSource.add(map);
@@ -263,12 +274,13 @@ public class SvcDailyReport extends BaseReport {
 			resultMap.put(StringUtil.convertString(hMap.get("SCT")), hMap);
 		}
 		
-		String[] saSct = {"1", "6", "7", "8"};
+		String[] saSct = {"1", "6", "8", "7"};
 		for (int i = 0; i < 4; i++) {
 			HashMap<String, Object> hMap = resultMap.get(saSct[i]);	
 			
 			HashMap<String, Object> map = new HashMap<String, Object>();
-			map.put("series", "보고건수");
+			map.put("series", "운영건수");
+			map.put("gubun", String.valueOf(i));
 			map.put("category", getDryTypeName(saSct[i]));
 			map.put("value", hMap != null ? ((Long)hMap.get("CNT")).longValue() : 0);
 			dataSource.add(map);
@@ -333,12 +345,14 @@ public class SvcDailyReport extends BaseReport {
 			resultMap.put(StringUtil.convertString(hMap.get("reqSct")), hMap);
 		}
 		
-		for (int reqSct = 2; reqSct <= 4; reqSct++) {
-			HashMap<String, Object> hMap = resultMap.get(String.valueOf(reqSct));	
+		String[] saSct = {"4", "2", "3"};
+		for (int i = 0; i < 3; i++) {
+			HashMap<String, Object> hMap = resultMap.get(saSct[i]);	
 			
 			HashMap<String, Object> map = new HashMap<String, Object>();
-			map.put("series", "보고건수");
-			map.put("category", getReqTypeName(String.valueOf(reqSct)));
+			map.put("series", "처리건수");
+			map.put("gubun", String.valueOf(i));
+			map.put("category", getReqTypeName(saSct[i]));
 			map.put("value", hMap != null ? ((Long)hMap.get("CNT")).longValue() : 0);
 			dataSource.add(map);
 			logger.debug(map.toString());
@@ -410,12 +424,14 @@ public class SvcDailyReport extends BaseReport {
 		
 		List<String> dayPeriod = baseDao.getPeriodDay(baseDao.addDate(sStartDay, -2), sEndDay, 1);
 
+		String[] saCtg = {"D-2", "D-1", "D"};
 		for (String sPrntCd : prntList) {
+			int nCtg = 0;
 			for (String tDay : dayPeriod) {
 				HashMap<String, Object> mVal = resultMap.get(sPrntCd + "-" + tDay);
 	    		HashMap<String, Object> map = new HashMap<String, Object>();
 	    		map.put("series", prntMap.get(sPrntCd));
-	    		map.put("category", tDay);
+	    		map.put("category", saCtg[nCtg++]);
 	    		map.put("value", mVal != null ? ((Long)mVal.get("CNT")).longValue() : 0);
 	    		
 	    		dataSource.add(map);
@@ -465,7 +481,13 @@ public class SvcDailyReport extends BaseReport {
             	map2.put("countVariation", ((Long)hMap.get("CNT")).longValue() - (prevMap != null ? ((Long)prevMap.get("CNT")).longValue() : 0));
         		map2.put("message", (String)pMap.get("esmRuleGroupNm"));
         		map2.put("ratio", (((Long)pMap.get("CNT")).longValue() * 100f) / ((Long)hMap.get("CNT")).longValue());
-        		map2.put("rank", prevMap != null ? String.valueOf((Integer)prevMap.get("rank") - nNo) : "N");
+        		
+        		if (prevMap != null) {
+        			int nRank = (Integer)prevMap.get("rank") - nNo;
+        			map2.put("rank", nRank > 0 ? "↑ " + nRank : nRank < 0 ? "↓ " + Math.abs(nRank) : "-");
+        		} else {
+        			map2.put("rank", "신규");
+        		}
         		
         		dataSource2.add(map2);
         		logger.debug(map2.toString());
@@ -567,12 +589,14 @@ public class SvcDailyReport extends BaseReport {
     		
     		List<String> dayPeriod = baseDao.getPeriodDay(baseDao.addDate(sStartDay, -2), sEndDay, 1);
 
+    		String[] saCtg = {"D-2", "D-1", "D"};
         	for (String strIp : topNIps) {
+        		int nCtg = 0;
         		for (String tDay : dayPeriod) {
         			HashMap<String, Object> mVal = resultMap.get(strIp + "-" + tDay);
 		    		HashMap<String, Object> map = new HashMap<String, Object>();
 		    		map.put("series", strIp);
-		    		map.put("category", tDay);
+		    		map.put("category", saCtg[nCtg++]);
 		    		map.put("value", mVal != null ? ((Long)mVal.get("CNT")).longValue() : 0);
 		    		
 		    		dataSource2.add(map);
@@ -642,12 +666,14 @@ public class SvcDailyReport extends BaseReport {
     		
     		List<String> dayPeriod = baseDao.getPeriodDay(baseDao.addDate(sStartDay, -2), sEndDay, 1);
 
+    		String[] saCtg = {"D-2", "D-1", "D"};
         	for (String strGeo : topNGeos) {
+        		int nCtg = 0;
         		for (String tDay : dayPeriod) {
         			HashMap<String, Object> mVal = resultMap.get(strGeo + "-" + tDay);
 		    		HashMap<String, Object> map = new HashMap<String, Object>();
 		    		map.put("series", strGeo);
-		    		map.put("category", tDay);
+		    		map.put("category", saCtg[nCtg++]);
 		    		map.put("value", mVal != null ? ((Long)mVal.get("CNT")).longValue() : 0);
 		    		
 		    		dataSource2.add(map);
@@ -847,22 +873,8 @@ public class SvcDailyReport extends BaseReport {
 
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public String push(List<String> contentsList, String sIdt, int n1, int n2, int n3, String msg) {
-		String sTitle = sIdt + n1 + "." + n2 + "." + n3 + msg;    
+	public String push(List<String> contentsList, String sIdt, int n1, int n2, String msg) {
+		String sTitle = sIdt + n1 + "." + n2 + msg;    
 		contentsList.add(sTitle);
 		HashMap<String, Object> pMap = new HashMap<String, Object>();
     	pMap.put("message", sTitle);
@@ -873,56 +885,6 @@ public class SvcDailyReport extends BaseReport {
 			e.printStackTrace();
 		}
 		return sTitle;
-	}
-
-	public String getRptTypeName(String rpt) {
-		if (rpt.equals("5")) {
-			return "상황보고서";
-		} else if (rpt.equals("6")) {
-			return "장애보고서";
-		} else if (rpt.equals("7")) {
-			return "작업수행계획서";
-		} else if (rpt.equals("8")) {
-			return "작업완료보고서";
-		}
-		return "-";
-	}
-
-	public String getDryTypeName(String sct) {
-		if (sct.equals("1")) {
-			return "방화벽정책처리";
-		} else if (sct.equals("6")) {
-			return "룰변경";
-		} else if (sct.equals("7")) {
-			return "패턴업데이트";
-		} else if (sct.equals("8")) {
-			return "패치";
-		}
-		return "-";
-	}
-
-	public String getReqTypeName(String rpt) {
-		if (rpt.equals("2")) {
-			return "일반요청";
-		} else if (rpt.equals("3")) {
-			return "침해사고분석";
-		} else if (rpt.equals("4")) {
-			return "기술지원";
-		}
-		return "-";
-	}
-
-	public String getNewsTypeName(String sct) {
-		if (sct.equals("R")) {
-			return "일일뉴스클리핑";
-		} else if (sct.equals("T")) {
-			return "주간보안동향";
-		} else if (sct.equals("P")) {
-			return "상황전파";
-		} else if (sct.equals("B")) {
-			return "악성코드 유포&경유지";
-		}
-		return "-";
 	}
 	
 }
