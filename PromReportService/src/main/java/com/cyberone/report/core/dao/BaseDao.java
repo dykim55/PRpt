@@ -13,6 +13,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.cyberone.report.utils.StringUtil;
 import com.mongodb.AggregationOutput;
 import com.mongodb.BasicDBObject;
@@ -35,6 +38,8 @@ public class BaseDao {
 	private String checkMethodName;
 
 	private long lLastTime;
+	
+	protected Logger logger = LoggerFactory.getLogger(getClass());
 	
 	public BaseDao(DB promDB, DB reportDB) {
 		this.promDB = promDB;
@@ -251,7 +256,7 @@ public class BaseDao {
 	}
 	
 	public void EndTimeCheck() {
-		System.out.println("#### " + checkMethodName + " : " + (System.currentTimeMillis() - lLastTime));
+		logger.debug("#### " + checkMethodName + " : " + (System.currentTimeMillis() - lLastTime));
 	}
 	
 	

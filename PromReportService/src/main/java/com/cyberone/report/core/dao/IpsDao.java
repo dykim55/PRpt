@@ -11,7 +11,6 @@ import com.mongodb.AggregationOutput;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
 public class IpsDao extends BaseDao {
@@ -24,6 +23,8 @@ public class IpsDao extends BaseDao {
      * 전체탐지로그 해당일-시간대별 발생추이
      */
 	public Iterable<DBObject> AllDetectLogTrend(String sCol, int nDirection, int assetCode, String sStartDay, String sEndDay) throws Exception {
+		
+		StartTimeCheck("AllDetectLogTrend");
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -87,6 +88,7 @@ public class IpsDao extends BaseDao {
 			e.printStackTrace();
 			throw e;
 		} finally {
+			EndTimeCheck();
 		}
 	}
 	
@@ -94,6 +96,8 @@ public class IpsDao extends BaseDao {
      * 전체/허용/차단 - 시간대별 추이
      */
 	public Iterable<DBObject> AllActionTrend(String sCol, int nDirection, String sAction, int assetCode, String sStartDay, String sEndDay) throws Exception {
+		
+		StartTimeCheck("AllActionTrend");
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -160,6 +164,7 @@ public class IpsDao extends BaseDao {
 			e.printStackTrace();
 			throw e;
 		} finally {
+			EndTimeCheck();
 		}
 	}
 	
@@ -167,6 +172,8 @@ public class IpsDao extends BaseDao {
      * 내외부 허용/차단 탐지로그 발생추이 전일/해당일 시간대별 비교
      */
 	public Iterable<DBObject> CompareDetectLogTrend(String sCol, int nDirection, String sAction, int assetCode, String sStartDay, String sEndDay) throws Exception {
+		
+		StartTimeCheck("CompareDetectLogTrend");
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -229,6 +236,7 @@ public class IpsDao extends BaseDao {
 			e.printStackTrace();
 			throw e;
 		} finally {
+			EndTimeCheck();
 		}
 	}
 	
@@ -237,6 +245,8 @@ public class IpsDao extends BaseDao {
      * 이벤트 TopN
      */
 	public Iterable<DBObject> EventTopN(String sCol, int nDirection, int assetCode, String sStartDay, String sEndDay, List<String> messages) throws Exception {
+		
+		StartTimeCheck("EventTopN");
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -295,10 +305,13 @@ public class IpsDao extends BaseDao {
 			e.printStackTrace();
 			throw e;
 		} finally {
+			EndTimeCheck();
 		}
 	}
 	
 	public Iterable<DBObject> EventTopN(String sCol, int nDirection, String sAction, int assetCode, String sStartDay, String sEndDay, int nLimit) throws Exception {
+		
+		StartTimeCheck("EventTopN");
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -355,6 +368,7 @@ public class IpsDao extends BaseDao {
 			e.printStackTrace();
 			throw e;
 		} finally {
+			EndTimeCheck();
 		}
 	}
 	
@@ -434,6 +448,8 @@ public class IpsDao extends BaseDao {
      */
 	public Iterable<DBObject> IpTopN(String sCol, int nDirection, String sAction, int assetCode, String sStartDay, String sEndDay, boolean bSrcIp, int nLimit) throws Exception {
 		
+		StartTimeCheck("IpTopN");
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		
 		try {
@@ -507,6 +523,8 @@ public class IpsDao extends BaseDao {
 	
 	public Iterable<DBObject> BeforeIpCondition(String sCol, int nDirection, String sAction, int assetCode, String sStartDay, String sEndDay, boolean bSrcIp, List<String> saIps) throws Exception {
 		
+		StartTimeCheck("BeforeIpCondition");
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		
 		try {
@@ -572,6 +590,8 @@ public class IpsDao extends BaseDao {
 	}
 
 	public Iterable<DBObject> IpTopNCondition(String sCol, int nDirection, String sAction, int assetCode, String sStartDay, String sEndDay, String ip, boolean bSrcIp) throws Exception {
+		
+		StartTimeCheck("IpTopNCondition");
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		
@@ -639,7 +659,7 @@ public class IpsDao extends BaseDao {
 	
 	public Iterable<DBObject> ServiceDetectLog(String sCol, int nDirection, int assetCode, String sStartDay, String sEndDay, int nLimit, boolean bAction, int nPort) throws Exception {
 		
-		StartTimeCheck("ServiceDetectLogDay");
+		StartTimeCheck("ServiceDetectLog");
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		
@@ -707,7 +727,9 @@ public class IpsDao extends BaseDao {
     /*
      * 서비스 TopN 이벤트 유형
      */
-	public Iterable<DBObject> ServiceEventTopN(String sCol, int assetCode, String sStartDay, String sEndDay, int nPort) throws Exception {
+	public Iterable<DBObject> ServiceEventTopN(String sCol, int nDirection, int assetCode, String sStartDay, String sEndDay, int nPort) throws Exception {
+		
+		StartTimeCheck("ServiceEventTopN");
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -725,6 +747,7 @@ public class IpsDao extends BaseDao {
 			BasicDBObject condition = new BasicDBObject();
 			condition.put("rptDate", new BasicDBObject("$gte", startCal.getTime()).append("$lte", endCal.getTime()));
 			condition.put("rptGubun", 9);
+			condition.put("direction", nDirection);
 			condition.put("destPort", nPort);
 			
 			BasicDBObject keys = new BasicDBObject();
@@ -758,6 +781,7 @@ public class IpsDao extends BaseDao {
 			e.printStackTrace();
 			throw e;
 		} finally {
+			EndTimeCheck();
 		}
 	}
 	
@@ -768,6 +792,8 @@ public class IpsDao extends BaseDao {
 	}
 	
 	public Iterable<DBObject> EventTopNTrend(String sCol, int nDirection, String sAction, int assetCode, String sStartDay, String sEndDay, List<String> messages) throws Exception {
+		
+		StartTimeCheck("EventTopNTrend");
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -836,6 +862,7 @@ public class IpsDao extends BaseDao {
 			e.printStackTrace();
 			throw e;
 		} finally {
+			EndTimeCheck();
 		}
 	}
 	
@@ -843,6 +870,8 @@ public class IpsDao extends BaseDao {
 	 * SRC IP TOP10 탐지로그 발생추이 - 시간별
 	 */
 	public Iterable<DBObject> IpTopNTrend(String sCol, int nDirection, String sAction, int assetCode, String sStartDay, String sEndDay, List<String> ips, boolean bSrcIp) throws Exception {
+		
+		StartTimeCheck("IpTopNTrend");
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		
@@ -928,6 +957,7 @@ public class IpsDao extends BaseDao {
 			e.printStackTrace();
 			throw e;
 		} finally {
+			EndTimeCheck();
 		}
 	}
 	

@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Report" pageWidth="539" pageHeight="726" columnWidth="539" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="f79d3e7a-7900-4ac0-86ee-c0b7ef020292">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="7393"/>
+	<property name="ireport.y" value="4555"/>
 	<style name="table_CH" mode="Opaque" backcolor="#CCCCCC" hAlign="Center" vAlign="Middle">
 		<box>
 			<pen lineWidth="0.5" lineStyle="Dotted" lineColor="#006600"/>
@@ -4771,10 +4771,14 @@
 			</textField>
 			<pieChart>
 				<chart isShowLegend="false" customizerClass="com.cyberone.report.core.customize.ChartBorderRemoveCustom">
-					<reportElement x="0" y="30" width="539" height="200" uuid="86cea465-724e-4025-8e90-4345de772bce"/>
+					<reportElement x="0" y="30" width="539" height="200" uuid="86cea465-724e-4025-8e90-4345de772bce">
+						<propertyExpression name="fileFormat"><![CDATA[$P{reportInfo}.get("fileFormat")]]></propertyExpression>
+					</reportElement>
 					<chartTitle position="Top"/>
 					<chartSubtitle/>
-					<chartLegend/>
+					<chartLegend>
+						<font size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					</chartLegend>
 				</chart>
 				<pieDataset>
 					<dataset>
@@ -4789,7 +4793,7 @@
 				<piePlot isShowLabels="true">
 					<plot/>
 					<itemLabel>
-						<font fontName="SansSerif" size="10" isUnderline="false" isStrikeThrough="false" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+						<font fontName="SansSerif" size="8" isUnderline="false" isStrikeThrough="false" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 					</itemLabel>
 				</piePlot>
 			</pieChart>
@@ -4977,10 +4981,14 @@
 			</textField>
 			<pieChart>
 				<chart isShowLegend="false" customizerClass="com.cyberone.report.core.customize.ChartBorderRemoveCustom">
-					<reportElement x="0" y="30" width="539" height="200" uuid="803381a0-442f-4514-965f-c2c8544feffc"/>
+					<reportElement x="0" y="30" width="539" height="200" uuid="803381a0-442f-4514-965f-c2c8544feffc">
+						<propertyExpression name="fileFormat"><![CDATA[$P{reportInfo}.get("fileFormat")]]></propertyExpression>
+					</reportElement>
 					<chartTitle position="Top"/>
 					<chartSubtitle/>
-					<chartLegend/>
+					<chartLegend>
+						<font size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					</chartLegend>
 				</chart>
 				<pieDataset>
 					<dataset>
@@ -4995,7 +5003,7 @@
 				<piePlot isShowLabels="true">
 					<plot/>
 					<itemLabel>
-						<font fontName="SansSerif" size="10" isUnderline="false" isStrikeThrough="false" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+						<font fontName="SansSerif" size="8" isUnderline="false" isStrikeThrough="false" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 					</itemLabel>
 				</piePlot>
 			</pieChart>
@@ -5555,10 +5563,14 @@
 			</textField>
 			<pieChart>
 				<chart isShowLegend="false" customizerClass="com.cyberone.report.core.customize.ChartBorderRemoveCustom">
-					<reportElement x="0" y="30" width="539" height="200" uuid="4ef2fcea-2eb0-4841-8218-53fe30020e14"/>
+					<reportElement x="0" y="30" width="539" height="200" uuid="4ef2fcea-2eb0-4841-8218-53fe30020e14">
+						<propertyExpression name="fileFormat"><![CDATA[$P{reportInfo}.get("fileFormat")]]></propertyExpression>
+					</reportElement>
 					<chartTitle position="Top"/>
 					<chartSubtitle/>
-					<chartLegend/>
+					<chartLegend>
+						<font size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					</chartLegend>
 				</chart>
 				<pieDataset>
 					<dataset>
@@ -5573,7 +5585,7 @@
 				<piePlot isShowLabels="true">
 					<plot/>
 					<itemLabel>
-						<font fontName="SansSerif" size="10" isUnderline="false" isStrikeThrough="false" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+						<font fontName="SansSerif" size="8" isUnderline="false" isStrikeThrough="false" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 					</itemLabel>
 				</piePlot>
 			</pieChart>
@@ -5761,10 +5773,14 @@
 			</textField>
 			<pieChart>
 				<chart isShowLegend="false" customizerClass="com.cyberone.report.core.customize.ChartBorderRemoveCustom">
-					<reportElement x="0" y="30" width="539" height="200" uuid="f7eb1546-371d-4e90-8b03-1aebea40aa9f"/>
+					<reportElement x="0" y="30" width="539" height="200" uuid="f7eb1546-371d-4e90-8b03-1aebea40aa9f">
+						<propertyExpression name="fileFormat"><![CDATA[$P{reportInfo}.get("fileFormat")]]></propertyExpression>
+					</reportElement>
 					<chartTitle position="Top"/>
 					<chartSubtitle/>
-					<chartLegend/>
+					<chartLegend>
+						<font size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					</chartLegend>
 				</chart>
 				<pieDataset>
 					<dataset>
@@ -5779,7 +5795,7 @@
 				<piePlot isShowLabels="true">
 					<plot/>
 					<itemLabel>
-						<font fontName="SansSerif" size="10" isUnderline="false" isStrikeThrough="false" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+						<font fontName="SansSerif" size="8" isUnderline="false" isStrikeThrough="false" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 					</itemLabel>
 				</piePlot>
 			</pieChart>

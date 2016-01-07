@@ -43,8 +43,8 @@ public class FwDailyReport extends BaseReport {
 		
 		reportData.put("reportType", sReportType);
 		
-		contentsList.add(ItemNo + ". " + (String)hMap.get("assetName") + " 장비의 일일 세션로그 분석");
-		reportData.put("RT", ItemNo + ". " + (String)hMap.get("assetName") + " 장비의 일일 세션로그 분석"); //Report Title
+		contentsList.add(ItemNo + ". " + (String)hMap.get("assetName") + " 장비의 일간 방화벽 세션로그 분석");
+		reportData.put("RT", ItemNo + ". " + (String)hMap.get("assetName") + " 장비의 일간 방화벽 세션로그 분석"); //Report Title
 		
 		String sStartDay = "";
 		String sEndDay = "";

@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Report" pageWidth="539" pageHeight="726" columnWidth="539" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="f79d3e7a-7900-4ac0-86ee-c0b7ef020292">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="1398"/>
 	<style name="table_CH" mode="Opaque" backcolor="#CCCCCC" hAlign="Center" vAlign="Middle">
 		<box>
 			<pen lineWidth="0.5" lineStyle="Dotted" lineColor="#006600"/>
@@ -802,10 +802,14 @@
 			</textField>
 			<pieChart>
 				<chart isShowLegend="false" customizerClass="com.cyberone.report.core.customize.ChartBorderRemoveCustom">
-					<reportElement x="0" y="65" width="539" height="200" uuid="d696e8d9-de80-4e00-bd29-5dd84efb0957"/>
+					<reportElement x="0" y="65" width="539" height="200" uuid="d696e8d9-de80-4e00-bd29-5dd84efb0957">
+						<propertyExpression name="fileFormat"><![CDATA[$P{reportInfo}.get("fileFormat")]]></propertyExpression>
+					</reportElement>
 					<chartTitle position="Top"/>
 					<chartSubtitle/>
-					<chartLegend/>
+					<chartLegend>
+						<font size="8" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					</chartLegend>
 				</chart>
 				<pieDataset>
 					<dataset>
@@ -820,7 +824,7 @@
 				<piePlot isShowLabels="true">
 					<plot/>
 					<itemLabel>
-						<font fontName="SansSerif" size="10" isUnderline="false" isStrikeThrough="false" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+						<font fontName="SansSerif" size="8" isUnderline="false" isStrikeThrough="false" pdfFontName="malgun.ttf" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 					</itemLabel>
 				</piePlot>
 			</pieChart>

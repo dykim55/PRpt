@@ -19,6 +19,7 @@ import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.chart.title.LegendTitle;
+import org.jfree.chart.title.TextTitle;
 import org.jfree.data.Range;
 
 public class ChartBorderRemoveCustom implements JRChartCustomizer, Serializable
@@ -49,20 +50,34 @@ public class ChartBorderRemoveCustom implements JRChartCustomizer, Serializable
 				Font font = new Font("SansSerif", Font.PLAIN, 12);
 				((CategoryPlot)plot).getDomainAxis().setLabelFont(font);
 				((CategoryPlot)plot).getRangeAxis().setLabelFont(font);
-
-				LegendTitle legend = (LegendTitle)chart.getLegend();
-				legend.setItemFont(font);
 				
-				font = new Font("SansSerif", Font.PLAIN, 10);
-				((CategoryPlot)plot).getDomainAxis().setTickLabelFont(font);
-				((CategoryPlot)plot).getRangeAxis().setTickLabelFont(font);
+				LegendTitle legend = (LegendTitle)chart.getLegend();
+				if (legend != null) legend.setItemFont(font);
+				
+				TextTitle text = (TextTitle)chart.getTitle();
+				if (text != null) text.setFont(font);
+				
+				if (((CategoryPlot)plot).getRenderer() instanceof BarRenderer) {
+					font = new Font("SansSerif", Font.PLAIN, 12);
+					((CategoryPlot)plot).getDomainAxis().setTickLabelFont(font);
+					font = new Font("SansSerif", Font.PLAIN, 10);
+					((CategoryPlot)plot).getRangeAxis().setTickLabelFont(font);
+					((CategoryPlot)plot).getRenderer().setBaseItemLabelFont(font);
+				} else {
+					font = new Font("SansSerif", Font.PLAIN, 10);
+					((CategoryPlot)plot).getDomainAxis().setTickLabelFont(font);
+					((CategoryPlot)plot).getRangeAxis().setTickLabelFont(font);
+				}
 			} else if (prop != null && prop.getProperty("fileFormat").equals("pdf")) {
-				Font font = new Font("SansSerif", Font.PLAIN, 10);
+				Font font = new Font("SansSerif", Font.PLAIN, 8);
 				((CategoryPlot)plot).getDomainAxis().setLabelFont(font);
 				((CategoryPlot)plot).getRangeAxis().setLabelFont(font);
 
 				LegendTitle legend = (LegendTitle)chart.getLegend();
-				legend.setItemFont(font);
+				if (legend != null) legend.setItemFont(font);
+
+				TextTitle text = (TextTitle)chart.getTitle();
+				if (text != null) text.setFont(font);
 				
 				font = new Font("SansSerif", Font.PLAIN, 8);
 				((CategoryPlot)plot).getDomainAxis().setTickLabelFont(font);
@@ -81,6 +96,16 @@ public class ChartBorderRemoveCustom implements JRChartCustomizer, Serializable
 			((PiePlot)plot).setLabelBackgroundPaint(Color.WHITE);
 			((PiePlot)plot).setLabelOutlinePaint(Color.WHITE);
 			((PiePlot)plot).setLabelShadowPaint(Color.WHITE);
+			
+			if (prop != null && prop.getProperty("fileFormat").equals("docx")) {
+				Font font = new Font("SansSerif", Font.PLAIN, 12);
+				((PiePlot)plot).setLabelFont(font);
+
+				LegendTitle legend = (LegendTitle)chart.getLegend();
+				legend.setItemFont(font);
+			} else if (prop != null && prop.getProperty("fileFormat").equals("pdf")) {
+				
+			}
 		}
 		
 		

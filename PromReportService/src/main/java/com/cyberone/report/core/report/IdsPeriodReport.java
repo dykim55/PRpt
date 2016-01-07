@@ -46,8 +46,8 @@ public class IdsPeriodReport extends BaseReport {
 		
 		reportData.put("reportType", sReportType);
 		
-		contentsList.add(ItemNo + ". " + (String)hMap.get("assetName") + " 장비의 침입탐지(IDS) 탐지로그 분석");
-		reportData.put("RT", ItemNo + ". " + (String)hMap.get("assetName") + " 장비의 침입탐지(IDS) 탐지로그 분석");
+		contentsList.add(ItemNo + ". " + (String)hMap.get("assetName") + " 장비의 IDS 탐지로그 분석");
+		reportData.put("RT", ItemNo + ". " + (String)hMap.get("assetName") + " 장비의 IDS 탐지로그 분석");
 		
 		String sStartDay = "";
 		String sEndDay = "";
@@ -94,36 +94,36 @@ public class IdsPeriodReport extends BaseReport {
 				//탐지로그 발생 추이
 				case "opt01" : case "opt02" : case "opt03" :  
 					if (nC1 == 0) { 
-						contentsList.add("  " + ItemNo + "." + ++nC1 + " 탐지로그 발생추이");
-						reportData.put("C1", "  " + ItemNo + "." + nC1 + " 탐지로그 발생추이");
+						contentsList.add("  " + ItemNo + "." + ++nC1 + " 탐지 추이");
+						reportData.put("C1", "  " + ItemNo + "." + nC1 + " 탐지 추이");
 					}
 					break;
 				//이벤트 현황
 				case "opt04" : case "opt05" :   
 					if (nC2 == 0) { 
-						contentsList.add("  " + ItemNo + "." + (++nC2 + nC1) + " 이벤트 현황");
-						reportData.put("C2", "  " + ItemNo + "." + (nC2 + nC1) + " 이벤트 현황");
+						contentsList.add("  " + ItemNo + "." + (++nC2 + nC1) + " 탐지 현황");
+						reportData.put("C2", "  " + ItemNo + "." + (nC2 + nC1) + " 탐지 현황");
 					}
 					break;
 				//출발지IP 현황
 				case "opt06" : case "opt07" :   
 					if (nC3 == 0) { 
-						contentsList.add("  " + ItemNo + "." + (++nC3 + nC2 + nC1) + " 출발지IP 현황");
-						reportData.put("C3", "  " + ItemNo + "." + (nC3 + nC2 + nC1) + " 출발지IP 현황");
+						contentsList.add("  " + ItemNo + "." + (++nC3 + nC2 + nC1) + " 출발지 현황");
+						reportData.put("C3", "  " + ItemNo + "." + (nC3 + nC2 + nC1) + " 출발지 현황");
 					}
 					break;
 				//목적지IP 현황
 				case "opt08" : case "opt09" :   
 					if (nC4 == 0) { 
-						contentsList.add("  " + ItemNo + "." + (++nC4 + nC3 + nC2 + nC1) + " 목적지IP 현황");
-						reportData.put("C4", "  " + ItemNo + "." + (nC4 + nC3 + nC2 + nC1) + " 목적지IP 현황");
+						contentsList.add("  " + ItemNo + "." + (++nC4 + nC3 + nC2 + nC1) + " 목적지 현황");
+						reportData.put("C4", "  " + ItemNo + "." + (nC4 + nC3 + nC2 + nC1) + " 목적지 현황");
 					}
 					break;
 				//서비스 현황
 				case "opt10" : case "opt11" :   
 					if (nC5 == 0) { 
-						contentsList.add("  " + ItemNo + "." + (++nC5 + nC4 + nC3 + nC2 + nC1) + " 서비스 현황");
-						reportData.put("C5", "  " + ItemNo + "." + (nC5 + nC4 + nC3 + nC2 + nC1) + " 서비스 현황");
+						contentsList.add("  " + ItemNo + "." + (++nC5 + nC4 + nC3 + nC2 + nC1) + " 목적지 서비스 현황");
+						reportData.put("C5", "  " + ItemNo + "." + (nC5 + nC4 + nC3 + nC2 + nC1) + " 목적지 서비스 현황");
 					}
 					break;
 				//성능정보
@@ -149,48 +149,47 @@ public class IdsPeriodReport extends BaseReport {
 					Direction_DetectLog_Trend(reportData, OUTBOUND, assetCode, sStartDay, sEndDay);
 					break;
 				case "opt04" : 	//외부에서 내부로의 전체 탐지로그 & 이벤트 TOP
-					reportData.put("opt04", push(contentsList, "    ", ItemNo, nC2 + nC1, nS2++, " 외부에서 내부로의 전체 탐지로그 & 이벤트 TOP"));
+					reportData.put("opt04", push(contentsList, "    ", ItemNo, nC2 + nC1, nS2++, " 외부에서 내부로의 전체 탐지로그에 대한 탐지룰 TOP 현황"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd4")));
 					Direction_EventTopN(reportData, INBOUND, assetCode, sStartDay, sEndDay, nChoice, !StringUtil.isEmpty(hData.get("ck4")));
 					break;
 				case "opt05" : 	//내부에서 외부로의 전체 탐지로그 & 이벤트 TOP
-					reportData.put("opt05", push(contentsList, "    ", ItemNo, nC2 + nC1, nS2++, " 내부에서 외부로의 전체 탐지로그 & 이벤트 TOP"));
+					reportData.put("opt05", push(contentsList, "    ", ItemNo, nC2 + nC1, nS2++, " 내부에서 외부로의 전체 탐지로그에 대한 탐지룰 TOP 현황"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd5")));
 					Direction_EventTopN(reportData, OUTBOUND, assetCode, sStartDay, sEndDay, nChoice, !StringUtil.isEmpty(hData.get("ck5")));
 					break;
 				case "opt06" : 	//외부에서 내부로의 전체 탐지로그 & SIP TOP
-					reportData.put("opt06", push(contentsList, "    ", ItemNo, nC3 + nC2 + nC1, nS3++, " 외부에서 내부로의 전체 탐지로그 & SIP TOP"));
+					reportData.put("opt06", push(contentsList, "    ", ItemNo, nC3 + nC2 + nC1, nS3++, " 외부에서 내부로의 전체 탐지로그에 대한 출발지IP TOP 현황"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd6")));
 					ALL_DetectLog_TopN(reportData, INBOUND, assetCode, sStartDay, sEndDay, true, nChoice, !StringUtil.isEmpty(hData.get("ck6")));
 					break;
 				case "opt07" : 	//내부에서 외부로의 전체 탐지로그 & SIP TOP
-					reportData.put("opt07", push(contentsList, "    ", ItemNo, nC3 + nC2 + nC1, nS3++, " 내부에서 외부로의 전체 탐지로그 & SIP TOP"));
+					reportData.put("opt07", push(contentsList, "    ", ItemNo, nC3 + nC2 + nC1, nS3++, " 내부에서 외부로의 전체 탐지로그에 대한 출발지IP TOP 현황"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd7")));
 					ALL_DetectLog_TopN(reportData, OUTBOUND, assetCode, sStartDay, sEndDay, true, nChoice, !StringUtil.isEmpty(hData.get("ck7")));
 					break;
 				case "opt08" : 	//외부에서 내부로의 전체 탐지로그 & DIP TOP
-					reportData.put("opt08", push(contentsList, "    ", ItemNo, nC4 + nC3 + nC2 + nC1, nS4++, " 외부에서 내부로의 전체 탐지로그 & DIP TOP"));
+					reportData.put("opt08", push(contentsList, "    ", ItemNo, nC4 + nC3 + nC2 + nC1, nS4++, " 외부에서 내부로의 전체 탐지로그에 대한 목적지IP TOP 현황"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd8")));
 					ALL_DetectLog_TopN(reportData, INBOUND, assetCode, sStartDay, sEndDay, false, nChoice, false);
 					break;
 				case "opt09" : 	//내부에서 외부로의 전체 탐지로그 & DIP TOP
-					reportData.put("opt09", push(contentsList, "    ", ItemNo, nC4 + nC3 + nC2 + nC1, nS4++, " 내부에서 외부로의 전체 탐지로그 & DIP TOP"));
+					reportData.put("opt09", push(contentsList, "    ", ItemNo, nC4 + nC3 + nC2 + nC1, nS4++, " 내부에서 외부로의 전체 탐지로그에 대한 목적지IP TOP 현황"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd9")));
 					ALL_DetectLog_TopN(reportData, OUTBOUND, assetCode, sStartDay, sEndDay, false, nChoice, false);
 					break;
 				case "opt10" : 	//외부에서 내부로의 전체 탐지로그 & 서비스 TOP10
-					reportData.put("opt10", push(contentsList, "    ", ItemNo, nC5 + nC4 + nC3 + nC2 + nC1, nS5++, " 외부에서 내부로의 전체 탐지로그 & 서비스 TOP10"));
+					reportData.put("opt10", push(contentsList, "    ", ItemNo, nC5 + nC4 + nC3 + nC2 + nC1, nS5++, " 외부에서 내부로의 전체 탐지로그에 대한 서비스 TOP 현황"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd10")));
 					ALL_ServiceTop10(reportData, INBOUND, assetCode, sStartDay, sEndDay, !StringUtil.isEmpty(hData.get("ck10")));
 					break;
 				case "opt11" : 	//내부에서 외부로의 전체 탐지로그 & 서비스 TOP10
-					reportData.put("opt11", push(contentsList, "    ", ItemNo, nC5 + nC4 + nC3 + nC2 + nC1, nS5++, " 내부에서 외부로의 전체 탐지로그 & 서비스 TOP10"));
+					reportData.put("opt11", push(contentsList, "    ", ItemNo, nC5 + nC4 + nC3 + nC2 + nC1, nS5++, " 내부에서 외부로의 전체 탐지로그에 대한 서비스 TOP 현황"));
 					nChoice = Integer.valueOf(StringUtil.convertString(hData.get("rd11")));
 					ALL_ServiceTop10(reportData, OUTBOUND, assetCode, sStartDay, sEndDay, !StringUtil.isEmpty(hData.get("ck11")));
 					break;
 				case "opt99" :	//성능정보
-					//reportData.put("opt99", push(contentsList, "    ", ItemNo, nC6 + nC5 + nC4 + nC3 + nC2 + nC1, nS6++, " 성능 정보"));
-					PerformanceInfo(idsDao, reportData, ItemNo, nC6 + nC5 + nC4 + nC3 + nC2 + nC1, assetCode, sStartDay, sEndDay);
+					PerformanceInfo(idsDao, reportData, contentsList, ItemNo, nC6 + nC5 + nC4 + nC3 + nC2 + nC1, assetCode, sStartDay, sEndDay);					
 					break;
 			}
 		}
@@ -201,38 +200,11 @@ public class IdsPeriodReport extends BaseReport {
 		
 		List<HashMap<String, Object>> dataSource = new ArrayList<HashMap<String, Object>>();
 
-		Iterable<DBObject> dbResult = idsDao.AllDetectLogTrend("DY", 1, assetCode, sStartDay, sEndDay);
-
-    	HashMap<String, DBObject> mapResult = new HashMap<String, DBObject>(); 
-    	for (DBObject val : dbResult) {
-    		String sDirection = (String)val.get("direction");
-    		String sYear = ((Integer)val.get("year")).toString();
-    		String sMonth = ((Integer)val.get("month")).toString();
-    		sMonth = sMonth.length() == 1 ? "0" + sMonth : sMonth;
-    		String sDay = ((Integer)val.get("day")).toString();
-    		sDay = sDay.length() == 1 ? "0" + sDay : sDay;
-    		mapResult.put(sDirection + sYear + sMonth + sDay, val);
-    	}
-    	
-    	List<String> dayPeriod = idsDao.getPeriodDay(sStartDay, sEndDay, 1);
-    	
-    	String[] saGubun = {"아웃바운드", "인바운드"};
-    	for (int direction = 0; direction < 2; direction++) { //아웃바운드/인바운드
-    		for (String tDay : dayPeriod) {
-	    		HashMap<String, Object> map = new HashMap<String, Object>();
-	    		DBObject val = mapResult.get(String.valueOf(direction) + tDay);
-	    		map.put("series", saGubun[direction]);
-	    		map.put("category", tDay);
-	    		map.put("value", val != null ? ((Number)val.get("count")).longValue() : 0);
-
-	    		dataSource.add(map);
-	    		logger.debug(map.toString());
-    		}	    		
-    	}
-    	
-		dbResult = idsDao.AllDetectLogTrend("DY", -1, assetCode, sStartDay, sEndDay);
+		List<String> dayPeriod = idsDao.getPeriodDay(sStartDay, sEndDay, 1);
 		
-    	mapResult = new HashMap<String, DBObject>(); 
+		Iterable<DBObject> dbResult = idsDao.AllDetectLogTrend("DY", -1, assetCode, sStartDay, sEndDay);
+		
+		HashMap<String, DBObject> mapResult = new HashMap<String, DBObject>(); 
     	for (DBObject val : dbResult) {
     		String sYear = ((Integer)val.get("year")).toString();
     		String sMonth = ((Integer)val.get("month")).toString();
@@ -246,13 +218,41 @@ public class IdsPeriodReport extends BaseReport {
     		HashMap<String, Object> map = new HashMap<String, Object>();
     		DBObject val = mapResult.get(tDay);
     		map.put("series", "전체");
-    		map.put("category", tDay);
+    		map.put("category", tDay.substring(6, 8));
     		map.put("value", val != null ? ((Number)val.get("count")).longValue() : 0);
     		
     		dataSource.add(map);
     		logger.debug(map.toString());
 		}
 		
+		dbResult = idsDao.AllDetectLogTrend("DY", 1, assetCode, sStartDay, sEndDay);
+
+    	mapResult = new HashMap<String, DBObject>(); 
+    	for (DBObject val : dbResult) {
+    		String sDirection = (String)val.get("direction");
+    		String sYear = ((Integer)val.get("year")).toString();
+    		String sMonth = ((Integer)val.get("month")).toString();
+    		sMonth = sMonth.length() == 1 ? "0" + sMonth : sMonth;
+    		String sDay = ((Integer)val.get("day")).toString();
+    		sDay = sDay.length() == 1 ? "0" + sDay : sDay;
+    		mapResult.put(sDirection + sYear + sMonth + sDay, val);
+    	}
+    	
+    	String[] saGubun = {"내부 → 외부 로그", "외부 → 내부 로그"};
+    	for (int direction = 1; direction >= 0; direction--) { //아웃바운드/인바운드
+    		for (String tDay : dayPeriod) {
+	    		HashMap<String, Object> map = new HashMap<String, Object>();
+	    		DBObject val = mapResult.get(String.valueOf(direction) + tDay);
+	    		map.put("series", saGubun[direction]);
+	    		map.put("category", tDay.substring(6, 8));
+	    		map.put("value", val != null ? ((Number)val.get("count")).longValue() : 0);
+
+	    		dataSource.add(map);
+	    		logger.debug(map.toString());
+    		}	    		
+    	}
+    	
+    	reportData.put("OPT1_0", "일");
 		reportData.put("OPT1_1", new SynthesisDataSource(dataSource));
 	}
 	
@@ -278,7 +278,7 @@ public class IdsPeriodReport extends BaseReport {
     		HashMap<String, Object> map = new HashMap<String, Object>();
     		DBObject val = mapResult.get(tDay);
     		map.put("series", "전체");
-    		map.put("category", tDay);
+    		map.put("category", tDay.substring(6, 8));
     		map.put("value", val != null ? ((Number)val.get("count")).longValue() : 0);
     		
     		dataSource.add(map);
@@ -286,8 +286,10 @@ public class IdsPeriodReport extends BaseReport {
 		}
 		
 		if (nDirection == 1) {	//INBOUND
+			reportData.put("OPT2_0", "일");
 			reportData.put("OPT2_1", new SynthesisDataSource(dataSource));
 		} else {
+			reportData.put("OPT3_0", "일");
 			reportData.put("OPT3_1", new SynthesisDataSource(dataSource));
 		}
 	}
@@ -313,8 +315,8 @@ public class IdsPeriodReport extends BaseReport {
     		if (!sMessage.equals("-1") && nNo <= 10) {
 	    		HashMap<String, Object> map = new HashMap<String, Object>();
 	    		map.put("message", sMessage);
-	    		map.put("total", lTotal);
 	    		map.put("count", ((Number)val.get("count")).longValue());
+	    		map.put("ratio", (((Number)val.get("count")).longValue()*100f)/lTotal);
 
 	    		dataSource1.add(map);
 	    		logger.debug(map.toString());
@@ -334,7 +336,7 @@ public class IdsPeriodReport extends BaseReport {
     			HashMap<String, Object> map = new HashMap<String, Object>();
     			map.put("no", nNo);
     			map.put("message", sMessage);
-    			map.put("total", ((Number)val.get("count")).longValue());    			
+    			map.put("count", ((Number)val.get("count")).longValue());    			
     			map.put("srcIp", StringUtil.convertString(sVal.get("srcIp")));
     			if (nDirection == INBOUND) {
     				map.put("geoCode", Constants.getCountryCode(StringUtil.convertString(sVal.get("srcIp"))));
@@ -342,7 +344,7 @@ public class IdsPeriodReport extends BaseReport {
     				map.put("geoCode", Constants.getCountryCode(StringUtil.convertString(sVal.get("destIp"))));
     			}
     			map.put("destIp", StringUtil.convertString(sVal.get("destIp")));
-    			map.put("count", ((Number)sVal.get("count")).longValue());
+    			map.put("ratio", (((Number)sVal.get("count")).longValue()*100f)/((Number)val.get("count")).longValue());
         		
         		dataSource2.add(map);
         		logger.debug(map.toString());
@@ -380,7 +382,7 @@ public class IdsPeriodReport extends BaseReport {
 		    		DBObject val = mapResult.get(sMessage + "-" + tDay);
 		    		HashMap<String, Object> map = new HashMap<String, Object>();
 		    		map.put("series", sMessage);
-		    		map.put("category", tDay);
+		    		map.put("category", tDay.substring(6, 8));
 		    		map.put("value", val != null ? ((Number)val.get("count")).longValue() : 0);
 		    		
 		    		dataSource3.add(map);
@@ -389,8 +391,10 @@ public class IdsPeriodReport extends BaseReport {
 	    	}
     		
 	    	if (nDirection == INBOUND) {
+	    		reportData.put("OPT4_0", "일");
 	    		reportData.put("OPT4_3", new SynthesisDataSource(dataSource3));
 	    	} else {
+	    		reportData.put("OPT5_0", "일");
 		    	reportData.put("OPT5_3", new SynthesisDataSource(dataSource3));
 	    	}
     	}
@@ -426,21 +430,23 @@ public class IdsPeriodReport extends BaseReport {
 				HashMap<String, Object> map = new HashMap<String, Object>();
 				map.put("no", nNo);
 				if (bSrcIp) {
-					map.put("srcIp", (String)dbObj.get("srcIp"));
-					map.put("message", (String)val.get("message"));
+					map.put("srcIp", (String)val.get("srcIp"));
+					map.put("count", ((Number)val.get("count")).longValue());
+					map.put("message", (String)dbObj.get("message"));
 					map.put("destIp", (String)dbObj.get("destIp"));
+					map.put("ratio", (((Number)dbObj.get("count")).longValue()*100f)/((Number)val.get("count")).longValue());
 				} else {
-					map.put("destIp", (String)dbObj.get("destIp"));
+					map.put("destIp", (String)val.get("destIp"));
+					map.put("count", ((Number)val.get("count")).longValue());
+		    		map.put("message", (String)dbObj.get("message"));
 					map.put("srcIp", (String)dbObj.get("srcIp"));
-					map.put("message", (String)val.get("message"));
+					map.put("ratio", (((Number)dbObj.get("count")).longValue()*100f)/((Number)val.get("count")).longValue());
 				}
 				if (nDirection == INBOUND) {
 					map.put("geoCode", Constants.getCountryCode((String)dbObj.get("srcIp")));
 				} else {
 					map.put("geoCode", Constants.getCountryCode((String)dbObj.get("destIp")));
 				}
-				map.put("total", ((Number)val.get("count")).longValue());
-				map.put("count", ((Number)dbObj.get("count")).longValue());
 				
 				dataSource1.add(map);
 				logger.debug(map.toString());
@@ -480,17 +486,19 @@ public class IdsPeriodReport extends BaseReport {
 	        		for (String tDay : dayPeriod) {
     		    		DBObject val = mapResult.get(strIp + "-" + tDay);
     		    		HashMap<String, Object> map = new HashMap<String, Object>();
-    		    		map.put("srcIp", strIp);
-    		    		map.put("day", Integer.valueOf(tDay));
-    		    		map.put("count", val != null ? ((Number)val.get("count")).longValue() : 0);
+    		    		map.put("series", strIp);
+    		    		map.put("category", tDay.substring(6, 8));
+    		    		map.put("value", val != null ? ((Number)val.get("count")).longValue() : 0);
     		    		dataSource2.add(map);
     					logger.debug(map.toString());
 	        		}
 	        	}
 	    		
 	        	if (nDirection == INBOUND) {
+	        		reportData.put("OPT9_0", "일");
 		    		reportData.put("OPT9_2", new SynthesisDataSource(dataSource2));
 		    	} else if (nDirection == OUTBOUND) {
+		    		reportData.put("OPT10_0", "일");
 		    		reportData.put("OPT10_2", new SynthesisDataSource(dataSource2));
 		    	}
 	    	}
@@ -509,33 +517,36 @@ public class IdsPeriodReport extends BaseReport {
 
     	Iterable<DBObject> dbResult = idsDao.ServiceDetectLog("DY", nDirection, assetCode, sStartDay, sEndDay, 0);
     	
-    	int nTotal = 0;
+    	long lTotal = 0;
 		for (DBObject val : dbResult) {
-    		nTotal += ((Number)val.get("count")).longValue();
+			lTotal += ((Number)val.get("count")).longValue();
 		}
 
     	int nNo = 1;
-    	int nCount = 0;
+    	long lCount = 0;
     	for (DBObject val : dbResult) {
     		int nPort = (Integer)val.get("destPort");
     		if (nPort != -1 && nNo <= 10) {
 	    		HashMap<String, Object> map = new HashMap<String, Object>();
-	    		map.put("destPort", String.valueOf(nPort));
-	    		map.put("total", nTotal);
-	    		map.put("count", ((Number)val.get("count")).longValue());
+        		map.put("port", nPort);
+        		map.put("svcName", idsDao.getPortServiceName(nPort));
+        		map.put("count", ((Number)val.get("count")).longValue());
+        		map.put("ratio", (((Number)val.get("count")).longValue()*100f)/lTotal);
 
 	    		dataSource1.add(map);
 	    		logger.debug(map.toString());
     		} else {
-    			nCount += ((Number)val.get("count")).longValue();
+    			lCount += ((Number)val.get("count")).longValue();
     		}
     		nNo++;
     	}
     	
-    	if (nCount > 0) {
+    	if (lCount > 0) {
 			HashMap<String, Object> map = new HashMap<String, Object>();
-			map.put("destPort", "기타");
-			map.put("count", nCount);
+    		map.put("port", -1);
+    		map.put("svcName", "기타");
+			map.put("count", lCount);
+			map.put("ratio", (lCount*100f)/lTotal);
 	
 			dataSource1.add(map);
 			logger.debug(map.toString());
@@ -549,23 +560,24 @@ public class IdsPeriodReport extends BaseReport {
     	
     	if (bChk) { //서비스 TOP10 증감현황 및 이벤트유형
     	
-    		//표 [순위 | Port | 서비스명 | 전체건수 | 증감현황 | 이벤트명 | 비율(%)]
+    		//표 [순위 | Port | 서비스명 | 전체건수 | 이벤트명 | 비율(%)]
         	List<HashMap<String, Object>> dataSource2 = new ArrayList<HashMap<String, Object>>();
         	
         	nNo = 1;
         	for (HashMap<String, Object> hMap : dataSource1) {
-        		String sPort = (String)hMap.get("destPort");
+        		int nPort = (Integer)hMap.get("port");
         		
-        		if (sPort.equals("기타")) continue;
+        		if (nPort < 0) continue;
         		
-        		Iterable<DBObject> dbTmp = idsDao.ServiceEventTopN("DY", assetCode, sStartDay, sEndDay, Integer.valueOf(sPort));
+        		Iterable<DBObject> dbTmp = idsDao.ServiceEventTopN("DY", nDirection, assetCode, sStartDay, sEndDay, nPort);
         		for (DBObject pMap : dbTmp) {
             		HashMap<String, Object> map = new HashMap<String, Object>();
             		map.put("no", nNo);
-            		map.put("destPort", sPort);
-            		map.put("total", ((Number)hMap.get("count")).longValue());
+            		map.put("port", nPort);
+            		map.put("svcName", idsDao.getPortServiceName(nPort));
+            		map.put("count", ((Number)hMap.get("count")).longValue());
             		map.put("message", (String)pMap.get("message"));
-            		map.put("count", ((Number)pMap.get("count")).longValue());
+            		map.put("ratio", (((Number)pMap.get("count")).longValue()*100f)/((Number)hMap.get("count")).longValue());
             		
             		dataSource2.add(map);
         			logger.debug(map.toString());
